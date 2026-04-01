@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useAtom } from "jotai";
 import {
   BookOpenText,
   Building2,
@@ -12,9 +13,8 @@ import {
   UserRound,
   UsersRound,
 } from "lucide-react";
+import { activeFilterTabAtom, archiveFiltersAtom } from "../../store/archiveAtoms";
 import type {
-  ArchiveFilters as ArchiveFiltersType,
-  FilterTab,
   PartyStatus,
   RetrospectiveKind,
   SignificanceKind,
@@ -22,8 +22,6 @@ import type {
 } from "../../types/archive";
 
 interface ArchiveFiltersProps {
-  filters: ArchiveFiltersType;
-  activeTab: FilterTab;
   options: {
     witnessKinds: WitnessKind[];
     retrospectiveKinds: RetrospectiveKind[];
@@ -36,42 +34,41 @@ interface ArchiveFiltersProps {
     buildings: string[];
     addresses: string[];
   };
-  onTabChange: (tab: FilterTab) => void;
-  onChange: (filters: ArchiveFiltersType) => void;
 }
 
 function toggleArrayValue<T extends string>(list: T[], value: T) {
   return list.includes(value) ? list.filter((item) => item !== value) : [...list, value];
 }
 
-function ArchiveFilters({
-  filters,
-  activeTab,
-  options,
-  onTabChange,
-  onChange,
-}: ArchiveFiltersProps) {
+function ArchiveFilters({ options }: ArchiveFiltersProps) {
+  const [activeTab, setActiveTab] = useAtom(activeFilterTabAtom);
+  const [filters, setFilters] = useAtom(archiveFiltersAtom);
+
+  const onChange = (update: any) => {
+    setFilters((prev) => ({ ...prev, ...update }));
+  };
+
   return (
     <section className="archive-panel archive-panel--filters">
       <div className="archive-filter-tabs">
         <button
           type="button"
           className={`archive-filter-tabs__item${activeTab === "general" ? " is-active is-blue" : ""}`}
-          onClick={() => onTabChange("general")}
+          onClick={() => setActiveTab("general")}
         >
           общее
         </button>
         <button
           type="button"
           className={`archive-filter-tabs__item${activeTab === "person" ? " is-active is-green" : ""}`}
-          onClick={() => onTabChange("person")}
+          onClick={() => setActiveTab("person")}
         >
           персоналия
         </button>
         <button
           type="button"
           className={`archive-filter-tabs__item${activeTab === "place" ? " is-active is-amber" : ""}`}
-          onClick={() => onTabChange("place")}
+          onClick={() => setActiveTab("place")}
         >
           место
         </button>
@@ -84,13 +81,13 @@ function ArchiveFilters({
               <input
                 type="date"
                 value={filters.startDate}
-                onChange={(event) => onChange({ ...filters, startDate: event.target.value })}
+                onChange={(event) => onChange({ startDate: event.target.value })}
               />
               <span />
               <input
                 type="date"
                 value={filters.endDate}
-                onChange={(event) => onChange({ ...filters, endDate: event.target.value })}
+                onChange={(event) => onChange({ endDate: event.target.value })}
               />
             </div>
           </FilterSection>
@@ -104,7 +101,6 @@ function ArchiveFilters({
                   label={value}
                   onChange={() =>
                     onChange({
-                      ...filters,
                       witnessKinds: toggleArrayValue(filters.witnessKinds, value),
                     })
                   }
@@ -122,7 +118,6 @@ function ArchiveFilters({
                   label={value}
                   onChange={() =>
                     onChange({
-                      ...filters,
                       retrospectiveKinds: toggleArrayValue(filters.retrospectiveKinds, value),
                     })
                   }
@@ -140,7 +135,6 @@ function ArchiveFilters({
                   label={value}
                   onChange={() =>
                     onChange({
-                      ...filters,
                       significances: toggleArrayValue(filters.significances, value),
                     })
                   }
@@ -157,7 +151,7 @@ function ArchiveFilters({
                   type="button"
                   className={`chip chip--tag${filters.tags.includes(tag) ? " is-active" : ""}`}
                   onClick={() =>
-                    onChange({ ...filters, tags: toggleArrayValue(filters.tags, tag) })
+                    onChange({ tags: toggleArrayValue(filters.tags, tag) })
                   }
                 >
                   {tag}
@@ -173,7 +167,7 @@ function ArchiveFilters({
           <FilterSection icon={UsersRound} title="персоналии">
             <select
               value={filters.authorId}
-              onChange={(event) => onChange({ ...filters, authorId: event.target.value })}
+              onChange={(event) => onChange({ authorId: event.target.value })}
             >
               <option value="">Все персоналии</option>
               {options.authors.map((author) => (
@@ -190,7 +184,7 @@ function ArchiveFilters({
                 type="date"
                 value={filters.birthDateStart}
                 onChange={(event) =>
-                  onChange({ ...filters, birthDateStart: event.target.value })
+                  onChange({ birthDateStart: event.target.value })
                 }
               />
               <span />
@@ -198,7 +192,7 @@ function ArchiveFilters({
                 type="date"
                 value={filters.birthDateEnd}
                 onChange={(event) =>
-                  onChange({ ...filters, birthDateEnd: event.target.value })
+                  onChange({ birthDateEnd: event.target.value })
                 }
               />
             </div>
@@ -213,7 +207,6 @@ function ArchiveFilters({
                   label={value}
                   onChange={() =>
                     onChange({
-                      ...filters,
                       genders: toggleArrayValue(filters.genders, value),
                     })
                   }
@@ -231,7 +224,6 @@ function ArchiveFilters({
                   label={value}
                   onChange={() =>
                     onChange({
-                      ...filters,
                       partyStatuses: toggleArrayValue(filters.partyStatuses, value),
                     })
                   }
@@ -248,7 +240,7 @@ function ArchiveFilters({
             <SelectField
               value={filters.district}
               options={options.districts}
-              onChange={(value) => onChange({ ...filters, district: value })}
+              onChange={(value) => onChange({ district: value })}
             />
           </FilterSection>
 
@@ -256,7 +248,7 @@ function ArchiveFilters({
             <SelectField
               value={filters.space}
               options={options.spaces}
-              onChange={(value) => onChange({ ...filters, space: value })}
+              onChange={(value) => onChange({ space: value })}
             />
           </FilterSection>
 
@@ -264,7 +256,7 @@ function ArchiveFilters({
             <SelectField
               value={filters.street}
               options={options.streets}
-              onChange={(value) => onChange({ ...filters, street: value })}
+              onChange={(value) => onChange({ street: value })}
             />
           </FilterSection>
 
@@ -272,7 +264,7 @@ function ArchiveFilters({
             <SelectField
               value={filters.building}
               options={options.buildings}
-              onChange={(value) => onChange({ ...filters, building: value })}
+              onChange={(value) => onChange({ building: value })}
             />
           </FilterSection>
 
@@ -280,7 +272,7 @@ function ArchiveFilters({
             <SelectField
               value={filters.address}
               options={options.addresses}
-              onChange={(value) => onChange({ ...filters, address: value })}
+              onChange={(value) => onChange({ address: value })}
             />
           </FilterSection>
         </div>
@@ -294,7 +286,7 @@ function FilterSection({
   title,
   children,
 }: {
-  icon: typeof Clock3;
+  icon: any;
   title: string;
   children: ReactNode;
 }) {

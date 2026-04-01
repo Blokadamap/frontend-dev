@@ -1,3 +1,4 @@
+import { MapPin, Calendar, user as UserIcon } from "lucide-react";
 import type { WitnessRecord } from "../../types/archive";
 import {
   buildRecordExcerpt,
@@ -27,11 +28,11 @@ function ArchiveResults({
   const showEmpty = records.length === 0;
 
   return (
-    <section className="archive-panel archive-panel--results">
+    <section className="archive-panel archive-panel--results custom-scrollbar">
       <div className="archive-panel__header">
         <div>
           <p className="archive-panel__eyebrow">Цитаты и свидетельства</p>
-          <h2>
+          <h2 className="archive-results__main-title">
             {searchValue.trim()
               ? `Результаты по запросу «${searchValue.trim()}»`
               : "Свежая выборка"}
@@ -42,15 +43,17 @@ function ArchiveResults({
 
       {showEmpty ? (
         <div className="archive-empty-state">
-          <p>Ничего не найдено по текущему запросу.</p>
-          <span>Попробуйте снять часть фильтров или изменить формулировку поиска.</span>
+          <p>Ничего не найдено</p>
+          <span>Попробуйте изменить фильтры</span>
         </div>
       ) : (
-        <>
+        <div className="archive-results__content">
           <div className="archive-results__groups">
             {grouped.map((group) => (
               <div key={group.label} className="archive-results__group">
-                <div className="archive-results__month">{group.label}</div>
+                <div className="archive-results__month">
+                   <span>{group.label}</span>
+                </div>
 
                 {group.items.map((record) => (
                   <button
@@ -62,15 +65,26 @@ function ArchiveResults({
                     onClick={() => onSelect(record.id)}
                   >
                     <div className="archive-quote-card__header">
-                      <strong>{record.location.title}</strong>
-                      <span>{formatHumanDate(record.date)}</span>
+                      <strong className="archive-quote-card__location">
+                        <MapPin size={12} className="inline mr-1 opacity-70" />
+                        {record.location.title}
+                      </strong>
+                      <span className="archive-quote-card__date">
+                        {formatHumanDate(record.date)}
+                      </span>
                     </div>
 
-                    <p>{buildRecordExcerpt(record.summary || record.content, 165)}</p>
+                    <p className="archive-quote-card__text">
+                      {buildRecordExcerpt(record.summary || record.content, 140)}
+                    </p>
 
-                    <footer>
-                      <span>{record.author.fullName}</span>
-                      <span>{record.witnessKind}</span>
+                    <footer className="archive-quote-card__footer">
+                      <span className="archive-quote-card__author">
+                        {record.author.fullName}
+                      </span>
+                      <span className="archive-quote-card__kind">
+                        {record.witnessKind}
+                      </span>
                     </footer>
                   </button>
                 ))}
@@ -78,12 +92,12 @@ function ArchiveResults({
             ))}
           </div>
 
-          {visibleCount < records.length ? (
-            <button type="button" className="archive-link-button" onClick={onShowMore}>
-              Показать ещё
+          {visibleCount < records.length && (
+            <button type="button" className="archive-show-more-btn" onClick={onShowMore}>
+              Показать ещё свидетельства
             </button>
-          ) : null}
-        </>
+          )}
+        </div>
       )}
     </section>
   );
