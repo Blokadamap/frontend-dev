@@ -910,6 +910,108 @@
   font-weight: 700;
 }
 
+/* --- Стили списка результатов --- */
+
+.archive-results__main-title {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 800;
+  font-size: 18px !important;
+  color: var(--ink);
+  margin-top: 6px;
+}
+
+.archive-panel__count {
+  background: var(--brand-gold) !important;
+  color: white !important;
+  border-radius: 8px;
+  font-size: 12px;
+  padding: 4px 8px;
+}
+
+.archive-results__month {
+  display: flex;
+  align-items: center;
+  margin: 20px 0 12px;
+}
+
+.archive-results__month span {
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--brand-gold);
+  background: #F0EDE8;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.archive-quote-card {
+  border: 1px solid #E8E2D9 !important;
+  background: white !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03) !important;
+  padding: 16px !important;
+  margin-bottom: 8px;
+  transition: all 0.3s ease !important;
+}
+
+.archive-quote-card:hover {
+  border-color: var(--brand-gold) !important;
+  transform: translateX(4px);
+}
+
+.archive-quote-card.is-active {
+  border-left: 4px solid var(--brand-gold) !important;
+  background: #FCFAF7 !important;
+  box-shadow: 0 8px 20px rgba(216, 174, 118, 0.15) !important;
+}
+
+.archive-quote-card__location {
+  color: var(--amber-strong) !important;
+  font-size: 14px !important;
+}
+
+.archive-quote-card__text {
+  font-size: 13.5px !important;
+  line-height: 1.5 !important;
+  color: var(--ink);
+  margin: 10px 0 !important;
+}
+
+.archive-quote-card__footer {
+  border-top: 1px dashed #EEE6DA;
+  padding-top: 10px;
+  margin-top: 10px;
+  font-size: 11px !important;
+  font-weight: 600;
+}
+
+.archive-quote-card__kind {
+  color: var(--brand-gold);
+  text-transform: uppercase;
+  font-size: 9px;
+  letter-spacing: 0.05em;
+}
+
+/* Кнопка "Показать еще" */
+.archive-show-more-btn {
+  width: 100%;
+  padding: 14px;
+  margin-top: 20px;
+  background: transparent;
+  border: 2px dashed #E8E2D9;
+  border-radius: 12px;
+  color: var(--ink-soft);
+  font-weight: 700;
+  font-size: 12px;
+  transition: 0.2s;
+}
+
+.archive-show-more-btn:hover {
+  border-color: var(--brand-gold);
+  color: var(--brand-gold);
+  background: white;
+}
+
 @media (max-width: 1180px) {
   .archive-sidebar--right {
     width: min(316px, calc(100% - 48px));
