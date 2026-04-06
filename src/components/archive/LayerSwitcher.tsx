@@ -1,35 +1,63 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAtom } from "jotai";
+import { Layers, ChevronRight } from "lucide-react";
 import { selectedLayerAtom } from "../../store/archiveAtoms";
 import type { MapLayerId } from "../../types/archive";
 
-const layers: { id: MapLayerId; label: string; desc: string }[] = [
-  { id: "modern", label: "СОВРЕМЕННАЯ", desc: "OpenStreetMap" },
-  { id: "retro", label: "АРХИВНАЯ", desc: "Аэрофотосъёмка" },
-  { id: "topo", label: "ТОПОГРАФИЯ", desc: "Карта 1940 г." },
+// Данные для слоев (картинки можно положить в public/assets/layers/)
+const layerOptions: { id: MapLayerId; label: string; img: string }[] = [
+  { id: "modern", label: "1942г.", img: "/assets/layers/1942.jpg" }, // замени на реальные пути
+  { id: "retro", label: "1943г.", img: "/assets/layers/1943.jpg" },
+  { id: "topo", label: "1944г.", img: "/assets/layers/1944.jpg" },
 ];
 
 function LayerSwitcher() {
   const [selected, setSelected] = useAtom(selectedLayerAtom);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="bg-white/95 backdrop-blur-sm p-2 rounded-2xl border border-[#E8E2D9] shadow-2xl flex gap-1">
-      {layers.map((layer) => (
-        <button
-          key={layer.id}
-          onClick={() => setSelected(layer.id)}
-          className={`px-4 py-2 rounded-xl transition-all flex flex-col items-start ${
-            selected === layer.id 
-            ? "bg-[#D8AE76] text-white shadow-inner" 
-            : "text-[#737982] hover:bg-[#F0EDE8]"
-          }`}
-        >
-          <span className="text-[9px] font-black tracking-tighter leading-none">{layer.label}</span>
-          <span className={`text-[8px] opacity-70 ${selected === layer.id ? "text-white" : "text-[#B5B0A7]"}`}>
-            {layer.desc}
-          </span>
-        </button>
-      ))}
+    <div className="layer-switcher-container">
+      {/* Основная кнопка "Слои" */}
+      <button 
+        className={`layer-main-button ${isOpen ? 'is-open' : ''}`}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <div className="layer-main-button__preview">
+           {/* Тут можно вставить мини-карту или картинку текущего слоя */}
+        </div>
+        <div className="layer-main-button__label">
+          <Layers size={16} strokeWidth={2.5} />
+          <span>Слои</span>
+        </div>
+      </button>
+
+      {/* Выпадающая панель с годами */}
+      {isOpen && (
+        <div className="layer-selection-panel animate-in slide-in-from-left-2">
+          {layerOptions.map((layer) => (
+            <button
+              key={layer.id}
+              className={`layer-item ${selected === layer.id ? "is-active" : ""}`}
+              onClick={() => {
+                setSelected(layer.id);
+                // setIsOpen(false); // расскоментируй, если хочешь чтобы закрывалось после выбора
+              }}
+            >
+              <div className="layer-item__image">
+                <img src={layer.img} alt={layer.label} />
+              </div>
+              <span>{layer.label}</span>
+            </button>
+          ))}
+          
+          <button className="layer-item layer-item--more">
+            <div className="layer-item__image">
+              <Layers size={24} opacity={0.5} />
+            </div>
+            <span>Еще</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 }

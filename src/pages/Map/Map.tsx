@@ -268,38 +268,11 @@ function Map() {
             </div>
           ) : null}
 
-          {showLayerDock ? (
-            <div className="archive-layer-dock">
-              <LayerSwitcher value={selectedLayer} onChange={setSelectedLayer} />
-            </div>
-          ) : null}
+          <div className="archive-layer-dock">
+            <LayerSwitcher />
+          </div>
 
-          {showMapStatus ? (
-            <div className="archive-map-status">
-              <div className="archive-map-status__primary">
-                <strong>{filteredRecords.length}</strong>
-                <span>{`${resultsWord} на карте`}</span>
-              </div>
-
-              <div className="archive-map-status__secondary">
-                <span>{layerLabels[selectedLayer]}</span>
-                <span>
-                  {activeFilterCount > 0 ? `${activeFilterCount} ${filtersWord}` : "Без фильтров"}
-                </span>
-              </div>
-
-              <button
-                type="button"
-                className="archive-map-status__action"
-                onClick={() => {
-                  setSelectedRecordId(null);
-                  setActivePanel(activePanel === "results" ? null : "results");
-                }}
-              >
-                {activePanel === "results" ? "Скрыть выборку" : "Открыть выборку"}
-              </button>
-            </div>
-          ) : null}
+         
         </div>
       </section>
     </main>
