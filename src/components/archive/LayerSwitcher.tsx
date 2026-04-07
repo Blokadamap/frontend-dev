@@ -1,61 +1,80 @@
 import React, { useState } from "react";
 import { useAtom } from "jotai";
-import { Layers, ChevronRight } from "lucide-react";
+import { Layers, X } from "lucide-react";
 import { selectedLayerAtom } from "../../store/archiveAtoms";
 import type { MapLayerId } from "../../types/archive";
 
-// Данные для слоев (картинки можно положить в public/assets/layers/)
-const layerOptions: { id: MapLayerId; label: string; img: string }[] = [
-  { id: "modern", label: "1942г.", img: "/assets/layers/1942.jpg" }, // замени на реальные пути
-  { id: "retro", label: "1943г.", img: "/assets/layers/1943.jpg" },
-  { id: "topo", label: "1944г.", img: "/assets/layers/1944.jpg" },
+// Все доступные слои по категориям
+const historicalLayers: { id: MapLayerId; label: string; img: string }[] = [
+  { id: "modern", label: "1942г.", img: "https://placehold.co/100x100/333/fff?text=1942" },
+  { id: "retro", label: "1943г.", img: "https://placehold.co/100x100/333/fff?text=1943" },
+  { id: "topo", label: "1944г.", img: "https://placehold.co/100x100/333/fff?text=1944" },
+  { id: "modern" as MapLayerId, label: "xxxxг.", img: "https://placehold.co/100x100/333/999?text=xxxx" },
+  { id: "modern" as MapLayerId, label: "xxxxг.", img: "https://placehold.co/100x100/333/999?text=xxxx" },
+  { id: "modern" as MapLayerId, label: "xxxxг.", img: "https://placehold.co/100x100/333/999?text=xxxx" },
+];
+
+const baseLayers: { id: MapLayerId; label: string; img: string }[] = [
+  { id: "retro" as MapLayerId, label: "Спутник", img: "https://placehold.co/100x100/223/fff?text=Sat" },
+  { id: "modern" as MapLayerId, label: "По умолчанию", img: "https://placehold.co/100x100/eee/333?text=Def" },
 ];
 
 function LayerSwitcher() {
   const [selected, setSelected] = useAtom(selectedLayerAtom);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <div className="layer-switcher-container">
-      {/* Основная кнопка "Слои" */}
-      <button 
-        className={`layer-main-button ${isOpen ? 'is-open' : ''}`}
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <div className="layer-main-button__preview">
-           {/* Тут можно вставить мини-карту или картинку текущего слоя */}
-        </div>
+    <div className="layer-switcher-wrapper">
+      {/* Маленькая квадратная кнопка (всегда видна слева) */}
+      <button className="layer-main-button" onClick={() => setIsModalOpen(true)}>
         <div className="layer-main-button__label">
-          <Layers size={16} strokeWidth={2.5} />
+          <Layers size={16} />
           <span>Слои</span>
         </div>
       </button>
 
-      {/* Выпадающая панель с годами */}
-      {isOpen && (
-        <div className="layer-selection-panel animate-in slide-in-from-left-2">
-          {layerOptions.map((layer) => (
-            <button
-              key={layer.id}
-              className={`layer-item ${selected === layer.id ? "is-active" : ""}`}
-              onClick={() => {
-                setSelected(layer.id);
-                // setIsOpen(false); // расскоментируй, если хочешь чтобы закрывалось после выбора
-              }}
-            >
-              <div className="layer-item__image">
-                <img src={layer.img} alt={layer.label} />
-              </div>
-              <span>{layer.label}</span>
-            </button>
-          ))}
-          
-          <button className="layer-item layer-item--more">
-            <div className="layer-item__image">
-              <Layers size={24} opacity={0.5} />
+      {/* Полноэкранное меню выбора (как на скрине) */}
+      {isModalOpen && (
+        <div className="layer-modal-overlay" onClick={() => setIsModalOpen(false)}>
+          <div className="layer-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="layer-modal-header">
+              <h2>Вид карты:</h2>
             </div>
-            <span>Еще</span>
-          </button>
+
+            {/* Сетка исторических слоев */}
+            <div className="layer-modal-grid">
+              {historicalLayers.map((layer, index) => (
+                <button
+                  key={index}
+                  className={`layer-modal-item ${selected === layer.id ? "is-active" : ""}`}
+                  onClick={() => setSelected(layer.id)}
+                >
+                  <div className="layer-modal-item__img">
+                    <img src={layer.img} alt={layer.label} />
+                  </div>
+                  <span>{layer.label}</span>
+                </button>
+              ))}
+            </div>
+
+            <hr className="layer-modal-divider" />
+
+            {/* Базовые слои */}
+            <div className="layer-modal-grid base-grid">
+              {baseLayers.map((layer, index) => (
+                <button
+                  key={index}
+                  className={`layer-modal-item ${selected === layer.id ? "is-active" : ""}`}
+                  onClick={() => setSelected(layer.id)}
+                >
+                  <div className="layer-modal-item__img">
+                    <img src={layer.img} alt={layer.label} />
+                  </div>
+                  <span>{layer.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       )}
     </div>

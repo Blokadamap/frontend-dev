@@ -179,8 +179,8 @@
   top: 108px;
   left: 24px;
   bottom: auto !important; 
-  max-height: calc(100vh - 212px); 
-  width: 340px;
+  max-height: 440px !important; 
+  width: 290px;
   display: flex;
   flex-direction: column;
 }
@@ -203,7 +203,12 @@
 
 .archive-panel--results {
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  height: auto !important; 
+  display: flex;
+  flex-direction: column;
 }
+
+
 
 .archive-panel::-webkit-scrollbar { width: 10px; height: 10px; }
 .archive-panel::-webkit-scrollbar-track { background: rgba(237, 231, 221, 0.72); }
@@ -825,6 +830,104 @@
   color: var(--ink);
 }
 
+/* Оверлей теперь просто прозрачный фон для закрытия по клику вне панели */
+.layer-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: transparent; /* Убираем затемнение, чтобы видеть карту */
+}
+
+/* Сама панель (теперь она парит слева снизу) */
+/* Контейнер всей панели */
+.layer-modal-content {
+   position: absolute;
+  left: 24px;
+  bottom: 110px;
+  
+  background: white;
+  width: 250px; 
+  border-radius: 20px;
+  padding: 16px; 
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  border: 1px solid #E8E2D9;
+}
+
+/* Заголовок "Вид карты:" */
+.layer-modal-header h2 {
+  font-size: 14px; 
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+/* Сетка для годов (3 в ряд) */
+.layer-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 10px; 
+}
+
+/* Сетка для низа (Спутник / По умолчанию - 2 в ряд) */
+.layer-modal-grid.base-grid {
+  grid-template-columns: repeat(2, 1fr);
+  margin-top: 10px;
+}
+
+/* Сама карточка (кнопка) */
+.layer-modal-item {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+/* Квадратик с картинкой */
+.layer-modal-item__img {
+  width: 64px;  
+  height: 64px; 
+  border-radius: 12px;
+  overflow: hidden;
+  background: #333;
+  border: 2px solid transparent;
+  transition: 0.2s;
+}
+
+/* Картинка внутри */
+.layer-modal-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.8;
+}
+
+/* Текст под картинкой */
+.layer-modal-item span {
+  font-size: 11px; 
+  font-weight: 600;
+  color: #2F3035;
+}
+
+/* Состояние выбора (Золотая рамка) */
+.layer-modal-item.is-active .layer-modal-item__img {
+  border-color: var(--brand-gold);
+  border-width: 3px;
+}
+
+.layer-modal-item.is-active span {
+  color: var(--brand-gold);
+}
+
+/* Разделитель */
+.layer-modal-divider {
+  border: none;
+  border-top: 1px solid #EEE6DA;
+  margin: 12px 0;
+}
+
 /* --- Стили списка результатов --- */
 
 .archive-results__main-title {
@@ -962,12 +1065,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%; /* На всю ширину панели */
+  width: 100%; 
   height: 40px;
   margin-top: 12px;
-  
-  /* Цвета с твоей картинки */
-  background: #CEAC7B !important; /* Тот самый песочно-золотой */
+  background: #CEAC7B !important; 
   color: #FFFFFF !important;
   
   border: none;
@@ -1004,6 +1105,140 @@
 .animate-in {
   animation: fadeIn 0.3s ease-out;
 }
+
+/* UI KIT STYLES */
+
+/* Кнопки */
+.ui-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 13px;
+}
+
+.ui-button--primary {
+  background: var(--brand-gold);
+  color: white;
+  padding: 10px 20px;
+}
+
+.ui-button--ghost {
+  background: #F4F1EC;
+  color: var(--ink);
+  border: 1px solid #E8E2D9;
+}
+
+.ui-button:hover { opacity: 0.9; transform: translateY(-1px); }
+.ui-button:disabled { background: #D1CBC0; cursor: not-allowed; }
+
+/* Баджи */
+.ui-badge {
+  display: inline-flex;
+  padding: 4px 12px;
+  background: #F0EDE8;
+  color: var(--brand-gold);
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.ui-badge.is-active {
+  background: var(--brand-gold);
+  color: white;
+}
+
+/* Радиокнопки */
+.ui-radio {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.ui-radio__circle {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #D1CBC0;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+
+/* Разделитель */
+.ui-separator {
+  height: 1px;
+  background: #EEE6DA;
+  width: 100%;
+  margin: 12px 0;
+}
+
+/* Кнопка-иконка */
+.ui-icon-button {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.ui-icon-button--primary {
+  background: var(--brand-gold);
+  color: white;
+}
+
+.ui-icon-button--secondary {
+  background: #F4F1EC;
+  color: var(--ink);
+  border: 1px solid #E8E2D9;
+}
+
+.ui-icon-button:hover { opacity: 0.9; transform: scale(1.05); }
+
+/* Инпут */
+.ui-input-wrapper {
+  display: flex;
+  align-items: center;
+  background: white;
+  border: 1px solid #E8E2D9;
+  border-radius: 10px;
+  padding: 0 12px;
+  gap: 8px;
+  width: 100%;
+}
+
+.ui-input-field {
+  border: none;
+  height: 40px;
+  width: 100%;
+  outline: none;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.ui-input-icon {
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+}
+
+.ui-radio__circle.is-checked { border-color: var(--brand-gold); }
+.ui-radio__dot { width: 8px; height: 8px; background: var(--brand-gold); border-radius: 50%; }
+.ui-radio__label { font-size: 14px; color: var(--ink); }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
