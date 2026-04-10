@@ -176,7 +176,7 @@
 }
 
 .archive-sidebar--left {
-  top: 108px;
+  top: 120px; /* Увеличили отступ сверху, так как поиск стал выше */
   left: 24px;
   bottom: auto !important; 
   max-height: 440px !important; 
@@ -208,11 +208,10 @@
   border-radius: 24px !important; 
 }
 
-/* ОБНОВЛЕНО: Отступы списка результатов (прижимаем карточки) */
 .archive-panel--results {
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   height: auto !important; 
-  padding: 24px 20px !important; /* Общий отступ для всей панели */
+  padding: 24px 20px !important; 
   display: flex;
   flex-direction: column;
 }
@@ -575,84 +574,114 @@
   ТУЛБАР И ПОИСК
    ========================================= */
 .archive-topbar {
-  top: 56px;
-  left: 24px;
-  width: min(324px, calc(100% - 48px));
+  top: 50px !important;
+  left: 24px !important;
+  /* Увеличил общую ширину контейнера для солидности */
+  width: min(400px, calc(100% - 48px)) !important; 
+  z-index: 1100 !important;
 }
 
 .archive-toolbar {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 38px;
-  gap: 6px;
+  display: grid !important;
+  /* По умолчанию: поиск + 1 кнопка */
+  grid-template-columns: 1fr 48px !important; 
+  gap: 10px !important;
+  align-items: center !important;
 }
 
-.archive-toolbar.has-close,
+/* Когда фильтры открыты, сетка перестраивается под 3 колонки (поиск + 2 кнопки) */
 .archive-toolbar.is-filters-open {
-  grid-template-columns: minmax(0, 1fr) 38px 38px;
+  grid-template-columns: 1fr 48px 48px !important;
+}
+
+/* Сохраняем поддержку старого класса, если он где-то остался */
+.archive-toolbar.has-close {
+  grid-template-columns: 1fr 48px 48px !important;
 }
 
 .archive-toolbar__field {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 38px;
-  padding: 0 12px;
-  border: 1px solid #E8E2D9;
-  border-radius: 9px;
-  background: #ffffff;
-  box-shadow: var(--panel-shadow);
-  color: var(--ink-soft);
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  height: 48px !important;
+  padding: 0 20px !important;
+  background: #ffffff !important;
+  border: 1px solid #E8E2D9 !important;
+  border-radius: 999px !important; /* Чистая пилюля */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
 }
 
 .archive-toolbar__field input {
-  width: 100%;
-  height: 36px;
-  border: none;
-  background: transparent;
-  outline: none;
-  color: var(--ink);
-  font-size: 14px;
+  width: 100% !important;
+  height: 100% !important;
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  font-size: 15px !important;
+  color: #2F3035 !important;
 }
 
+/* ОБЩИЙ СТИЛЬ КНОПОК: Квадраты с белыми иконками */
 .archive-toolbar__button {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border: none;
-  border-radius: 9px;
-  color: white;
-  box-shadow: var(--panel-shadow);
+  position: relative !important;
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 16px !important; /* Мягкий квадрат как на скрине */
+  border: none !important;
+  display: grid !important;
+  place-items: center !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
+  color: #ffffff !important; /* Иконки всегда белые */
+  transition: all 0.2s ease;
 }
 
-.archive-toolbar__button--filter { background: var(--brand-gold) !important; }
-.archive-toolbar__button--apply { background: var(--green-strong); }
-.archive-toolbar__button--close, .archive-toolbar__button--mobile-close { background: var(--rose-strong); }
-.archive-toolbar__button--mobile-close { display: none; }
+.archive-toolbar__button:hover {
+  transform: translateY(-1px) scale(1.02);
+  filter: brightness(1.05);
+}
+
+/* Кнопка фильтра (Золотая) */
+.archive-toolbar__button--filter {
+  background: #CEAC7B !important;
+}
+
+/* Кнопка "Применить" (Зеленая) */
+.archive-toolbar__button--apply {
+  background: #CEAC7B !important;
+}
+
+/* Кнопка "Сбросить" и мобильный клос (Красная) */
+.archive-toolbar__button--close, 
+.archive-toolbar__button--mobile-close { 
+  background: #CEAC7B !important;
+}
 
 .archive-toolbar__badge {
-  position: absolute;
-  top: -4px;
-  right: -4px;
-  min-width: 16px;
-  padding: 3px 4px;
-  border-radius: 999px;
-  background: rgba(49, 53, 61, 0.94);
-  color: white;
-  font-size: 10px;
-  line-height: 1;
+  position: absolute !important;
+  top: -6px !important;
+  right: -6px !important;
+  min-width: 20px !important;
+  height: 20px !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 50% !important;
+  background: #2F3035 !important;
+  color: white !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  border: 2px solid #ffffff !important; /* Обводка чтобы не сливалось */
 }
 
 /* =========================================
-   СПИСОК РЕЗУЛЬТАТОВ И КАРТОЧКИ (ОБНОВЛЕНО)
+   СПИСОК РЕЗУЛЬТАТОВ И КАРТОЧКИ 
    ========================================= */
 
 .archive-panel__header {
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-start !important;
-  padding: 0 0 16px 0 !important; /* Убрали боковые отступы, так как задали их общей панели */
+  padding: 0 0 16px 0 !important; 
 }
 
 .archive-panel--results.is-collapsed {
@@ -674,26 +703,26 @@
   display: flex;
   align-items: center;
   position: relative;
-  margin: 16px 0 12px 0; /* Прижали к бокам (отступы 0) */
+  margin: 16px 0 12px 0; 
   border-bottom: 1px solid #E8E2D9;
 }
 
 .archive-results__content {
-  padding: 10px 0 20px 0; /* Убрали боковые отступы, карточки растянулись */
+  padding: 10px 0 20px 0; 
 }
 
 .archive-quote-card {
   width: 100% !important;
   margin: 0 0 12px 0 !important;
-  padding: 18px !important; /* Больше воздуха внутри карточки */
+  padding: 18px !important; 
   border: 1px solid #E8E2D9 !important;
   text-align: left;
   display: grid;
   gap: 12px;
   background: #fff;
-  box-shadow: 0 6px 16px rgba(56, 60, 67, 0.04); /* Аккуратная легкая тень */
+  box-shadow: 0 6px 16px rgba(56, 60, 67, 0.04); 
   transition: 0.2s;
-  border-radius: 20px !important; /* Плавные края как в макете */
+  border-radius: 20px !important; 
 }
 
 .archive-quote-card:hover, .archive-quote-card.is-active {
@@ -749,7 +778,7 @@
 }
 
 .archive-quote-card__text {
-  font-size: 14px !important; /* Крупнее для читаемости */
+  font-size: 14px !important; 
   line-height: 1.5 !important; 
   color: var(--ink);
   margin: 0;
