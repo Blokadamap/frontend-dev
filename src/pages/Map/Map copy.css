@@ -60,12 +60,12 @@
 .archive-status__eyebrow,
 .archive-panel__eyebrow,
 .archive-detail__eyebrow {
-  color: #737982;
+  margin: 0;
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  margin: 0 0 4px 0 !important;
+  color: var(--ink-soft);
 }
 
 .archive-shell--status h1 {
@@ -182,13 +182,8 @@
   max-height: 440px !important; 
   width: 320px !important;
   padding: 0 !important; 
-  display: flex !important;
-  flex-direction: column !important;
-  background: transparent !important; 
-  box-shadow: none !important;        
-  border: none !important;            
-  gap: 12px;                          
-  overflow: visible !important; 
+  display: flex;
+  flex-direction: column;
 }
 
 .archive-sidebar--right {
@@ -208,14 +203,15 @@
   border-radius: 24px !important; 
 }
 
-/* ОБНОВЛЕНО: Отступы списка результатов (прижимаем карточки) */
 .archive-panel--results {
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   height: auto !important; 
-  padding: 24px 20px !important; /* Общий отступ для всей панели */
+  padding: 20px 10px !important; 
   display: flex;
   flex-direction: column;
 }
+
+
 
 .archive-panel::-webkit-scrollbar { width: 10px; height: 10px; }
 .archive-panel::-webkit-scrollbar-track { background: rgba(237, 231, 221, 0.72); }
@@ -229,47 +225,38 @@
 /* =========================================
    ТАБЫ
    ========================================= */
+/* Контейнер табов */
 .archive-filter-tabs {
   display: flex;
-  width: 100%;
-  gap: 8px;
-  padding: 0 4px; 
+  background: #F0EDE8; 
+  border-radius: 999px; 
+  padding: 4px;
+  gap: 4px;
+  margin: 10px 20px;
+  border-bottom: none !important; 
 }
 
+/* Элемент таба */
 .archive-filter-tabs__item {
   flex: 1;
   min-height: 32px !important;
-  padding: 0 12px !important;
+  padding: 0 16px;
   border: none !important;
-  border-radius: 999px !important;    
-  background: white !important;       
+  border-radius: 999px !important; 
+  background: transparent !important;
   color: #737982 !important;
   font-size: 13px !important;
   font-weight: 700 !important;
-  text-transform: none !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); 
-  cursor: pointer;
+  text-transform: none !important; 
   transition: all 0.2s ease;
+  cursor: pointer;
 }
+
 
 .archive-filter-tabs__item.is-active {
   background: var(--brand-gold) !important; 
   color: white !important;
-  box-shadow: 0 4px 12px rgba(216, 174, 118, 0.4) !important; 
-}
-
-.archive-filter-tabs__item:not(.is-active):hover {
-  background: #fdfdfd !important;
-  transform: translateY(-1px);
-}
-
-.archive-panel--filters {
-  border: 1px solid #E8E2D9 !important;
-  border-radius: 28px !important;     
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
-  flex: 1;                            
-  padding-top: 20px !important;
-  background-color: var(--paper) !important;
+  box-shadow: 0 4px 12px rgba(216, 174, 118, 0.3); 
 }
 
 /* =========================================
@@ -535,9 +522,9 @@
    ========================================= */
 .archive-layer-dock {
   position: absolute;
-  left: 24px;   
-  bottom: 24px; 
-  z-index: 1500; 
+  left: 24px;   /* Прижали к левому краю */
+  bottom: 24px; /* Прижали к нижнему краю */
+  z-index: 1500; /* Чтобы всегда было поверх всего */
 }
 
 .archive-layer-switcher {
@@ -645,55 +632,51 @@
 }
 
 /* =========================================
-   СПИСОК РЕЗУЛЬТАТОВ И КАРТОЧКИ (ОБНОВЛЕНО)
+   ПРОЧЕЕ (КАРТОЧКИ, РЕЗУЛЬТАТЫ, АДАПТИВ)
    ========================================= */
+.archive-panel--results {
+  padding-left: 10px !important;  
+  padding-right: 10px !important; 
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
 
 .archive-panel__header {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: flex-start !important;
-  padding: 0 0 16px 0 !important; /* Убрали боковые отступы, так как задали их общей панели */
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+  padding: 0 !important; 
+  margin-bottom: 20px;
+  width: 100%;
 }
 
 .archive-panel--results.is-collapsed {
   height: auto !important;
   min-height: 0 !important;
-  padding-bottom: 20px; 
-  overflow: hidden; 
+  padding-bottom: 20px; /* Чтобы был небольшой отступ снизу под кнопкой */
+  overflow: hidden; /* Чтобы ничего не вылезало в сжатом виде */
 }
-
 .archive-panel__header h2 { margin: 4px 0 0; font-size: 17px; color: var(--ink); }
-
 .archive-panel__count { display: grid; place-items: center; min-width: 32px; height: 32px; border-radius: 10px; background: #f0ede6; color: var(--ink); font-size: 13px; font-weight: 800; }
-
 .archive-results__groups { display: flex; flex-direction: column; gap: 16px; }
-
 .archive-results__group { display: flex; flex-direction: column; gap: 10px; }
-
-.archive-results__month {
-  display: flex;
-  align-items: center;
-  position: relative;
-  margin: 16px 0 12px 0; /* Прижали к бокам (отступы 0) */
-  border-bottom: 1px solid #E8E2D9;
-}
-
-.archive-results__content {
-  padding: 10px 0 20px 0; /* Убрали боковые отступы, карточки растянулись */
-}
+.archive-results__month { padding-bottom: 10px; border-bottom: 1px solid var(--line); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
 
 .archive-quote-card {
   width: 100% !important;
-  margin: 0 0 12px 0 !important;
-  padding: 18px !important; /* Больше воздуха внутри карточки */
-  border: 1px solid #E8E2D9 !important;
-  text-align: left;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding: 16px 12px !important; 
+  
   display: grid;
-  gap: 12px;
+  gap: 9px;
+  padding: 14px 14px 13px;
+  border: 1px solid #E8E2D9;
   background: #fff;
-  box-shadow: 0 6px 16px rgba(56, 60, 67, 0.04); /* Аккуратная легкая тень */
+  text-align: left;
+  box-shadow: 0 10px 24px rgba(56, 60, 67, 0.04);
   transition: 0.2s;
-  border-radius: 20px !important; /* Плавные края как в макете */
+  border-radius: 16px !important; 
+  border: 1px solid #E8E2D9 !important;
 }
 
 .archive-quote-card:hover, .archive-quote-card.is-active {
@@ -701,35 +684,11 @@
   transform: translateY(-1px);
 }
 
-.archive-quote-card__header { 
-  display: flex; 
-  justify-content: space-between; 
-  gap: 10px; 
-  align-items: flex-start; 
-}
-
+.archive-quote-card__header { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
 .archive-quote-card__header strong { font-size: 15px; color: var(--ink); }
 .archive-quote-card__header span { min-width: 74px; font-size: 10.5px; text-align: right; color: var(--ink-soft); }
-
-.archive-quote-card p { 
-  margin: 0; 
-  font-size: 14px; 
-  line-height: 1.52; 
-  color: var(--ink); 
-  display: -webkit-box; 
-  overflow: hidden; 
-  -webkit-box-orient: vertical; 
-  -webkit-line-clamp: 5; 
-}
-
-.archive-quote-card footer { 
-  display: grid; 
-  grid-template-columns: minmax(0, 1fr) auto; 
-  gap: 10px; 
-  font-size: 12px; 
-  color: var(--ink-soft); 
-}
-
+.archive-quote-card p { margin: 0; font-size: 14px; line-height: 1.52; color: var(--ink); display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 5; }
+.archive-quote-card footer { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; font-size: 12px; color: var(--ink-soft); }
 .archive-quote-card footer span:last-child { text-align: right; }
 
 .archive-quote-card:hover {
@@ -749,21 +708,18 @@
 }
 
 .archive-quote-card__text {
-  font-size: 14px !important; /* Крупнее для читаемости */
-  line-height: 1.5 !important; 
+  font-size: 13.5px !important;
+  line-height: 1.5 !important;
   color: var(--ink);
-  margin: 0;
+  margin: 10px 0 !important;
 }
 
 .archive-quote-card__footer {
   border-top: 1px dashed #EEE6DA;
-  padding-top: 12px;
-  margin-top: 6px;
-  font-size: 11.5px !important;
+  padding-top: 10px;
+  margin-top: 10px;
+  font-size: 11px !important;
   font-weight: 600;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .archive-quote-card__kind {
@@ -831,6 +787,13 @@
   gap: 12px;
 }
 
+/* Кнопка "Слои" (Квадратная с рамкой) */
+.layer-switcher-container {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
 .layer-switcher-wrapper {
   position: relative;
   display: flex;
@@ -872,19 +835,99 @@
 .layer-selection-panel {
   position: absolute;
   left: 0;
-  bottom: 0; 
+  bottom: 0; /* Окно стоит ровно в углу, заменяя кнопку */
+  
   width: 280px !important;
-  height: auto !important; 
+  height: auto !important; /* Даем ей расти вверх сколько нужно */
   background: white !important;
   border-radius: 24px !important;
   border: 1px solid #E8E2D9 !important;
   padding: 20px !important;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.2) !important;
+  
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+}
+
+.layer-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.layer-item__image {
+  width: 64px; height: 64px; border-radius: 12px;
+  overflow: hidden; background: #F0EDE8;
+  border: 2px solid transparent; transition: 0.2s;
+}
+
+.layer-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(0.5);
+}
+
+.layer-item span {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* Состояние выбранного года */
+.layer-item.is-active .layer-item__image {
+  border-color: var(--brand-gold);
+}
+
+.layer-item.is-active span {
+  color: var(--brand-gold);
+}
+
+.layer-item:hover .layer-item__image {
+  transform: translateY(-2px);
+}
+
+/* Кнопка "Еще" */
+.layer-item--more .layer-item__image {
+  background: #D1CBC0;
+  color: var(--ink);
+}
+
+/* Оверлей теперь просто прозрачный фон для закрытия по клику вне панели */
+.layer-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: transparent; /* Убираем затемнение, чтобы видеть карту */
+}
+
+/* Сама панель (теперь она парит слева снизу) */
+/* Контейнер всей панели */
+/* 1. Контейнер всей панели (теперь встает ВМЕСТО кнопки в углу) */
+.layer-selection-panel {
+  position: absolute;
+  left: 0;
+  bottom: 0; /* Встает в самый низ, перекрывая место кнопки */
+  
+  background: white !important;
+  width: 280px !important; /* Чуть увеличил, чтобы 3 карточки по 64px + отступы влезли идеально */
+  border-radius: 24px !important;
+  padding: 20px !important;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid #E8E2D9 !important;
   z-index: 1200;
+  
   display: flex !important;
   flex-direction: column !important;
 }
 
+/* 2. Шапка (Заголовок + Крестик) */
 .layer-modal-header {
   display: flex !important;
   justify-content: space-between !important;
@@ -896,9 +939,11 @@
   margin: 0 !important;
   font-size: 16px !important;
   font-weight: 800 !important;
+  margin: 0 !important;
   color: #000 !important;
 }
 
+/* Кнопка-крестик */
 .layer-modal-close-btn {
   background: #F0EDE8 !important;
   border: none !important;
@@ -912,17 +957,20 @@
   cursor: pointer;
 }
 
+/* 3. Сетка (Жестко 3 колонки) */
 .layer-modal-grid {
   display: grid !important;
   grid-template-columns: repeat(3, 1fr) !important;
   gap: 12px !important;
 }
 
+/* Сетка для низа (2 колонки) */
 .layer-modal-grid.base-grid {
   grid-template-columns: repeat(2, 1fr) !important;
   margin-top: 4px !important;
 }
 
+/* 4. Сама карточка (кнопка) */
 .layer-modal-item {
   display: flex !important;
   flex-direction: column !important;
@@ -933,29 +981,36 @@
   cursor: pointer;
 }
 
+/* Квадратик с картинкой */
 .layer-modal-item__img {
   width: 68px !important;
   height: 68px !important;
   border-radius: 14px !important;
   overflow: hidden;
-  border: 3px solid transparent !important;
-  background: #333 !important;
+  border: 3px solid transparent;
+  background: #f0f0f0;
   margin-bottom: 4px;
+  background: #333 !important;
+  border: 3px solid transparent !important;
   transition: 0.2s;
+  margin-bottom: 4px;
 }
 
+/* Картинка внутри */
 .layer-modal-item img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
+/* Текст под картинкой */
 .layer-modal-item span {
   font-size: 11px !important;
   font-weight: 600 !important;
   color: #333 !important;
 }
 
+/* Состояние выбора (Золотая рамка) */
 .layer-modal-item.is-active .layer-modal-item__img {
   border-color: var(--brand-gold) !important;
 }
@@ -964,6 +1019,7 @@
   color: var(--brand-gold) !important;
 }
 
+/* 5. Разделитель */
 .layer-modal-divider {
   width: 100% !important;
   border: none !important;
@@ -971,29 +1027,47 @@
   margin: 16px 0 !important;
 }
 
+/* --- Стили списка результатов --- */
+
 .archive-results__main-title {
   font-family: 'Manrope', sans-serif;
-  margin: 0 0 12px 0 !important;
-  font-size: 24px !important; 
   font-weight: 800;
-  color: #2F3035;
-  line-height: 1.2;
+  font-size: 18px !important;
+  color: var(--ink);
+  margin-top: 6px;
+}
+
+.archive-panel__count {
+  background: var(--brand-gold) !important;
+  color: white !important;
+  border-radius: 8px;
+  font-size: 12px;
+  padding: 4px 8px;
+}
+
+.archive-results__month {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 0 !important;
+  margin: 15px 0 10px 0;
 }
 
 .archive-results__month span {
-  position: relative;
-  z-index: 2; 
-  background: #F4EFE8; 
-  color: #D8AE76; 
   font-size: 10px;
-  font-weight: 800;
-  padding: 4px 10px;
-  border-radius: 999px; 
+  font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  display: inline-block;
+  letter-spacing: 0.1em;
+  color: var(--brand-gold);
+  background: #F0EDE8;
+  padding: 2px 8px;
+  border-radius: 4px;
 }
 
+
+
+
+/* Кнопка "Показать еще" */
 .archive-show-more-btn {
   width: 100%;
   padding: 14px;
@@ -1012,7 +1086,6 @@
   color: var(--brand-gold);
   background: white;
 }
-
 .archive-results__interactive-badge {
   cursor: pointer;
   border: none;
@@ -1020,21 +1093,31 @@
   align-items: center;
   justify-content: center;
   white-space: nowrap;
-  background: var(--brand-gold) !important; 
-  color: white !important; 
-  font-size: 10px;
+  background: #F0EDE8 !important; 
+  color: var(--brand-gold) !important;
+  font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  height: 26px; 
-  padding: 6px 14px; 
-  border-radius: 999px !important;
+  height: 30px;
+  padding: 0 15px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
 }
 
 .archive-results__interactive-badge:hover {
   transform: translateY(-1px);
 }
 
+
+.archive-results__interactive-badge.is-active {
+  background: var(--brand-gold) !important; 
+  color: white !important;
+}
+
+
+
+/* Кнопка-переключатель (бадж) */
 .archive-results__toggle-badge {
   display: flex;
   align-items: center;
@@ -1044,8 +1127,10 @@
   margin-top: 12px;
   background: #CEAC7B !important; 
   color: #FFFFFF !important;
+  
   border: none;
   border-radius: 12px;
+  
   font-size: 14px;
   font-weight: 800;
   cursor: pointer;
@@ -1054,20 +1139,33 @@
 }
 
 .archive-results__toggle-badge:hover {
-  background: #BD9B6A !important; 
+  background: #BD9B6A !important; /* Чуть темнее при наведении */
   transform: translateY(-1px);
 }
 
+.archive-results__toggle-badge:active {
+  transform: translateY(0);
+}
+
+/* Когда список открыт, можно чуть изменить стиль баджа */
 .archive-results__toggle-badge.is-active {
   box-shadow: none;
   margin-bottom: 10px;
 }
 
+/* Контейнер для выпадающего списка */
+.archive-results__content {
+  padding: 10px 20px 20px;
+}
+
+/* Плавное появление (если у тебя подключен tailwind-animate или просто добавь это) */
 .animate-in {
   animation: fadeIn 0.3s ease-out;
 }
 
 /* UI KIT STYLES */
+
+/* Кнопки */
 .ui-button {
   display: inline-flex;
   align-items: center;
@@ -1096,6 +1194,7 @@
 .ui-button:hover { opacity: 0.9; transform: translateY(-1px); }
 .ui-button:disabled { background: #D1CBC0; cursor: not-allowed; }
 
+/* Баджи */
 .ui-badge {
   display: inline-flex;
   padding: 4px 12px;
@@ -1114,6 +1213,7 @@
   color: white;
 }
 
+/* Радиокнопки */
 .ui-radio {
   display: flex;
   align-items: center;
@@ -1133,6 +1233,7 @@
   transition: 0.2s;
 }
 
+/* Разделитель */
 .ui-separator {
   height: 1px;
   background: #EEE6DA;
@@ -1140,6 +1241,7 @@
   margin: 12px 0;
 }
 
+/* Кнопка-иконка */
 .ui-icon-button {
   width: 38px;
   height: 38px;
@@ -1164,6 +1266,7 @@
 
 .ui-icon-button:hover { opacity: 0.9; transform: scale(1.05); }
 
+/* Инпут */
 .ui-input-wrapper {
   display: flex;
   align-items: center;
@@ -1190,10 +1293,12 @@
   align-items: center;
 }
 
+
 .ui-radio__circle.is-checked { border-color: var(--brand-gold); }
 .ui-radio__dot { width: 8px; height: 8px; background: var(--brand-gold); border-radius: 50%; }
 .ui-radio__label { font-size: 14px; color: var(--ink); }
 
+/* Инпуты даты */
 input[type="date"] {
   border: 1px solid #E8E2D9 !important;
   border-radius: 999px !important; 
@@ -1201,9 +1306,9 @@ input[type="date"] {
   padding: 8px 16px !important;
 }
 
+/* Радиокнопки с галочкой (как на макете 2) */
 .archive-checkbox-row__control {
-  border-radius: 50% !important; 
-  border: 1.5px solid #CEAC7B !important;
+  border: 1.5px solid #D1CBC0 !important;
   background: white !important;
 }
 
@@ -1212,6 +1317,7 @@ input[type="date"] {
   border-color: var(--brand-gold) !important;
 }
 
+/* Если в макете внутри радиокнопки не точка, а галочка */
 .archive-checkbox-row.is-checked .archive-checkbox-row__control::after {
   content: "✓" !important;
   color: white;
@@ -1223,78 +1329,7 @@ input[type="date"] {
   height: 100%;
 }
 
-/* =========================================
-   СТИЛИ ДЛЯ НОВЫХ ФИЛЬТРОВ (ПЕРСОНАЛИЯ И МЕСТО)
-   ========================================= */
-.archive-filter-custom-group {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
 
-.archive-filter-block {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.archive-filter-label {
-  font-size: 16px;
-  font-weight: 800;
-  color: #000000;
-  margin: 0;
-}
-
-.archive-filter-block select {
-  border: 1px solid #CEAC7B !important; 
-  border-radius: 20px !important;       
-  padding: 10px 16px !important;
-  color: #333 !important;
-  font-weight: 500;
-  background-color: #fff !important;
-}
-
-.archive-filter-grid__dates--gold input[type="date"] {
-  border: 1px solid #CEAC7B !important;
-  border-radius: 20px !important;
-  padding: 10px 16px !important;
-  color: #333 !important;
-}
-
-.archive-filter-grid__dates--gold span {
-  background: #CEAC7B !important; 
-  height: 1.5px;
-}
-
-.archive-filter-block select:invalid,
-.archive-filter-block select option[value=""] {
-  color: #999 !important;
-}
-
-/* =========================================
-   ПЛАВАЮЩИЕ ТЕГИ ФИЛЬТРОВ ПОД ПОИСКОМ
-   ========================================= */
-.archive-filter-summary {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 10px; 
-  padding-left: 4px;
-}
-
-.chip--soft {
-  background: rgba(255, 255, 255, 0.85); 
-  border: 1px solid #E8E2D9;
-  border-radius: 10px;
-  padding: 6px 12px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--ink);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); 
-  backdrop-filter: blur(4px); 
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }

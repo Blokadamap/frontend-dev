@@ -1,5 +1,5 @@
 import { useState } from "react"; 
-import { MapPin, Calendar, User as UserIcon } from "lucide-react";
+import { MapPin } from "lucide-react";
 import type { WitnessRecord } from "../../types/archive";
 import {
   buildRecordExcerpt,
@@ -28,7 +28,7 @@ function ArchiveResults({
   const grouped = groupWitnessesByMonth(visibleItems);
   const showEmpty = records.length === 0;
   const [isCountExpanded, setIsCountExpanded] = useState(false);
-  const [isListOpen, setIsListOpen] = useState(false);
+
 
   return (
   <section className={`archive-panel archive-panel--results custom-scrollbar ${!isCountExpanded ? 'is-collapsed' : ''}`}>
