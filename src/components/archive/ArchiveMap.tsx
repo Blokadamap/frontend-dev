@@ -185,16 +185,19 @@ function ArchiveMap({
 
       <ClearSelectionHandler onClearSelection={onClearSelection} />
 
-      {records.map((record) => (
-        <Marker
-          key={record.id}
-          position={record.markerPosition}
-          icon={createMarkerIcon(record.id === selectedRecordId)}
-          eventHandlers={{
-            click: () => onSelectRecord(record.id),
-          }}
-        />
-      ))}
+      {records.map((record) => {
+        const isSelected = record.id === selectedRecordId;
+        return (
+          <Marker
+            key={`${record.id}-${isSelected}`} 
+            position={record.markerPosition}
+            icon={createMarkerIcon(isSelected)}
+            eventHandlers={{
+              click: () => onSelectRecord(record.id),
+            }}
+          />
+        );
+      })}
     </MapContainer>
   );
 }
