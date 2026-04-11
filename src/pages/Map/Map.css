@@ -23,7 +23,6 @@
 .archive-page {
   height: 100dvh;
   min-height: 100dvh;
-  padding: 24px;
   overflow: hidden;
   background: #f4efe8;
 }
@@ -36,8 +35,7 @@
 .archive-shell {
   height: 100%;
   min-height: 100%;
-  border: 1px solid rgba(90, 86, 80, 0.08);
-  border-radius: 30px;
+
   background: var(--surface-strong);
   box-shadow: var(--shadow);
   overflow: hidden;
@@ -144,7 +142,7 @@
   height: 20px;
   border: 2px solid rgba(255, 255, 255, 0.95);
   border-radius: 50% 50% 50% 0;
-  background: #c9281f;
+  background: #D8AE76;
   box-shadow: 0 7px 15px rgba(56, 36, 31, 0.22);
   transform: rotate(-45deg);
 }
@@ -602,6 +600,7 @@
 .archive-toolbar__field {
   display: flex !important;
   align-items: center !important;
+  width: 320px;
   gap: 12px !important;
   height: 48px !important;
   padding: 0 20px !important;

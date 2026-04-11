@@ -152,8 +152,8 @@ function Map() {
               setActivePanel("results");
             }}
           />
-
-          <div className="archive-mode-badge">Поиск по дневникам</div>
+          {/* ux: */}
+          {/* <div className="archive-mode-badge">Поиск по дневникам</div> */}
 
           <div className="archive-topbar">
             <ArchiveToolbar

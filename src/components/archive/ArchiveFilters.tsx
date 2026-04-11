@@ -59,6 +59,7 @@ function ArchiveFilters({ options }: ArchiveFiltersProps) {
   return (
     <>
       <div className="archive-filter-tabs">
+        {/* todo_ui вынести в tabs */}
         <button
           type="button"
           className={`archive-filter-tabs__item ${activeTab === "general" ? "is-active" : ""}`}
@@ -88,6 +89,7 @@ function ArchiveFilters({ options }: ArchiveFiltersProps) {
           {/* --- ВКЛАДКА: ОБЩЕЕ --- */}
           {activeTab === "general" && (
             <>
+              {/* todo_ui вынести в отдельный компонент + редизайн как с макета */}
               <FilterSection icon={Clock3} title="временной промежуток">
                 <div className="archive-filter-grid__dates">
                   <input
@@ -191,6 +193,7 @@ function ArchiveFilters({ options }: ArchiveFiltersProps) {
 
               <FilterSection icon={IdCard} title="партийность">
                 <div className="archive-checkbox-list">
+                  {/* todo_fix избавиться от подобных мапов вынести их поля в json */}
                   {["Партийный", "Беспартийный"].map((value) => (
                     <CheckboxRow
                       key={value}
