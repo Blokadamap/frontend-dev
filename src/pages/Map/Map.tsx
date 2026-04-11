@@ -160,7 +160,6 @@ function Map() {
               value={searchValue}
               filterCount={activeFilterCount}
               isFiltersOpen={activePanel === "filters"}
-              showCloseButton={activePanel === "results"}
               onChange={setSearchValue}
               onSearch={() => {
                 setSelectedRecordId(null);
@@ -180,7 +179,6 @@ function Map() {
                 setSelectedRecordId(null);
                 setActivePanel("results");
               }}
-              onClosePanel={() => setActivePanel(null)}
             />
 
             {filterPreview.length > 0 && !activePanel && !selectedRecord ? (
