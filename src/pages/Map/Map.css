@@ -193,12 +193,13 @@
   top: 56px;
   right: 24px;
   bottom: 104px;
-  width: min(340px, calc(100% - 48px));
+  width: min(480px, calc(100% - 48px));
 }
 
 .archive-panel {
   background-color: var(--paper) !important;
   height: 100%;
+
   display: flex;
   flex-direction: column;
   padding: 0;
@@ -571,91 +572,89 @@
 /* =========================================
   ТУЛБАР И ПОИСК
    ========================================= */
+
 .archive-topbar {
   top: 50px !important;
   left: 24px !important;
-  /* Увеличил общую ширину контейнера для солидности */
-  width: min(400px, calc(100% - 48px)) !important; 
+  width: 320px !important;  
   z-index: 1100 !important;
 }
 
 .archive-toolbar {
-  display: grid !important;
-  /* По умолчанию: поиск + 1 кнопка */
-  grid-template-columns: 1fr 48px !important; 
-  gap: 10px !important;
+  display: flex !important;
   align-items: center !important;
-}
-
-/* Когда фильтры открыты, сетка перестраивается под 3 колонки (поиск + 2 кнопки) */
-.archive-toolbar.is-filters-open {
-  grid-template-columns: 1fr 48px 48px !important;
-}
-
-/* Сохраняем поддержку старого класса, если он где-то остался */
-.archive-toolbar.has-close {
-  grid-template-columns: 1fr 48px 48px !important;
+  gap: 8px !important;
+  width: 320px !important;
+  height: 40px !important;
 }
 
 .archive-toolbar__field {
+  flex: 1 !important;
   display: flex !important;
   align-items: center !important;
-  width: 320px;
-  gap: 12px !important;
-  height: 48px !important;
-  padding: 0 20px !important;
+  gap: 8px !important;
+  height: 100% !important;
+  padding: 0 12px !important;
   background: #ffffff !important;
   border: 1px solid #E8E2D9 !important;
-  border-radius: 999px !important; /* Чистая пилюля */
+  border-radius: 999px !important;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
 }
 
 .archive-toolbar__field input {
-  width: 100% !important;
+  flex: 1 !important;
   height: 100% !important;
   border: none !important;
   outline: none !important;
   background: transparent !important;
-  font-size: 15px !important;
+  font-size: 14px !important;
   color: #2F3035 !important;
+  padding: 0 !important;
 }
 
-/* ОБЩИЙ СТИЛЬ КНОПОК: Квадраты с белыми иконками */
-.archive-toolbar__button {
-  position: relative !important;
-  width: 48px !important;
-  height: 48px !important;
-  border-radius: 16px !important; /* Мягкий квадрат как на скрине */
+.archive-toolbar__search-icon {
+  flex-shrink: 0 !important;
+  color: #aaa !important;
+}
+
+.archive-toolbar__clear-button {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 50% !important;
   border: none !important;
-  display: grid !important;
-  place-items: center !important;
+  background: #E8E2D9 !important;
   cursor: pointer !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
-  color: #ffffff !important; /* Иконки всегда белые */
+  padding: 0 !important;
+  flex-shrink: 0 !important;
+  transition: background 0.2s;
+}
+
+.archive-toolbar__clear-button:hover {
+  background: #d0c8bc !important;
+}
+
+.archive-toolbar__action-button {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 12px !important;
+  border: none !important;
+  background: #CEAC7B !important;
+  color: white !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  flex-shrink: 0 !important;
   transition: all 0.2s ease;
 }
 
-.archive-toolbar__button:hover {
+.archive-toolbar__action-button:hover {
   transform: translateY(-1px) scale(1.02);
   filter: brightness(1.05);
 }
-
-/* Кнопка фильтра (Золотая) */
-.archive-toolbar__button--filter {
-  background: #CEAC7B !important;
-}
-
-/* Кнопка "Применить" (Зеленая) */
-.archive-toolbar__button--apply {
-  background: #CEAC7B !important;
-}
-
-/* Кнопка "Сбросить" и мобильный клос (Красная) */
-.archive-toolbar__button--close, 
-.archive-toolbar__button--mobile-close { 
-  background: #CEAC7B !important;
-}
-
 .archive-toolbar__badge {
   position: absolute !important;
   top: -6px !important;
@@ -671,7 +670,6 @@
   font-weight: 800 !important;
   border: 2px solid #ffffff !important; /* Обводка чтобы не сливалось */
 }
-
 /* =========================================
    СПИСОК РЕЗУЛЬТАТОВ И КАРТОЧКИ 
    ========================================= */
