@@ -7,9 +7,8 @@ import ArchiveResults from "../../components/archive/ArchiveResults";
 import ArchiveToolbar from "../../components/archive/ArchiveToolbar";
 import LayerSwitcher from "../../components/archive/LayerSwitcher";
 import { useArchiveData } from "../../hooks/useArchiveData";
-import type { ArchiveFilters as ArchiveFiltersType, MapLayerId } from "../../types/archive";
+import type { ArchiveFilters as ArchiveFiltersType } from "../../types/archive";
 import {
-  activeFilterTabAtom,
   activePanelAtom,
   archiveFiltersAtom,
   defaultFilters,
@@ -20,13 +19,7 @@ import {
 import { buildFilterOptions, filterWitnessRecords } from "../../utils/archive";
 import "./Map.css";
 
-const layerLabels: Record<MapLayerId, string> = {
-  modern: "Современная карта",
-  retro: "Аэрофотосъёмка",
-  topo: "Топография 1940",
-};
-
-function buildActiveFilterCount(filters: typeof defaultFilters) {
+function buildActiveFilterCount(filters: ArchiveFiltersType) {
   return [
     Boolean(filters.startDate || filters.endDate),
     filters.witnessKinds.length > 0,
@@ -43,25 +36,6 @@ function buildActiveFilterCount(filters: typeof defaultFilters) {
     Boolean(filters.building),
     Boolean(filters.address),
   ].filter(Boolean).length;
-}
-
-function formatWord(value: number, [one, few, many]: [string, string, string]) {
-  const absValue = Math.abs(value) % 100;
-  const lastDigit = absValue % 10;
-
-  if (absValue > 10 && absValue < 20) {
-    return many;
-  }
-
-  if (lastDigit === 1) {
-    return one;
-  }
-
-  if (lastDigit >= 2 && lastDigit <= 4) {
-    return few;
-  }
-
-  return many;
 }
 
 function buildFilterPreview(
@@ -109,8 +83,7 @@ function Map() {
   const [searchValue, setSearchValue] = useAtom(searchAtom);
   const [filters, setFilters] = useAtom(archiveFiltersAtom);
   const [activePanel, setActivePanel] = useAtom(activePanelAtom);
-  const [activeFilterTab, setActiveFilterTab] = useAtom(activeFilterTabAtom);
-  const [selectedLayer, setSelectedLayer] = useAtom(selectedLayerAtom);
+  const [selectedLayer] = useAtom(selectedLayerAtom); 
   const [selectedRecordId, setSelectedRecordId] = useAtom(selectedRecordIdAtom);
   const [visibleResultsCount, setVisibleResultsCount] = useState(6);
   const deferredSearch = useDeferredValue(searchValue);
@@ -121,14 +94,6 @@ function Map() {
   const selectedRecord = filteredRecords.find((record) => record.id === selectedRecordId) ?? null;
   const activeFilterCount = buildActiveFilterCount(filters);
   const filterPreview = buildFilterPreview(filters, filterOptions.authors);
-  const showMapStatus = !selectedRecord && activePanel !== "filters";
-  const showLayerDock = !activePanel || Boolean(selectedRecord);
-  const resultsWord = formatWord(filteredRecords.length, [
-    "свидетельство",
-    "свидетельства",
-    "свидетельств",
-  ]);
-  const filtersWord = formatWord(activeFilterCount, ["фильтр", "фильтра", "фильтров"]);
 
   useEffect(() => {
     setVisibleResultsCount(6);
@@ -184,17 +149,17 @@ function Map() {
             }}
             onClearSelection={() => {
               setSelectedRecordId(null);
+              setActivePanel("results");
             }}
           />
-
-          <div className="archive-mode-badge">Поиск по дневникам</div>
+          {/* ux: */}
+          {/* <div className="archive-mode-badge">Поиск по дневникам</div> */}
 
           <div className="archive-topbar">
             <ArchiveToolbar
               value={searchValue}
               filterCount={activeFilterCount}
               isFiltersOpen={activePanel === "filters"}
-              showCloseButton={activePanel === "results"}
               onChange={setSearchValue}
               onSearch={() => {
                 setSelectedRecordId(null);
@@ -214,7 +179,6 @@ function Map() {
                 setSelectedRecordId(null);
                 setActivePanel("results");
               }}
-              onClosePanel={() => setActivePanel(null)}
             />
 
             {filterPreview.length > 0 && !activePanel && !selectedRecord ? (
@@ -230,13 +194,8 @@ function Map() {
 
           {activePanel === "filters" ? (
             <div className="archive-sidebar archive-sidebar--left">
-              <ArchiveFilters
-                filters={filters}
-                activeTab={activeFilterTab}
-                options={filterOptions}
-                onTabChange={setActiveFilterTab}
-                onChange={setFilters}
-              />
+              {/* Исправлено: передаем только необходимые опции, остальное компонент берет из атомов */}
+              <ArchiveFilters options={filterOptions} />
             </div>
           ) : null}
 
@@ -268,38 +227,9 @@ function Map() {
             </div>
           ) : null}
 
-          {showLayerDock ? (
-            <div className="archive-layer-dock">
-              <LayerSwitcher value={selectedLayer} onChange={setSelectedLayer} />
-            </div>
-          ) : null}
-
-          {showMapStatus ? (
-            <div className="archive-map-status">
-              <div className="archive-map-status__primary">
-                <strong>{filteredRecords.length}</strong>
-                <span>{`${resultsWord} на карте`}</span>
-              </div>
-
-              <div className="archive-map-status__secondary">
-                <span>{layerLabels[selectedLayer]}</span>
-                <span>
-                  {activeFilterCount > 0 ? `${activeFilterCount} ${filtersWord}` : "Без фильтров"}
-                </span>
-              </div>
-
-              <button
-                type="button"
-                className="archive-map-status__action"
-                onClick={() => {
-                  setSelectedRecordId(null);
-                  setActivePanel(activePanel === "results" ? null : "results");
-                }}
-              >
-                {activePanel === "results" ? "Скрыть выборку" : "Открыть выборку"}
-              </button>
-            </div>
-          ) : null}
+          <div className="archive-layer-dock">
+            <LayerSwitcher />
+          </div>
         </div>
       </section>
     </main>

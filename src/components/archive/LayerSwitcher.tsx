@@ -1,35 +1,87 @@
-import React from "react";
+import { useState } from "react";
 import { useAtom } from "jotai";
+import { Layers, X } from "lucide-react";
 import { selectedLayerAtom } from "../../store/archiveAtoms";
 import type { MapLayerId } from "../../types/archive";
 
-const layers: { id: MapLayerId; label: string; desc: string }[] = [
-  { id: "modern", label: "СОВРЕМЕННАЯ", desc: "OpenStreetMap" },
-  { id: "retro", label: "АРХИВНАЯ", desc: "Аэрофотосъёмка" },
-  { id: "topo", label: "ТОПОГРАФИЯ", desc: "Карта 1940 г." },
+
+const HISTORICAL_LAYERS = [
+  { id: "1942", label: "1942г.", img: "/assets/layers/1942.jpg" },
+  { id: "1943", label: "1943г.", img: "/assets/layers/1943.jpg" },
+  { id: "1944", label: "1944г.", img: "/assets/layers/1944.jpg" },
+  { id: "1945", label: "1945г.", img: "/assets/layers/placeholder.jpg" },
+  { id: "1946", label: "1946г.", img: "/assets/layers/placeholder.jpg" },
+  { id: "1947", label: "1947г.", img: "/assets/layers/placeholder.jpg" },
+];
+
+const BASE_LAYERS = [
+  { id: "retro", label: "Спутник", img: "/src/assets/layers/tomsk.png" },
+  { id: "modern", label: "По умолчанию", img: "/src/assets/layers/default.png" },
 ];
 
 function LayerSwitcher() {
-  const [selected, setSelected] = useAtom(selectedLayerAtom);
+  const [selectedLayer, setSelectedLayer] = useAtom(selectedLayerAtom);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleSelectLayer = (layerId: MapLayerId) => {
+    setSelectedLayer(layerId);
+  };
 
   return (
-    <div className="bg-white/95 backdrop-blur-sm p-2 rounded-2xl border border-[#E8E2D9] shadow-2xl flex gap-1">
-      {layers.map((layer) => (
-        <button
-          key={layer.id}
-          onClick={() => setSelected(layer.id)}
-          className={`px-4 py-2 rounded-xl transition-all flex flex-col items-start ${
-            selected === layer.id 
-            ? "bg-[#D8AE76] text-white shadow-inner" 
-            : "text-[#737982] hover:bg-[#F0EDE8]"
-          }`}
-        >
-          <span className="text-[9px] font-black tracking-tighter leading-none">{layer.label}</span>
-          <span className={`text-[8px] opacity-70 ${selected === layer.id ? "text-white" : "text-[#B5B0A7]"}`}>
-            {layer.desc}
-          </span>
+    <div className="layer-switcher-wrapper">
+      {!isModalOpen && (
+        <button className="layer-main-button" onClick={() => setIsModalOpen(true)}>
+          <div className="layer-main-button__label">
+            <Layers size={20} />
+            <span>Слои</span>
+          </div>
         </button>
-      ))}
+      )}
+
+      {isModalOpen && (
+        <div className="layer-selection-panel animate-in fade-in slide-in-from-bottom-2">
+          <div className="layer-modal-header">
+            <h2>Вид карты:</h2>
+            <button className="layer-modal-close-btn" onClick={() => setIsModalOpen(false)}>
+              <X size={18} strokeWidth={2.5} />
+            </button>
+          </div>
+
+          <div className="layer-modal-grid">
+            {/* ui_kit это компонент icon_button */}
+            {HISTORICAL_LAYERS.map((layer, index) => (
+              <button
+                key={index}
+                className={`layer-modal-item ${selectedLayer === layer.id ? "is-active" : ""}`}
+                onClick={() => handleSelectLayer(layer.id as MapLayerId)}
+              >
+                <div className="layer-modal-item__img">
+                  <img src={layer.img} alt={layer.label} />
+                </div>
+                <span>{layer.label}</span>
+              </button>
+            ))}
+          </div>
+
+          <hr className="layer-modal-divider" />
+          
+          <div className="layer-modal-grid">
+            {BASE_LAYERS.map((layer, index) => (
+              <button
+                key={index}
+                className={`layer-modal-item ${selectedLayer === layer.id ? "is-active" : ""}`}
+                onClick={() => handleSelectLayer(layer.id as MapLayerId)}
+              >
+                <div className="layer-modal-item__img">
+                  <img src={layer.img} alt={layer.label} />
+                </div>
+                <span>{layer.label}</span>
+              </button>
+            ))}
+            <div className="layer-modal-item-placeholder"></div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
