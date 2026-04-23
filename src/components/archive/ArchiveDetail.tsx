@@ -6,6 +6,7 @@ import {
   getSignificanceAccent,
   getWitnessAccent,
 } from "../../utils/archive";
+import './ArchiveDetail.css';
 
 interface ArchiveDetailProps {
   record: WitnessRecord;

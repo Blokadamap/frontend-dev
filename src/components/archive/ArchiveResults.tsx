@@ -6,6 +6,7 @@ import {
   formatHumanDate,
   groupWitnessesByMonth,
 } from "../../utils/archive";
+import './ArchiveResults.css';
 
 interface ArchiveResultsProps {
   records: WitnessRecord[];

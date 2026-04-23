@@ -3,7 +3,7 @@ import { useAtom } from "jotai";
 import { Layers, X } from "lucide-react";
 import { selectedLayerAtom } from "../../store/archiveAtoms";
 import type { MapLayerId } from "../../types/archive";
-
+import './LayerSwitcher.css';
 
 const HISTORICAL_LAYERS = [
   { id: "1942", label: "1942г.", img: "/assets/layers/1942.jpg" },
@@ -48,7 +48,7 @@ function LayerSwitcher() {
           </div>
 
           <div className="layer-modal-grid">
-            {/* ui_kit это компонент icon_button */}
+            {}
             {HISTORICAL_LAYERS.map((layer, index) => (
               <button
                 key={index}

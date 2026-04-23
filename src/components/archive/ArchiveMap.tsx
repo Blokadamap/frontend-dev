@@ -19,7 +19,9 @@ interface ArchiveMapProps {
   onSelectRecord: (recordId: string) => void;
   onClearSelection: () => void;
 }
-const rasterLayerConfig: Record<MapLayerId, {
+
+// Добавил заглушки для всех годов, чтобы не было белого экрана
+const rasterLayerConfig: Record<string, {
   url: string;
   attribution: string;
   className?: string;
@@ -39,6 +41,13 @@ const rasterLayerConfig: Record<MapLayerId, {
     attribution: "Map data &copy; OpenStreetMap contributors, SRTM | Map style &copy; OpenTopoMap",
     className: "archive-map__tiles--topo",
   },
+  // Заглушки: пока нет своих тайлов, используем topo с его стилями
+  "1942": { url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", attribution: "1942", className: "archive-map__tiles--topo" },
+  "1943": { url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", attribution: "1943", className: "archive-map__tiles--topo" },
+  "1944": { url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", attribution: "1944", className: "archive-map__tiles--topo" },
+  "1945": { url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", attribution: "1945", className: "archive-map__tiles--topo" },
+  "1946": { url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", attribution: "1946", className: "archive-map__tiles--topo" },
+  "1947": { url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", attribution: "1947", className: "archive-map__tiles--topo" },
 };
 
 function createMarkerIcon(selected: boolean) {
@@ -154,7 +163,9 @@ function ArchiveMap({
   onClearSelection,
 }: ArchiveMapProps) {
   const selectedRecord = records.find((record) => record.id === selectedRecordId);
-  const layerConfig = rasterLayerConfig[selectedLayer];
+  
+  // Добавил страховку (fallback): если ID не найден в конфиге, берем modern
+  const layerConfig = rasterLayerConfig[selectedLayer] || rasterLayerConfig.modern;
 
   return (
     <MapContainer
@@ -164,7 +175,12 @@ function ArchiveMap({
       className={`archive-map archive-map--${selectedLayer}`}
       attributionControl={false}
     >
+      {/* 
+        ВАЖНО: Добавил key={selectedLayer}. 
+        Это заставляет Leaflet перерисовать тайлы при смене ID.
+      */}
       <TileLayer
+        key={selectedLayer}
         url={layerConfig.url}
         attribution={layerConfig.attribution}
         className={layerConfig.className}

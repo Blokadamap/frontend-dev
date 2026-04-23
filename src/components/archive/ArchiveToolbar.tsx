@@ -1,4 +1,5 @@
 import { Check, Search, SlidersHorizontal, X } from "lucide-react";
+import './ArchiveToolbar.css';
 
 interface ArchiveToolbarProps {
   value: string;
@@ -22,50 +23,64 @@ function ArchiveToolbar({
   onResetFilters,
 }: ArchiveToolbarProps) {
 
-  const showClearButton = isFiltersOpen && filterCount > 0;
-  
   const showBadge = !isFiltersOpen && filterCount > 0;
 
   return (
     <form
-      className="archive-toolbar"
+      className={`archive-toolbar ${isFiltersOpen ? "is-filters-open" : ""}`}
       onSubmit={(event) => {
         event.preventDefault();
         onSearch();
       }}
     >
+      {/* ПИЛЮЛЯ ПОИСКА (теперь без крестика внутри) */}
       <div className="archive-toolbar__field">
-        <Search size={18} strokeWidth={2} className="archive-toolbar__search-icon" />
+        <Search size={20} strokeWidth={2} className="archive-toolbar__search-icon" />
         <input
           type="search"
           value={value}
           onChange={(event) => onChange(event.target.value)}
           placeholder="Поиск по дневникам..."
         />
-        {showClearButton && (
+      </div>
+
+      {/* БЛОК КНОПОК */}
+      <div className="archive-toolbar__buttons">
+        {isFiltersOpen ? (
+          <>
+            {/* КВАДРАТ СБРОСА (X) */}
+            <button
+              type="button"
+              className="archive-toolbar__button archive-toolbar__button--reset"
+              onClick={onResetFilters}
+              aria-label="Сбросить фильтры"
+            >
+              <X size={24} strokeWidth={3} />
+            </button>
+
+            {/* КВАДРАТ ПРИМЕНИТЬ (Галка) */}
+            <button
+              type="button"
+              className="archive-toolbar__button archive-toolbar__button--apply"
+              onClick={onApplyFilters}
+              aria-label="Применить фильтры"
+            >
+              <Check size={24} strokeWidth={3} />
+            </button>
+          </>
+        ) : (
+          /* КВАДРАТ НАСТРОЕК (Ползунки) */
           <button
             type="button"
-            className="archive-toolbar__clear-button"
-            onClick={(e) => {
-              e.preventDefault();
-              onResetFilters();
-            }}
-            aria-label="Сбросить фильтры"
+            className="archive-toolbar__button archive-toolbar__button--filter"
+            onClick={onOpenFilters}
+            aria-label="Открыть фильтры"
           >
-            <X size={16} strokeWidth={2.5} />
+            <SlidersHorizontal size={24} strokeWidth={2.5} />
+            {showBadge && <span className="archive-toolbar__badge">{filterCount}</span>}
           </button>
         )}
       </div>
-
-      <button
-        type="button"
-        className="archive-toolbar__action-button"
-        onClick={isFiltersOpen ? onApplyFilters : onOpenFilters}
-        aria-label={isFiltersOpen ? "Применить фильтры" : "Открыть фильтры"}
-      >
-        {isFiltersOpen ? <Check size={20} strokeWidth={2.5} /> : <SlidersHorizontal size={20} strokeWidth={2} />}
-        {showBadge && <span className="archive-toolbar__badge">{filterCount}</span>}
-      </button>
     </form>
   );
 }

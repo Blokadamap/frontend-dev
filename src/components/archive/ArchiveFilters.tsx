@@ -17,6 +17,7 @@ import {
 import { validateDateRange } from "../../utils/dateValidation";
 import { activeFilterTabAtom, archiveFiltersAtom } from "../../store/archiveAtoms";
 import type { WitnessKind } from "../../types/archive";
+import './ArchiveFilters.css';
 
 interface ArchiveFiltersProps {
   options: {
