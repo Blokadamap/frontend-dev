@@ -51,18 +51,28 @@
 }
 
 .layer-selection-panel {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 320px;
   background: white;
   border-radius: 24px;
   border: 1px solid #E8E2D9;
   padding: 20px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-  z-index: 1200;
   display: flex;
   flex-direction: column;
+}
+
+/* Десктоп: рядом с кнопкой */
+@media (min-width: 961px) {
+  .layer-selection-panel {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 320px;
+    z-index: 1200;
+  }
+}
+
+.layer-modal-handle {
+  display: none;
 }
 
 .layer-modal-header {
@@ -191,23 +201,50 @@
     display: none !important;
   }
 
-  .layer-selection-panel {
-    top: 60px !important; /* Выезжает под кнопкой */
-    left: 0 !important;
-    bottom: auto !important;
-    width: calc(100vw - 32px) !important;
-    max-width: 320px !important;
-  }
-
   .layer-main-button__label {
-    
     color: #ffffff !important;
   }
-  
+
   .layer-main-button svg {
     color: #ffffff !important;
     stroke: #ffffff !important;
   }
 
-  
+  /* Оверлей */
+  .layer-mobile-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 3150;
+  }
+
+  /* Панель слоёв внутри шторки */
+  .layer-selection-panel--mobile {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 4px 0 !important;
+    overflow-y: auto !important;
+    box-sizing: border-box !important;
+    z-index: auto !important;
+    inset: auto !important;
+    max-height: none !important;
+  }
+
+  /* Ручка шторки */
+  .layer-modal-handle {
+    width: 44px;
+    height: 5px;
+    background: #EBE6DE;
+    border-radius: 10px;
+    margin: 0 auto 14px;
+  }
+
+  .layer-modal-item__img {
+    width: 90px;
+    height: 90px;
+  }
 }

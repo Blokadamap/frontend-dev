@@ -39,8 +39,8 @@ function toggleArrayValue<T extends string>(list: T[], value: T) {
 }
 
 function ArchiveFilters({ options }: ArchiveFiltersProps) {
-  const [activeTab, setActiveTab] = useAtom(activeFilterTabAtom);
-  const [filters, setFilters] = useAtom(archiveFiltersAtom);
+  const [activeTab] = useAtom(activeFilterTabAtom);
+  const[filters, setFilters] = useAtom(archiveFiltersAtom);
 
   const onChange = (update: Partial<typeof filters>) => {
     setFilters((prev) => ({ ...prev, ...update }));
@@ -58,208 +58,179 @@ function ArchiveFilters({ options }: ArchiveFiltersProps) {
   };
 
   return (
-    <>
-      <div className="archive-filter-tabs">
-        {/* todo_ui вынести в tabs */}
-        <button
-          type="button"
-          className={`archive-filter-tabs__item ${activeTab === "general" ? "is-active" : ""}`}
-          onClick={() => setActiveTab("general")}
-        >
-          Общее
-        </button>
-        <button
-          type="button"
-          className={`archive-filter-tabs__item ${activeTab === "person" ? "is-active" : ""}`}
-          onClick={() => setActiveTab("person")}
-        >
-          Персоналия
-        </button>
-        <button
-          type="button"
-          className={`archive-filter-tabs__item ${activeTab === "place" ? "is-active" : ""}`}
-          onClick={() => setActiveTab("place")}
-        >
-          Место
-        </button>
+    <section className="archive-panel archive-panel--filters custom-scrollbar">
+      <div className="archive-filter-grid">
+        
+        {/* --- ВКЛАДКА: ОБЩЕЕ --- */}
+        {activeTab === "general" && (
+          <>
+            <FilterSection icon={Clock3} title="временной промежуток">
+              <div className="archive-filter-grid__dates">
+                <input
+                  type="date"
+                  value={filters.startDate}
+                  onChange={(e) => handleDateChange("startDate", e.target.value)}
+                />
+                <span />
+                <input
+                  type="date"
+                  value={filters.endDate}
+                  onChange={(e) => handleDateChange("endDate", e.target.value)}
+                />
+              </div>
+            </FilterSection>
+
+            <FilterSection icon={NotebookPen} title="тип свидетельства">
+              <div className="archive-checkbox-list">
+                {options.witnessKinds.map((value) => (
+                  <CheckboxRow
+                    key={value}
+                    checked={filters.witnessKinds.includes(value)}
+                    label={value}
+                    onChange={() => onChange({ witnessKinds: toggleArrayValue(filters.witnessKinds, value) })}
+                  />
+                ))}
+              </div>
+            </FilterSection>
+
+            <FilterSection icon={Flag} title="значимость">
+              <div className="archive-checkbox-list">
+                {options.significances.map((value) => (
+                  <CheckboxRow
+                    key={value}
+                    checked={filters.significances.includes(value as any)}
+                    label={value}
+                    onChange={() => onChange({ significances: toggleArrayValue(filters.significances as any, value) as any })}
+                  />
+                ))}
+              </div>
+            </FilterSection>
+
+            <FilterSection icon={Tag} title="тематики">
+              <div className="archive-chip-grid">
+                {options.tags.map((tag) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    className={`chip chip--tag${filters.tags.includes(tag) ? " is-active" : ""}`}
+                    onClick={() => onChange({ tags: toggleArrayValue(filters.tags, tag) })}
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
+            </FilterSection>
+          </>
+        )}
+
+        {/* --- ВКЛАДКА: ПЕРСОНАЛИЯ --- */}
+        {activeTab === "person" && (
+          <>
+            <FilterSection icon={UsersRound} title="персоналии">
+              <SelectField
+                value={filters.authorId}
+                options={options.authors.map((a) => a.id)}
+                displayOptions={options.authors.map((a) => a.fullName)}
+                onChange={(val) => onChange({ authorId: val })}
+                placeholder="Выберите персоналию..."
+              />
+            </FilterSection>
+
+            <FilterSection icon={CalendarDays} title="дата рождения">
+              <div className="archive-filter-grid__dates">
+                <input
+                  type="date"
+                  value={filters.birthDateStart}
+                  onChange={(e) => onChange({ birthDateStart: e.target.value })}
+                />
+                <span />
+                <input
+                  type="date"
+                  value={filters.birthDateEnd}
+                  onChange={(e) => onChange({ birthDateEnd: e.target.value })}
+                />
+              </div>
+            </FilterSection>
+
+            <FilterSection icon={UserRound} title="пол">
+              <div className="archive-checkbox-list">
+                {["Мужской", "Женский"].map((value) => (
+                  <CheckboxRow
+                    key={value}
+                    checked={filters.genders.includes(value as any)}
+                    label={value}
+                    onChange={() => onChange({ genders: toggleArrayValue(filters.genders as any, value) as any })}
+                  />
+                ))}
+              </div>
+            </FilterSection>
+
+            <FilterSection icon={IdCard} title="партийность">
+              <div className="archive-checkbox-list">
+                {["Партийный", "Беспартийный"].map((value) => (
+                  <CheckboxRow
+                    key={value}
+                    checked={filters.partyStatuses.includes(value as any)}
+                    label={value}
+                    onChange={() => onChange({ partyStatuses: toggleArrayValue(filters.partyStatuses as any, value) as any })}
+                  />
+                ))}
+              </div>
+            </FilterSection>
+          </>
+        )}
+
+        {/* --- ВКЛАДКА: МЕСТО --- */}
+        {activeTab === "place" && (
+          <>
+            <FilterSection icon={MapPinned} title="район">
+              <SelectField
+                value={filters.district}
+                options={options.districts}
+                onChange={(value) => onChange({ district: value })}
+                placeholder="Выберите район..."
+              />
+            </FilterSection>
+
+            <FilterSection icon={Navigation} title="пространство">
+              <SelectField
+                value={filters.space}
+                options={options.spaces}
+                onChange={(value) => onChange({ space: value })}
+                placeholder="Введите пространство..."
+              />
+            </FilterSection>
+
+            <FilterSection icon={MapPin} title="улица">
+              <SelectField
+                value={filters.street}
+                options={options.streets}
+                onChange={(value) => onChange({ street: value })}
+                placeholder="Введите улицу..."
+              />
+            </FilterSection>
+
+            <FilterSection icon={Building2} title="здание">
+              <SelectField
+                value={filters.building}
+                options={options.buildings}
+                onChange={(value) => onChange({ building: value })}
+                placeholder="Выберите здание..."
+              />
+            </FilterSection>
+
+            <FilterSection icon={MapPin} title="адрес">
+              <SelectField
+                value={filters.address}
+                options={options.addresses}
+                onChange={(value) => onChange({ address: value })}
+                placeholder="Введите адрес..."
+              />
+            </FilterSection>
+          </>
+        )}
       </div>
-
-      <section className="archive-panel archive-panel--filters">
-        <div className="archive-filter-grid">
-          
-          {/* --- ВКЛАДКА: ОБЩЕЕ --- */}
-          {activeTab === "general" && (
-            <>
-              {/* todo_ui вынести в отдельный компонент + редизайн как с макета */}
-              <FilterSection icon={Clock3} title="временной промежуток">
-                <div className="archive-filter-grid__dates">
-                  <input
-                    type="date"
-                    value={filters.startDate}
-                    onChange={(e) => handleDateChange("startDate", e.target.value)}
-                  />
-                  <span />
-                  <input
-                    type="date"
-                    value={filters.endDate}
-                    onChange={(e) => handleDateChange("endDate", e.target.value)}
-                  />
-                </div>
-              </FilterSection>
-
-              <FilterSection icon={NotebookPen} title="тип свидетельства">
-                <div className="archive-checkbox-list">
-                  {options.witnessKinds.map((value) => (
-                    <CheckboxRow
-                      key={value}
-                      checked={filters.witnessKinds.includes(value)}
-                      label={value}
-                      onChange={() => onChange({ witnessKinds: toggleArrayValue(filters.witnessKinds, value) })}
-                    />
-                  ))}
-                </div>
-              </FilterSection>
-
-              <FilterSection icon={Flag} title="значимость">
-                <div className="archive-checkbox-list">
-                  {options.significances.map((value) => (
-                    <CheckboxRow
-                      key={value}
-                      checked={filters.significances.includes(value as any)}
-                      label={value}
-                      onChange={() => onChange({ significances: toggleArrayValue(filters.significances as any, value) as any })}
-                    />
-                  ))}
-                </div>
-              </FilterSection>
-
-              <FilterSection icon={Tag} title="тематики">
-                <div className="archive-chip-grid">
-                  {options.tags.map((tag) => (
-                    <button
-                      key={tag}
-                      type="button"
-                      className={`chip chip--tag${filters.tags.includes(tag) ? " is-active" : ""}`}
-                      onClick={() => onChange({ tags: toggleArrayValue(filters.tags, tag) })}
-                    >
-                      {tag}
-                    </button>
-                  ))}
-                </div>
-              </FilterSection>
-            </>
-          )}
-
-          {/* --- ВКЛАДКА: ПЕРСОНАЛИЯ --- */}
-          {activeTab === "person" && (
-            <>
-              <FilterSection icon={UsersRound} title="персоналии">
-                <SelectField
-                  value={filters.authorId}
-                  options={options.authors.map((a) => a.id)}
-                  displayOptions={options.authors.map((a) => a.fullName)}
-                  onChange={(val) => onChange({ authorId: val })}
-                  placeholder="Выберите персоналию..."
-                />
-              </FilterSection>
-
-              <FilterSection icon={CalendarDays} title="дата рождения">
-                <div className="archive-filter-grid__dates">
-                  <input
-                    type="date"
-                    value={filters.birthDateStart}
-                    onChange={(e) => onChange({ birthDateStart: e.target.value })}
-                  />
-                  <span />
-                  <input
-                    type="date"
-                    value={filters.birthDateEnd}
-                    onChange={(e) => onChange({ birthDateEnd: e.target.value })}
-                  />
-                </div>
-              </FilterSection>
-
-              <FilterSection icon={UserRound} title="пол">
-                <div className="archive-checkbox-list">
-                  {["Мужской", "Женский"].map((value) => (
-                    <CheckboxRow
-                      key={value}
-                      checked={filters.genders.includes(value as any)}
-                      label={value}
-                      onChange={() => onChange({ genders: toggleArrayValue(filters.genders as any, value) as any })}
-                    />
-                  ))}
-                </div>
-              </FilterSection>
-
-              <FilterSection icon={IdCard} title="партийность">
-                <div className="archive-checkbox-list">
-                  {/* todo_fix избавиться от подобных мапов вынести их поля в json */}
-                  {["Партийный", "Беспартийный"].map((value) => (
-                    <CheckboxRow
-                      key={value}
-                      checked={filters.partyStatuses.includes(value as any)}
-                      label={value}
-                      onChange={() => onChange({ partyStatuses: toggleArrayValue(filters.partyStatuses as any, value) as any })}
-                    />
-                  ))}
-                </div>
-              </FilterSection>
-            </>
-          )}
-
-          {/* --- ВКЛАДКА: МЕСТО --- */}
-          {activeTab === "place" && (
-            <>
-              <FilterSection icon={MapPinned} title="район">
-                <SelectField
-                  value={filters.district}
-                  options={options.districts}
-                  onChange={(value) => onChange({ district: value })}
-                  placeholder="Выберите район..."
-                />
-              </FilterSection>
-
-              <FilterSection icon={Navigation} title="пространство">
-                <SelectField
-                  value={filters.space}
-                  options={options.spaces}
-                  onChange={(value) => onChange({ space: value })}
-                  placeholder="Введите пространство..."
-                />
-              </FilterSection>
-
-              <FilterSection icon={MapPin} title="улица">
-                <SelectField
-                  value={filters.street}
-                  options={options.streets}
-                  onChange={(value) => onChange({ street: value })}
-                  placeholder="Введите улицу..."
-                />
-              </FilterSection>
-
-              <FilterSection icon={Building2} title="здание">
-                <SelectField
-                  value={filters.building}
-                  options={options.buildings}
-                  onChange={(value) => onChange({ building: value })}
-                  placeholder="Выберите здание..."
-                />
-              </FilterSection>
-
-              <FilterSection icon={MapPin} title="адрес">
-                <SelectField
-                  value={filters.address}
-                  options={options.addresses}
-                  onChange={(value) => onChange({ address: value })}
-                  placeholder="Введите адрес..."
-                />
-              </FilterSection>
-            </>
-          )}
-        </div>
-      </section>
-    </>
+    </section>
   );
 }
 

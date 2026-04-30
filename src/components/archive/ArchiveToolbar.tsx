@@ -33,7 +33,7 @@ function ArchiveToolbar({
         onSearch();
       }}
     >
-      {/* ПИЛЮЛЯ ПОИСКА (теперь без крестика внутри) */}
+      {/* ПИЛЮЛЯ ПОИСКА */}
       <div className="archive-toolbar__field">
         <Search size={20} strokeWidth={2} className="archive-toolbar__search-icon" />
         <input
@@ -48,17 +48,17 @@ function ArchiveToolbar({
       <div className="archive-toolbar__buttons">
         {isFiltersOpen ? (
           <>
-            {/* КВАДРАТ СБРОСА (X) */}
+            {/* КВАДРАТ СБРОСА (X) — теперь с классом для скрытия на мобилках */}
             <button
               type="button"
-              className="archive-toolbar__button archive-toolbar__button--reset"
+              className="archive-toolbar__button archive-toolbar__button--reset archive-toolbar__button--desktop-only"
               onClick={onResetFilters}
               aria-label="Сбросить фильтры"
             >
               <X size={24} strokeWidth={3} />
             </button>
 
-            {/* КВАДРАТ ПРИМЕНИТЬ (Галка) */}
+            {/* КВАДРАТ ПРИМЕНИТЬ (Галка) — остается всегда */}
             <button
               type="button"
               className="archive-toolbar__button archive-toolbar__button--apply"

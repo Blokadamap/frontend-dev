@@ -113,15 +113,17 @@
   .archive-toolbar {
     display: grid !important;
     grid-template-columns: 1fr 48px !important; 
-    gap: 12px !important;
-    align-items: center !important;
+    gap: 8px !important;
+    padding-right: 4px !important; 
+    box-sizing: border-box !important;
+    width: 100% !important;
   }
 
   .archive-toolbar__field {
     background: #F6F6F6 !important;
     border: none !important;
     box-shadow: none !important; 
-    height: 52px !important;
+    height: 48px !important;
     border-radius: 16px !important;
     padding: 0 16px !important; 
   }
@@ -136,7 +138,7 @@
   }
 
   .archive-toolbar__buttons {
-    padding-right: 8px !important; 
+    padding-right: 0 !important;
     align-items: center !important;
   }
   
@@ -146,15 +148,31 @@
 
   .archive-toolbar__badge {
     position: absolute !important;
-    /* Сдвигаем внутрь кнопки, чтобы не задевал край экрана */
-    top: -4px !important;
-    right: -4px !important;
+    top: -2px !important;
+    right: -2px !important;
     background: #2F3035 !important;
     color: #ffffff !important;
     border: 2px solid #ffffff !important;
     width: 20px !important;
-    height: 20px !important;
+    min-width: 18px !important;
+    height: 18px !important;
     font-size: 10px !important;
     z-index: 10 !important;
+  }
+
+  .archive-toolbar__button--apply {
+    background: var(--brand-gold) !important;
+    box-shadow: 0 4px 12px rgba(216, 174, 118, 0.3) !important;
+    display: grid !important;
+    place-items: center !important;
+  }
+
+  .archive-toolbar__button--apply svg {
+    color: #ffffff !important;
+    stroke: #ffffff !important;
+  }
+
+  .archive-toolbar__button--desktop-only {
+    display: none !important;
   }
 }
