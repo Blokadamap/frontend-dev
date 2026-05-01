@@ -251,15 +251,15 @@ function Map() {
                   </button>
                   <button
                     type="button"
-                    className={`archive-filter-tabs__item ${activeTab === "person" ? "is-active" : ""}`}
-                    onClick={() => { setActiveTab("person"); if (isMobile) setActivePanel("filters"); }}
+                    className={`archive-filter-tabs__item ${activeTab === "place" ? "is-active" : ""}`}
+                    onClick={() => { setActiveTab("place"); if (isMobile) setActivePanel("filters"); }}
                   >
                     Место
                   </button>
                   <button
                     type="button"
-                    className={`archive-filter-tabs__item ${activeTab === "place" ? "is-active" : ""}`}
-                    onClick={() => { setActiveTab("place"); if (isMobile) setActivePanel("filters"); }}
+                    className={`archive-filter-tabs__item ${activeTab === "person" ? "is-active" : ""}`}
+                    onClick={() => { setActiveTab("person"); if (isMobile) setActivePanel("filters"); }}
                   >
                     Персоналия
                   </button>
