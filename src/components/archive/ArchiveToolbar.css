@@ -114,7 +114,7 @@
     display: grid !important;
     grid-template-columns: 1fr 48px !important; 
     gap: 8px !important;
-    padding-right: 4px !important; 
+    padding-right: 0 !important; 
     box-sizing: border-box !important;
     width: 100% !important;
   }
@@ -138,7 +138,7 @@
   }
 
   .archive-toolbar__buttons {
-    padding-right: 0 !important;
+    padding-right: 0 !important; 
     align-items: center !important;
   }
   

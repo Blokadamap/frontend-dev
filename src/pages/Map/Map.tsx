@@ -161,7 +161,7 @@ function Map() {
 
           {/* === ГЛАВНАЯ ОБЕРТКА (Шторка на мобилке / Колонка на десктопе) === */}
           <div
-            className={`archive-left-column ${activePanel ? 'is-expanded' : 'is-collapsed'}`}
+            className={`archive-left-column ${activePanel ? 'is-expanded' : 'is-collapsed'} ${layerPanelOpen && isMobile ? 'has-layer-panel' : ''}`}
             style={isMobile ? { height: sheetHeightMap[snapPoint], transition: "height 0.35s cubic-bezier(0.4,0,0.2,1)" } : undefined}
           >
             <div
@@ -179,7 +179,7 @@ function Map() {
             <div className="archive-topbar">
               {/* Когда открыта панель слоёв — показываем её вместо поиска */}
               {layerPanelOpen && isMobile ? (
-                <div className="layer-selection-panel layer-selection-panel--mobile">
+                <div className="layer-selection-panel layer-selection-panel--mobile" style={{ flex: 1, overflowY: "auto" }}>
                   <div className="layer-modal-header">
                     <h2>Вид карты:</h2>
                     <button className="layer-modal-close-btn" onClick={() => { setLayerPanelOpen(false); setSnapPoint("peek"); }}>
@@ -317,7 +317,7 @@ function Map() {
           )}
 
           <div className="archive-layer-dock">
-            <LayerSwitcher onMobileOpen={() => { setLayerPanelOpen(true); setSnapPoint("half"); setActivePanel(null); }} />
+            <LayerSwitcher onMobileOpen={() => { setLayerPanelOpen(true); setSnapPoint("full"); setActivePanel(null); }} />
           </div>
         </div>
       </section>

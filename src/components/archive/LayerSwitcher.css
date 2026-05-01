@@ -26,7 +26,7 @@
   cursor: pointer;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   overflow: hidden;
   transition: transform 0.2s ease;
   z-index: 10;
@@ -218,20 +218,35 @@
     z-index: 3150;
   }
 
-  /* Панель слоёв внутри шторки */
+  /* Панель слоёв — встроена в шторку */
   .layer-selection-panel--mobile {
     position: relative !important;
+    inset: auto !important;
     width: 100% !important;
     max-width: 100% !important;
     border-radius: 0 !important;
     border: none !important;
     box-shadow: none !important;
     padding: 4px 0 !important;
-    overflow-y: auto !important;
-    box-sizing: border-box !important;
     z-index: auto !important;
-    inset: auto !important;
     max-height: none !important;
+    overflow-y: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  .layer-selection-panel--mobile .layer-modal-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .layer-selection-panel--mobile .layer-modal-item__img {
+    width: 100% !important;
+    height: 76px !important;
+    border-radius: 12px !important;
+  }
+
+  .layer-selection-panel--mobile .layer-modal-item {
+    width: 100% !important;
   }
 
   /* Ручка шторки */
@@ -241,10 +256,5 @@
     background: #EBE6DE;
     border-radius: 10px;
     margin: 0 auto 14px;
-  }
-
-  .layer-modal-item__img {
-    width: 90px;
-    height: 90px;
   }
 }

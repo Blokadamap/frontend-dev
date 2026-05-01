@@ -296,19 +296,8 @@
 
 @media (max-width: 960px) {
   .archive-page { padding: 0 !important; overflow: hidden !important; }
-  .archive-shell {
-    border-radius: 0 !important;
-    position: relative !important;
-    height: 100dvh !important;
-  }
-  .archive-stage {
-    padding: 0 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    height: 100dvh !important;
-    min-height: 100dvh !important;
-    position: relative !important;
-  }
+  .archive-shell { border-radius: 0 !important; }
+  .archive-stage { padding: 0 !important; display: flex !important; flex-direction: column !important; }
 
   /* Карта на задний план */
   .archive-map {
@@ -331,7 +320,7 @@
     background: #ffffff !important;
     border-radius: 32px 32px 0 0 !important;
     box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.12) !important;
-    padding: 0 0 calc(16px + env(safe-area-inset-bottom)) !important;
+    padding: 0 16px calc(16px + env(safe-area-inset-bottom)) !important;
     display: flex !important;
     gap: 6px;
     flex-direction: column !important;
@@ -348,6 +337,11 @@
   }
   .archive-left-column:has(.archive-panel--results.is-collapsed) .archive-sidebar--left {
     display: none !important;
+  }
+
+  /* Когда открыта панель слоёв — убираем нижний паддинг */
+  .archive-left-column.has-layer-panel {
+    padding-bottom: 0 !important;
   }
 
   /* Ручка шторки */
