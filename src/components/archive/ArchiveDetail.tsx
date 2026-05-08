@@ -1,84 +1,100 @@
-import { ArrowLeft, Quote, MapPin, Calendar } from "lucide-react";
-import type { WitnessRecord } from "../../types/archive";
-import {
-  buildMetaLine,
-  formatHumanDate,
-  getSignificanceAccent,
-  getWitnessAccent,
-} from "../../utils/archive";
+import { ArrowLeft, Quote, MapPin, Calendar } from 'lucide-react';
+import { buildMetaLine, formatHumanDate } from '../../utils/archive';
+import { useDiaryById } from '../../hooks/diaries/useDiaryById';
+import { useNotesByDiary } from '../../hooks/diaries/useNotesByDiary';
 
 interface ArchiveDetailProps {
-  record: WitnessRecord;
-  onClose: () => void;
+    diaryId: number;
+    onClose: () => void;
 }
 
-function ArchiveDetail({ record, onClose }: ArchiveDetailProps) {
-  return (
-    <aside className="archive-panel archive-panel--detail">
-      {/* Шапка с кнопкой назад и датой */}
-      <div className="archive-detail__header">
-        <button
-          type="button"
-          className="archive-detail__back"
-          onClick={onClose}
-          aria-label="Закрыть свидетельство"
-        >
-          <ArrowLeft size={18} strokeWidth={2.5} />
-        </button>
+function ArchiveDetail({ diaryId, onClose }: ArchiveDetailProps) {
+    const { data: notes, isLoading, isError } = useNotesByDiary(diaryId);
+    const { data: diary } = useDiaryById(diaryId);
 
-        <div className="archive-detail__header-copy">
-          <span className="archive-detail__eyebrow">
-            {buildMetaLine(record)}
-          </span>
-          <div className="archive-detail__date-wrapper">
-             <Calendar size={14} className="text-[#D8AE76]" />
-             <strong>{formatHumanDate(record.date)}</strong>
-          </div>
-        </div>
-      </div>
+    if (isLoading) {
+        return <aside className="archive-panel archive-panel--detail">Загрузка...</aside>;
+    }
 
-      {/* Основной контент: Цитата */}
-      <div className="archive-detail__body">
-        <div className="archive-detail__quote-wrapper">
-          <Quote className="archive-detail__quote-icon" size={40} fill="#D8AE76" stroke="none" />
-          <p className="archive-detail__text">
-            {record.content}
-          </p>
-        </div>
-        <footer className="archive-detail__author-signature">
-          — {record.author.fullName}
-        </footer>
-      </div>
+    if (isError) {
+        return <aside className="archive-panel archive-panel--detail">Ошибка загрузки</aside>;
+    }
 
-      {/* Карточка локации */}
-      <div className="archive-detail__location-card">
-        <div className="archive-detail__section-label">
-          <MapPin size={12} className="inline mr-1" /> Локация
-        </div>
-        <div className="archive-detail__location-info">
-          <a href="#record-location" className="archive-detail__location-title">
-            {record.location.title}
-          </a>
-          <p className="archive-detail__location-address">
-            {record.location.district}, {record.location.street}, {record.location.building}
-          </p>
-          <small className="archive-detail__location-full-address">{record.location.address}</small>
-        </div>
-      </div>
+    return (
+        <aside className="archive-panel archive-panel--detail">
+            {/* Шапка с кнопкой назад и датой */}
+            <div className="archive-detail__header">
+                <button
+                    type="button"
+                    className="archive-detail__back"
+                    onClick={onClose}
+                    aria-label="Закрыть свидетельство"
+                >
+                    <ArrowLeft size={18} strokeWidth={2.5} />
+                </button>
 
-      {/* Теги */}
-      <div className="archive-tag-row">
-        {record.tags.map((tag) => (
-          <span key={tag} className={`chip ${getSignificanceAccent(record.significance)}`}>
-            {tag}
-          </span>
-        ))}
-        <span className={`chip ${getWitnessAccent(record.witnessKind)}`}>
-          {record.witnessKind}
-        </span>
-      </div>
-    </aside>
-  );
+                <div className="archive-detail__header-copy">
+                    <span className="archive-detail__eyebrow">{buildMetaLine(diary)}</span>
+                    <div className="archive-detail__date-wrapper">
+                        <Calendar size={14} className="text-[#D8AE76]" />
+                        {diary?.diaryStartedAt ? (
+                            <strong>{formatHumanDate(diary.diaryStartedAt)}</strong>
+                        ) : (
+                            <strong>Не указана</strong>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            {/* Основной контент: Цитата */}
+            {notes?.map((note) => (
+                <>
+                    <div className="archive-detail__body">
+                        <div className="archive-detail__quote-wrapper">
+                            <Quote
+                                className="archive-detail__quote-icon"
+                                size={40}
+                                fill="#D8AE76"
+                                stroke="none"
+                            />
+                            <p className="archive-detail__text">{}</p>
+                        </div>
+                        <footer className="archive-detail__author-signature">
+                            —{' '}
+                            {`${note.middleName} ${note.firstName} ${note.lastName}`}
+                        </footer>
+                    </div>
+
+                    {/* Карточка локации */}
+                    <div className="archive-detail__location-card">
+                        <div className="archive-detail__section-label">
+                            <MapPin size={12} className="inline mr-1" /> Локация
+                        </div>
+                        <div className="archive-detail__location-info">
+                            <a href="#record-location" className="archive-detail__location-title">
+                                {note?.temporality?.name}
+                            </a>
+                            <p className="archive-detail__location-address"></p>
+                            <small className="archive-detail__location-full-address"></small>
+                        </div>
+                    </div>
+
+                    {/* Теги */}
+                    <div className="archive-tag-row">
+                        {note?.tags &&
+                            note?.tags.map((tag) => (
+                                <span key={tag.id} className={`chip chip--rose`}>
+                                    {tag.name}
+                                </span>
+                            ))}
+                        {/* <span className={`chip chip--blue`}>
+                    {note.}
+                </span> */}
+                    </div>
+                </>
+            ))}
+        </aside>
+    );
 }
 
 export default ArchiveDetail;

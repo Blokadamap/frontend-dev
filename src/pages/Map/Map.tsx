@@ -1,239 +1,253 @@
-import { useAtom } from "jotai";
-import { useDeferredValue, useEffect, useState } from "react";
-import ArchiveDetail from "../../components/archive/ArchiveDetail";
-import ArchiveFilters from "../../components/archive/ArchiveFilters";
-import ArchiveMap from "../../components/archive/ArchiveMap";
-import ArchiveResults from "../../components/archive/ArchiveResults";
-import ArchiveToolbar from "../../components/archive/ArchiveToolbar";
-import LayerSwitcher from "../../components/archive/LayerSwitcher";
-import { useArchiveData } from "../../hooks/useArchiveData";
-import type { ArchiveFilters as ArchiveFiltersType } from "../../types/archive";
+import { useAtom, useAtomValue } from 'jotai';
+import { useDeferredValue, useEffect, useState } from 'react';
+import ArchiveDetail from '../../components/archive/ArchiveDetail';
+import ArchiveMap from '../../components/archive/ArchiveMap';
+import ArchiveResults from '../../components/archive/ArchiveResults';
+import ArchiveToolbar from '../../components/archive/ArchiveToolbar';
+import ArchiveFilters from '../../components/archive/ArchiveFilters';
+import LayerSwitcher from '../../components/archive/LayerSwitcher';
 import {
-  activePanelAtom,
-  archiveFiltersAtom,
-  defaultFilters,
-  searchAtom,
-  selectedLayerAtom,
-  selectedRecordIdAtom,
-} from "../../store/archiveAtoms";
-import { buildFilterOptions, filterWitnessRecords } from "../../utils/archive";
-import "./Map.css";
+    activePanelAtom,
+    archiveFilters,
+    resetArchiveFiltersAtom,
+    searchAtom,
+    selectedLayerAtom,
+    selectedRecordIdAtom,
+    type ArchiveFiltersType,
+} from '../../store/archiveAtoms';
+import './Map.css';
+import { useDiaries } from '../../hooks/diaries/useDiaries';
+import { usePoints } from '../../hooks/points/usePoints';
+import type { PointResponse } from '../../types/point/point.type';
 
 function buildActiveFilterCount(filters: ArchiveFiltersType) {
-  return [
-    Boolean(filters.startDate || filters.endDate),
-    filters.witnessKinds.length > 0,
-    filters.retrospectiveKinds.length > 0,
-    filters.significances.length > 0,
-    filters.tags.length > 0,
-    Boolean(filters.authorId),
-    Boolean(filters.birthDateStart || filters.birthDateEnd),
-    filters.genders.length > 0,
-    filters.partyStatuses.length > 0,
-    Boolean(filters.district),
-    Boolean(filters.space),
-    Boolean(filters.street),
-    Boolean(filters.building),
-    Boolean(filters.address),
-  ].filter(Boolean).length;
+    let res = 0;
+
+    if (filters.authorId) res++;
+    if (filters.educations.length != 0) res++;
+    if (filters.familyStatuses.length != 0) res++;
+    if (filters.tags.length != 0) res++;
+    if (filters.cards.length != 0) res++;
+    if (filters.nationalities.length != 0) res++;
+    if (filters.noteTypes.length != 0) res++;
+    if (filters.occupations.length != 0) res++;
+    if (filters.politicalParties.length != 0) res++;
+    if (filters.religions.length != 0) res++;
+    if (filters.socialClasses.length != 0) res++;
+    if (filters.temporalities.length != 0) res++;
+    if (filters.address) res++
+    if (filters.birthdayStart) res++
+    if (filters.birthdayEnd) res++
+    if (filters.building) res++
+    if (filters.genders.length != 0) res++
+    if (filters.startDate) res++
+    if (filters.endDate) res++
+    if (filters.street) res++
+
+    return res;
 }
 
-function buildFilterPreview(
-  filters: ArchiveFiltersType,
-  authors: { id: string; fullName: string }[],
-) {
-  const preview: string[] = [];
+function buildFilterPreview(filters: ArchiveFiltersType): string[] {
+    const res = [];
 
-  if (filters.authorId) {
-    const selectedAuthor = authors.find((author) => author.id === filters.authorId);
-    if (selectedAuthor) {
-      preview.push(selectedAuthor.fullName);
-    }
-  }
+    if (filters.authorId) res.push('Поиск по автору');
+    if (filters.educations.length != 0)
+        res.push('Поиск по образованию: ', filters.educations.map((item) => item.name).join('; '));
 
-  if (filters.district) {
-    preview.push(filters.district);
-  }
-
-  if (filters.tags.length > 0) {
-    preview.push(...filters.tags);
-  }
-
-  if (filters.witnessKinds.length > 0) {
-    preview.push(...filters.witnessKinds);
-  }
-
-  if (filters.retrospectiveKinds.length > 0) {
-    preview.push(...filters.retrospectiveKinds);
-  }
-
-  if (filters.significances.length > 0) {
-    preview.push(...filters.significances);
-  }
-
-  if (filters.startDate || filters.endDate) {
-    preview.push("Фильтр по дате");
-  }
-
-  return [...new Set(preview)].slice(0, 4);
+    return res;
 }
+
+function getFilteredPoints(
+    filters: ArchiveFiltersType,
+    points: PointResponse[] | undefined
+): PointResponse[] {
+    let res: PointResponse[] = []
+    
+    if (!points) return res
+
+    if (filters.street) res = points.filter(point => point.street === filters.street)
+    if (filters.building) res = points.filter(point => point.building === filters.building)
+    if (filters.district) res = points.filter(point => point.rayon?.name === filters.district)
+
+    return res
+}
+
+const options = {
+    districts: [],
+    spaces: [],
+    streets: [],
+    buildings: [],
+    addresses: [],
+};
 
 function Map() {
-  const { data, isLoading, isError } = useArchiveData();
-  const [searchValue, setSearchValue] = useAtom(searchAtom);
-  const [filters, setFilters] = useAtom(archiveFiltersAtom);
-  const [activePanel, setActivePanel] = useAtom(activePanelAtom);
-  const [selectedLayer] = useAtom(selectedLayerAtom); 
-  const [selectedRecordId, setSelectedRecordId] = useAtom(selectedRecordIdAtom);
-  const [visibleResultsCount, setVisibleResultsCount] = useState(6);
-  const deferredSearch = useDeferredValue(searchValue);
+    const { data: diaries, isLoading: isLoadingDiaries, isError: isErrorDiaries } = useDiaries();
+    const { data: points, isLoading: isLoadingPoints, isError: isErrorPoints } = usePoints();
 
-  const records = data ?? [];
-  const filterOptions = buildFilterOptions(records);
-  const filteredRecords = filterWitnessRecords(records, deferredSearch, filters);
-  const selectedRecord = filteredRecords.find((record) => record.id === selectedRecordId) ?? null;
-  const activeFilterCount = buildActiveFilterCount(filters);
-  const filterPreview = buildFilterPreview(filters, filterOptions.authors);
+    const [searchValue, setSearchValue] = useAtom(searchAtom);
+    const filters = useAtomValue(archiveFilters);
+    const [, resetFilters] = useAtom(resetArchiveFiltersAtom);
+    const [activePanel, setActivePanel] = useAtom(activePanelAtom);
+    const [selectedLayer] = useAtom(selectedLayerAtom);
+    const [selectedDiaryId, setSelectedDiaryId] = useAtom(selectedRecordIdAtom);
+    const [visibleResultsCount, setVisibleResultsCount] = useState(6);
+    const deferredSearch = useDeferredValue(searchValue);
 
-  useEffect(() => {
-    setVisibleResultsCount(6);
-  }, [deferredSearch, filters]);
+    const [selectedPointId, setSelectedPointId] = useState<number | null>(null);
 
-  useEffect(() => {
-    if (searchValue.trim() && activePanel !== "filters") {
-      setActivePanel("results");
+    const filteredDiaries = diaries ?? [];
+    const selectedRecord = diaries
+        ? diaries.find((diary) => diary.diaryId === selectedDiaryId)
+        : null;
+    const activeFilterCount = buildActiveFilterCount(filters);
+
+    const filterPreview = buildFilterPreview(filters);
+
+    const filteredPoints = getFilteredPoints(filters, points) 
+
+    useEffect(() => {
+        const setResultsCount = () => setVisibleResultsCount(6);
+        setResultsCount();
+    }, [deferredSearch, filters]);
+
+    useEffect(() => {
+        if (searchValue.trim() && activePanel !== 'filters') {
+            setActivePanel('results');
+        }
+    }, [activePanel, searchValue, setActivePanel]);
+
+    useEffect(() => {
+        if (
+            selectedDiaryId &&
+            !filteredDiaries.some((diary) => diary.diaryId === selectedDiaryId)
+        ) {
+            setSelectedDiaryId(null);
+        }
+    }, [filteredDiaries, selectedDiaryId, setSelectedDiaryId]);
+
+    if (isLoadingDiaries || isLoadingPoints) {
+        return (
+            <main className="archive-page archive-page--loading">
+                <div className="archive-shell archive-shell--status">
+                    <p className="archive-status__eyebrow">Поиск по дневникам</p>
+                    <h1>Подгружаем тестовую выборку свидетельств...</h1>
+                </div>
+            </main>
+        );
     }
-  }, [activePanel, searchValue, setActivePanel]);
 
-  useEffect(() => {
-    if (selectedRecordId && !filteredRecords.some((record) => record.id === selectedRecordId)) {
-      setSelectedRecordId(null);
+    if (isErrorDiaries || isErrorPoints || !diaries) {
+        return (
+            <main className="archive-page archive-page--loading">
+                <div className="archive-shell archive-shell--status">
+                    <p className="archive-status__eyebrow">Поиск по дневникам</p>
+                    <h1>Не удалось получить данные архива.</h1>
+                </div>
+            </main>
+        );
     }
-  }, [filteredRecords, selectedRecordId, setSelectedRecordId]);
 
-  if (isLoading) {
     return (
-      <main className="archive-page archive-page--loading">
-        <div className="archive-shell archive-shell--status">
-          <p className="archive-status__eyebrow">Поиск по дневникам</p>
-          <h1>Подгружаем тестовую выборку свидетельств...</h1>
-        </div>
-      </main>
+        <main className="archive-page">
+            <section className="archive-shell">
+                <div className="archive-stage">
+                    <ArchiveMap
+                        points={filteredPoints}
+                        selectedPointId={selectedPointId}
+                        selectedLayer={selectedLayer}
+                        hasLeftSidebar={activePanel !== null}
+                        hasRightSidebar={Boolean(selectedRecord)}
+                        onSelectPoint={(pointId) => {
+                            setSelectedPointId(pointId);
+                            setActivePanel(null);
+                        }}
+                        onClearSelection={() => {
+                            setSelectedPointId(null);
+                            setActivePanel('results');
+                        }}
+                    />
+                    {/* ux: */}
+                    {/* <div className="archive-mode-badge">Поиск по дневникам</div> */}
+
+                    <div className="archive-topbar">
+                        <ArchiveToolbar
+                            value={searchValue}
+                            filterCount={activeFilterCount}
+                            isFiltersOpen={activePanel === 'filters'}
+                            onChange={setSearchValue}
+                            onSearch={() => {
+                                setSelectedPointId(null);
+                                setActivePanel('results');
+                            }}
+                            onOpenFilters={() => {
+                                setSelectedPointId(null);
+                                setActivePanel('filters');
+                            }}
+                            onApplyFilters={() => {
+                                setSelectedPointId(null);
+                                setActivePanel('results');
+                            }}
+                            onResetFilters={() => {
+                                resetFilters();
+                                setSearchValue('');
+                                setSelectedPointId(null);
+                                setActivePanel('results');
+                            }}
+                        />
+
+                        {filterPreview.length > 0 && !activePanel && !selectedRecord ? (
+                            <div className="archive-filter-summary">
+                                {filterPreview.map((item) => (
+                                    <span key={item} className="chip chip--soft">
+                                        {item}
+                                    </span>
+                                ))}
+                            </div>
+                        ) : null}
+                    </div>
+
+                    {activePanel === 'filters' ? (
+                        <div className="archive-sidebar archive-sidebar--left">
+                            {/* Исправлено: передаем только необходимые опции, остальное компонент берет из атомов */}
+                            <ArchiveFilters options={options} />
+                        </div>
+                    ) : null}
+
+                    {activePanel === 'results' ? (
+                        <div className="archive-sidebar archive-sidebar--left">
+                            <ArchiveResults
+                                diaries={filteredDiaries}
+                                searchValue={searchValue}
+                                selectedRecordId={selectedDiaryId}
+                                visibleCount={visibleResultsCount}
+                                onShowMore={() => setVisibleResultsCount((count) => count + 6)}
+                                onSelect={(diaryId) => {
+                                    setSelectedDiaryId(diaryId);
+                                    setActivePanel(null);
+                                }}
+                            />
+                        </div>
+                    ) : null}
+
+                    {selectedDiaryId ? (
+                        <div className="archive-sidebar archive-sidebar--right">
+                            <ArchiveDetail
+                                diaryId={selectedDiaryId}
+                                onClose={() => {
+                                    setSelectedPointId(null);
+                                    setActivePanel('results');
+                                }}
+                            />
+                        </div>
+                    ) : null}
+
+                    <div className="archive-layer-dock">
+                        <LayerSwitcher />
+                    </div>
+                </div>
+            </section>
+        </main>
     );
-  }
-
-  if (isError || !data) {
-    return (
-      <main className="archive-page archive-page--loading">
-        <div className="archive-shell archive-shell--status">
-          <p className="archive-status__eyebrow">Поиск по дневникам</p>
-          <h1>Не удалось получить данные архива.</h1>
-        </div>
-      </main>
-    );
-  }
-
-  return (
-    <main className="archive-page">
-      <section className="archive-shell">
-        <div className="archive-stage">
-          <ArchiveMap
-            records={filteredRecords}
-            selectedRecordId={selectedRecordId}
-            selectedLayer={selectedLayer}
-            hasLeftSidebar={activePanel !== null}
-            hasRightSidebar={Boolean(selectedRecord)}
-            onSelectRecord={(recordId) => {
-              setSelectedRecordId(recordId);
-              setActivePanel(null);
-            }}
-            onClearSelection={() => {
-              setSelectedRecordId(null);
-              setActivePanel("results");
-            }}
-          />
-          {/* ux: */}
-          {/* <div className="archive-mode-badge">Поиск по дневникам</div> */}
-
-          <div className="archive-topbar">
-            <ArchiveToolbar
-              value={searchValue}
-              filterCount={activeFilterCount}
-              isFiltersOpen={activePanel === "filters"}
-              onChange={setSearchValue}
-              onSearch={() => {
-                setSelectedRecordId(null);
-                setActivePanel("results");
-              }}
-              onOpenFilters={() => {
-                setSelectedRecordId(null);
-                setActivePanel("filters");
-              }}
-              onApplyFilters={() => {
-                setSelectedRecordId(null);
-                setActivePanel("results");
-              }}
-              onResetFilters={() => {
-                setFilters(defaultFilters);
-                setSearchValue("");
-                setSelectedRecordId(null);
-                setActivePanel("results");
-              }}
-            />
-
-            {filterPreview.length > 0 && !activePanel && !selectedRecord ? (
-              <div className="archive-filter-summary">
-                {filterPreview.map((item) => (
-                  <span key={item} className="chip chip--soft">
-                    {item}
-                  </span>
-                ))}
-              </div>
-            ) : null}
-          </div>
-
-          {activePanel === "filters" ? (
-            <div className="archive-sidebar archive-sidebar--left">
-              {/* Исправлено: передаем только необходимые опции, остальное компонент берет из атомов */}
-              <ArchiveFilters options={filterOptions} />
-            </div>
-          ) : null}
-
-          {activePanel === "results" ? (
-            <div className="archive-sidebar archive-sidebar--left">
-              <ArchiveResults
-                records={filteredRecords}
-                searchValue={searchValue}
-                selectedRecordId={selectedRecordId}
-                visibleCount={visibleResultsCount}
-                onShowMore={() => setVisibleResultsCount((count) => count + 6)}
-                onSelect={(recordId) => {
-                  setSelectedRecordId(recordId);
-                  setActivePanel(null);
-                }}
-              />
-            </div>
-          ) : null}
-
-          {selectedRecord ? (
-            <div className="archive-sidebar archive-sidebar--right">
-              <ArchiveDetail
-                record={selectedRecord}
-                onClose={() => {
-                  setSelectedRecordId(null);
-                  setActivePanel("results");
-                }}
-              />
-            </div>
-          ) : null}
-
-          <div className="archive-layer-dock">
-            <LayerSwitcher />
-          </div>
-        </div>
-      </section>
-    </main>
-  );
 }
 
 export default Map;

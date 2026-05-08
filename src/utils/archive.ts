@@ -5,6 +5,9 @@ import type {
   WitnessKind,
   WitnessRecord,
 } from "../types/archive";
+import type { AuthorFiltersWithId, AuthorShort } from "../types/author/author.type";
+import type { DiaryResponse } from "../types/diary/diary.types";
+import type { NoteDetailed, NoteFilters } from "../types/note/note.type";
 
 const collator = new Intl.Collator("ru-RU");
 
@@ -80,73 +83,48 @@ function offsetCoordinates([lat, lng]: [number, number], index: number): [number
 }
 
 export function filterWitnessRecords(
-  records: WitnessRecord[],
+  authors: AuthorShort[],
   searchValue: string,
-  filters: ArchiveFilters,
+  authorFilters: AuthorFiltersWithId,
+  noteFilters: NoteFilters
 ) {
   const query = normalize(searchValue);
 
-  return records.filter((record) => {
-    const searchMatches = !query || record.searchIndex.includes(query);
+  return authors.filter((author) => {
+    if (authorFilters.authorId) {
+      return author.authorId === authorFilters.authorId
+    }
 
-    const dateMatches =
-      (!filters.startDate || record.date >= filters.startDate) &&
-      (!filters.endDate || record.date <= filters.endDate);
+    let education = true
 
-    const witnessKindMatches =
-      filters.witnessKinds.length === 0 || filters.witnessKinds.includes(record.witnessKind);
+    if (authorFilters.educations.length != 0) {
+     education = authorFilters.educations.includes(author.education)
+    }
 
-    const retrospectiveMatches =
-      filters.retrospectiveKinds.length === 0 ||
-      filters.retrospectiveKinds.includes(record.retrospectiveKind);
+    // в таком формате все фильтры для автора и для заметок
 
-    const significanceMatches =
-      filters.significances.length === 0 || filters.significances.includes(record.significance);
-
-    const tagMatches =
-      filters.tags.length === 0 || filters.tags.some((tag) => record.tags.includes(tag));
-
-    const authorMatches = !filters.authorId || record.author.id === filters.authorId;
-
-    const birthDateMatches =
-      (!filters.birthDateStart || record.author.birthDate >= filters.birthDateStart) &&
-      (!filters.birthDateEnd || record.author.birthDate <= filters.birthDateEnd);
-
-    const genderMatches =
-      filters.genders.length === 0 || filters.genders.includes(record.author.gender);
-
-    const partyMatches =
-      filters.partyStatuses.length === 0 ||
-      filters.partyStatuses.includes(record.author.partyStatus);
-
-    const districtMatches = !filters.district || record.location.district === filters.district;
-    const spaceMatches = !filters.space || record.location.space === filters.space;
-    const streetMatches = !filters.street || record.location.street === filters.street;
-    const buildingMatches = !filters.building || record.location.building === filters.building;
-    const addressMatches = !filters.address || record.location.address === filters.address;
 
     return (
-      searchMatches &&
-      dateMatches &&
-      witnessKindMatches &&
-      retrospectiveMatches &&
-      significanceMatches &&
-      tagMatches &&
-      authorMatches &&
-      birthDateMatches &&
-      genderMatches &&
-      partyMatches &&
-      districtMatches &&
-      spaceMatches &&
-      streetMatches &&
-      buildingMatches &&
-      addressMatches
+      education
     );
   });
 }
 
 function normalize(value: string) {
   return value.trim().toLocaleLowerCase("ru-RU");
+}
+
+export function groupWitnessesByMonth(records: WitnessRecord[]) {
+  const groups = new Map<string, WitnessRecord[]>();
+
+  records.forEach((record) => {
+    const key = formatMonthLabel(record.date);
+    const current = groups.get(key) ?? [];
+    current.push(record);
+    groups.set(key, current);
+  });
+
+  return [...groups.entries()].map(([label, items]) => ({ label, items }));
 }
 
 export function formatMonthLabel(date: string) {
@@ -212,21 +190,9 @@ function uniqueBy<T>(values: T[], getKey: (value: T) => string) {
   });
 }
 
-export function groupWitnessesByMonth(records: WitnessRecord[]) {
-  const groups = new Map<string, WitnessRecord[]>();
-
-  records.forEach((record) => {
-    const key = formatMonthLabel(record.date);
-    const current = groups.get(key) ?? [];
-    current.push(record);
-    groups.set(key, current);
-  });
-
-  return [...groups.entries()].map(([label, items]) => ({ label, items }));
-}
-
-export function buildMetaLine(record: WitnessRecord) {
-  return `${record.significance} • ${record.witnessKind} • ${record.retrospectiveKind}`;
+export function buildMetaLine(diary: DiaryResponse | undefined) {
+  if (!diary) return ""
+  return `${diary.author.firstName} • ${diary.diarySource}`;
 }
 
 export function getSignificanceAccent(significance: SignificanceKind) {

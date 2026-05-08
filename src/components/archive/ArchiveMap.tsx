@@ -7,16 +7,33 @@ import {
   useMap,
   useMapEvents,
 } from "react-leaflet";
-import type { MapLayerId, WitnessRecord } from "../../types/archive";
+import type { MapLayerId } from "../../types/archive";
 import "leaflet/dist/leaflet.css";
+import type { CoordinateItem, PointInNote, PointResponse } from "../../types/point/point.type";
+
+function countAveragePosition(
+  coordinateItems: CoordinateItem[] | undefined
+): [number, number] {
+  if (!coordinateItems?.length) return [0, 0];
+
+  let lat = 0;
+  let lng = 0;
+
+  for (const coor of coordinateItems) {
+    lat += coor.latitude;
+    lng += coor.longitude;
+  }
+
+  return [lat, lng];
+}
 
 interface ArchiveMapProps {
-  records: WitnessRecord[];
-  selectedRecordId: string | null;
+  points: PointResponse[];
+  selectedPointId: number | null;
   selectedLayer: MapLayerId;
   hasLeftSidebar: boolean;
   hasRightSidebar: boolean;
-  onSelectRecord: (recordId: string) => void;
+  onSelectPoint: (pointId: number) => void;
   onClearSelection: () => void;
 }
 const rasterLayerConfig: Record<MapLayerId, {
@@ -95,13 +112,13 @@ function MapLayoutWatcher({
 }
 
 function MapViewport({
-  records,
-  selectedRecord,
+  points,
+  selectedPoint,
   hasLeftSidebar,
   hasRightSidebar,
 }: {
-  records: WitnessRecord[];
-  selectedRecord: WitnessRecord | undefined;
+  points: PointResponse[];
+  selectedPoint: PointInNote | undefined;
   hasLeftSidebar: boolean;
   hasRightSidebar: boolean;
 }) {
@@ -110,8 +127,8 @@ function MapViewport({
   useEffect(() => {
     const viewport = getViewportConfig(hasLeftSidebar, hasRightSidebar);
 
-    if (selectedRecord) {
-      map.flyTo(selectedRecord.markerPosition, 17.2, {
+    if (selectedPoint) {
+      map.flyTo(countAveragePosition(selectedPoint.pointCoordinates), 17.2, {
         animate: true,
         duration: 0.85,
       });
@@ -126,7 +143,7 @@ function MapViewport({
       return;
     }
 
-    const bounds = L.latLngBounds(records.map((r) => r.markerPosition));
+    const bounds = L.latLngBounds(points.map((point) => countAveragePosition(point.pointCoordinates)));
     if (bounds.isValid()) {
       map.fitBounds(bounds, {
         animate: true,
@@ -139,21 +156,21 @@ function MapViewport({
     }
 
     map.setView([59.9386, 30.3141], 12.5, { animate: true });
-  }, [map, records, selectedRecord, hasLeftSidebar, hasRightSidebar]);
+  }, [map, points, selectedPoint, hasLeftSidebar, hasRightSidebar]);
 
   return null;
 }
 
 function ArchiveMap({
-  records,
-  selectedRecordId,
+  points,
+  selectedPointId,
   selectedLayer,
   hasLeftSidebar,
   hasRightSidebar,
-  onSelectRecord,
+  onSelectPoint,
   onClearSelection,
 }: ArchiveMapProps) {
-  const selectedRecord = records.find((record) => record.id === selectedRecordId);
+  const selectedPoint = points.find((point) => point.pointId === selectedPointId);
   const layerConfig = rasterLayerConfig[selectedLayer];
 
   return (
@@ -171,8 +188,8 @@ function ArchiveMap({
       />
 
       <MapViewport
-        records={records}
-        selectedRecord={selectedRecord}
+        points={points}
+        selectedPoint={selectedPoint}
         hasLeftSidebar={hasLeftSidebar}
         hasRightSidebar={hasRightSidebar}
       />
@@ -185,15 +202,15 @@ function ArchiveMap({
 
       <ClearSelectionHandler onClearSelection={onClearSelection} />
 
-      {records.map((record) => {
-        const isSelected = record.id === selectedRecordId;
+      {points.map((point) => {
+        const isSelected = point.pointId === selectedPointId;
         return (
           <Marker
-            key={`${record.id}-${isSelected}`} 
-            position={record.markerPosition}
+            key={`${point.pointId }-${isSelected}`} 
+            position={countAveragePosition(point.pointCoordinates)}
             icon={createMarkerIcon(isSelected)}
             eventHandlers={{
-              click: () => onSelectRecord(record.id),
+              click: () => onSelectPoint(point.pointId),
             }}
           />
         );
