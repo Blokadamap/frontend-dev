@@ -42,32 +42,30 @@ function ArchiveToolbar({
           onChange={(event) => onChange(event.target.value)}
           placeholder="Поиск по дневникам..."
         />
+        {(value || isFiltersOpen) && (
+          <button
+            type="button"
+            className="archive-toolbar__clear"
+            onClick={() => { onChange(""); onResetFilters(); }}
+            aria-label="Очистить"
+          >
+            <X size={18} strokeWidth={2.5} />
+          </button>
+        )}
       </div>
 
       {/* БЛОК КНОПОК */}
       <div className="archive-toolbar__buttons">
         {isFiltersOpen ? (
-          <>
-            {/* КВАДРАТ СБРОСА (X) — теперь с классом для скрытия на мобилках */}
-            <button
-              type="button"
-              className="archive-toolbar__button archive-toolbar__button--reset archive-toolbar__button--desktop-only"
-              onClick={onResetFilters}
-              aria-label="Сбросить фильтры"
-            >
-              <X size={24} strokeWidth={3} />
-            </button>
-
-            {/* КВАДРАТ ПРИМЕНИТЬ (Галка) — остается всегда */}
-            <button
-              type="button"
-              className="archive-toolbar__button archive-toolbar__button--apply"
-              onClick={onApplyFilters}
-              aria-label="Применить фильтры"
-            >
-              <Check size={24} strokeWidth={3} />
-            </button>
-          </>
+          /* КВАДРАТ ПРИМЕНИТЬ (Галка) */
+          <button
+            type="button"
+            className="archive-toolbar__button archive-toolbar__button--apply"
+            onClick={onApplyFilters}
+            aria-label="Применить фильтры"
+          >
+            <Check size={24} strokeWidth={3} />
+          </button>
         ) : (
           /* КВАДРАТ НАСТРОЕК (Ползунки) */
           <button

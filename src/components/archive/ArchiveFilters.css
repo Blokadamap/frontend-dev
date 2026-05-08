@@ -3,18 +3,19 @@
    ========================================= */
 
 .archive-panel--filters {
-  border: 1px solid #E8E2D9 !important;
-  border-radius: 28px !important;     
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
-  flex: 1;                            
-  background-color: var(--paper) !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  flex: 1;
+  background-color: #ffffff !important;
+  overflow-y: auto;
 }
 
 .archive-filter-grid {
-  padding: 24px;
+  padding: 16px 20px 28px;
   display: flex;
   flex-direction: column;
-  gap: 28px; 
+  gap: 20px; 
 }
 
 /* =========================================
@@ -37,12 +38,12 @@
 .archive-filter-section__title {
   display: flex;
   align-items: center;
-  gap: 10px;
-  color: var(--brand-gold);
-  font-size: 11px;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  gap: 8px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 /* =========================================
@@ -87,6 +88,29 @@
   border-radius: 2px;
 }
 
+.archive-filter-grid__dates input[type="date"] {
+  width: 100%;
+  height: 48px !important;
+  padding: 0 16px !important;
+  border: 1.5px solid #E8E2D9 !important;
+  border-radius: 999px !important;
+  background: #ffffff !important;
+  color: transparent !important;
+  outline: none;
+  font-size: 14px !important;
+  cursor: pointer !important;
+  transition: border-color 0.2s ease, color 0.2s !important;
+}
+
+.archive-filter-grid__dates input[type="date"]:focus,
+.archive-filter-grid__dates input[type="date"]:not([value=""]) {
+  color: var(--ink) !important;
+}
+
+.archive-filter-grid__dates input[type="date"]:focus {
+  border-color: var(--brand-gold) !important;
+}
+
 /* =========================================
    ЧЕКБОКСЫ
    ========================================= */
@@ -115,7 +139,7 @@
 }
 
 .archive-checkbox-row__control {
-  border-radius: 6px !important; /* Квадратные чекбоксы обычно привычнее для фильтров */
+  border-radius: 50% !important;
   border: 2px solid #D1CBC0 !important;
   background: white !important;
   position: relative;
@@ -218,6 +242,12 @@
     padding: 0 16px !important;
     font-size: 15px !important; 
     background: #ffffff !important;
+    color: transparent !important;
+  }
+
+  .archive-filter-grid__dates input:focus,
+  .archive-filter-grid__dates input:not([value=""]) {
+    color: var(--ink) !important;
   }
 
 

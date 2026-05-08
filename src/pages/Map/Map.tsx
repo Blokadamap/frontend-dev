@@ -162,19 +162,32 @@ function Map() {
           {/* === ГЛАВНАЯ ОБЕРТКА (Шторка на мобилке / Колонка на десктопе) === */}
           <div
             className={`archive-left-column ${activePanel ? 'is-expanded' : 'is-collapsed'} ${layerPanelOpen && isMobile ? 'has-layer-panel' : ''}`}
-            style={isMobile ? { height: sheetHeightMap[snapPoint], transition: "height 0.35s cubic-bezier(0.4,0,0.2,1)" } : undefined}
+            style={isMobile ? { 
+              height: layerPanelOpen ? "520px" : sheetHeightMap[snapPoint], 
+              transition: "height 0.35s cubic-bezier(0.4,0,0.2,1)" 
+            } : undefined}
           >
+            {/* В peek — весь видимый участок шторки тянется вверх */}
+            {isMobile && snapPoint === "peek" && (
+              <div
+                style={{ position: "absolute", inset: 0, zIndex: 50, cursor: "grab" }}
+                onTouchStart={(e) => onDragStart(e.touches[0].clientY)}
+                onTouchEnd={(e) => { onDragEnd(e.changedTouches[0].clientY); }}
+                onClick={() => { setSnapPoint("half"); setActivePanel("results"); }}
+              />
+            )}
             <div
-              className="mobile-handle"
+              className="mobile-handle-zone"
               onClick={() => {
                 if (snapPoint === "peek") { setSnapPoint("half"); setActivePanel("results"); }
-                else { setSnapPoint("peek"); setActivePanel(null); }
+                else if (snapPoint === "full") { setSnapPoint("half"); }
+                else { setSnapPoint("peek"); setActivePanel(null); setLayerPanelOpen(false); }
               }}
               onTouchStart={(e) => onDragStart(e.touches[0].clientY)}
               onTouchEnd={(e) => onDragEnd(e.changedTouches[0].clientY)}
-              onMouseDown={(e) => onDragStart(e.clientY)}
-              onMouseUp={(e) => onDragEnd(e.clientY)}
-            />
+            >
+              <div className="mobile-handle" />
+            </div>
 
             <div className="archive-topbar">
               {/* Когда открыта панель слоёв — показываем её вместо поиска */}

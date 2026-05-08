@@ -50,6 +50,28 @@
   color: #B2B2B2 !important;
 }
 
+/* --- КНОПКА ОЧИСТКИ ВНУТРИ ПОЛЯ --- */
+.archive-toolbar__clear {
+  background: #2F3035 !important;
+  border: none !important;
+  border-radius: 50% !important;
+  width: 22px !important;
+  height: 22px !important;
+  min-width: 22px !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  color: #ffffff !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  transition: opacity 0.2s !important;
+}
+
+.archive-toolbar__clear:hover {
+  opacity: 0.75 !important;
+}
+
 /* --- КОНТЕЙНЕР ДЛЯ КНОПОК --- */
 .archive-toolbar__buttons {
   display: flex !important;
@@ -173,6 +195,10 @@
   }
 
   .archive-toolbar__button--desktop-only {
+    display: none !important;
+  }
+
+  .archive-toolbar__clear {
     display: none !important;
   }
 }

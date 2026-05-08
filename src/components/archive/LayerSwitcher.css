@@ -26,7 +26,7 @@
   cursor: pointer;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   overflow: hidden;
   transition: transform 0.2s ease;
   z-index: 10;
@@ -195,6 +195,7 @@
     background: var(--brand-gold) !important;
     border: none !important;
     box-shadow: 0 4px 12px rgba(216, 174, 118, 0.4) !important;
+    align-items: center !important;
   }
 
   .layer-main-button__label span {
@@ -203,6 +204,10 @@
 
   .layer-main-button__label {
     color: #ffffff !important;
+    justify-content: center !important;
+    align-items: center !important;
+    height: 100% !important;
+    padding: 0 !important;
   }
 
   .layer-main-button svg {
@@ -241,7 +246,8 @@
 
   .layer-selection-panel--mobile .layer-modal-item__img {
     width: 100% !important;
-    height: 76px !important;
+    height: auto !important;
+    aspect-ratio: 1 !important;
     border-radius: 12px !important;
   }
 

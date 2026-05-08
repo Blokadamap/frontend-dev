@@ -218,7 +218,7 @@
 .archive-filter-tabs {
   display: flex;
   gap: 6px;
-  width: 320px;
+  width: 360px;
 }
 
 .archive-filter-tabs__item {
@@ -248,8 +248,8 @@
   top: 84px !important; /* 20px (topbar) + 48px (search) + 6px (gap) + 10px (margin) */
   left: 24px !important;
   bottom: auto !important;
-  max-height: 440px !important;
-  width: 320px !important;
+  max-height: 560px !important;
+  width: 360px !important;
   background: var(--paper) !important;
   border: 1px solid #E8E2D9 !important;
   border-radius: 20px !important;
@@ -322,7 +322,7 @@
     box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.12) !important;
     padding: 0 16px calc(16px + env(safe-area-inset-bottom)) !important;
     display: flex !important;
-    gap: 6px;
+    gap: 0;
     flex-direction: column !important;
     pointer-events: auto !important;
     z-index: 3000 !important;
@@ -344,6 +344,18 @@
     padding-bottom: 0 !important;
   }
 
+  /* Зона для drag — большая touch-область */
+  .mobile-handle-zone {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    padding: 10px 0 6px !important;
+    flex-shrink: 0 !important;
+    cursor: grab !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+
   /* Ручка шторки */
   .mobile-handle {
     display: block !important;
@@ -351,9 +363,8 @@
     height: 5px !important;
     background: #EBE6DE !important;
     border-radius: 10px !important;
-    margin: 8px auto 6px !important;
     flex-shrink: 0 !important;
-    cursor: grab !important;
+    pointer-events: none !important;
   }
 
   /* Тулбар  */
