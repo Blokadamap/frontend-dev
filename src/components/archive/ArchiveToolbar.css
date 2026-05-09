@@ -7,7 +7,7 @@
   top: 20px !important;
   left: 24px !important;
   /* Чуть расширили под две кнопки, чтобы поиск не сжимался */
-  width: 420px !important; 
+  width: 360px !important; 
   z-index: 1100 !important;
 }
 
@@ -28,7 +28,7 @@
   padding: 0 20px !important;
   background: #ffffff !important;
   border: 1px solid #E8E2D9 !important;
-  border-radius: 999px !important;
+  border-radius: 20px !important;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
 }
 
@@ -86,7 +86,7 @@
   width: 48px !important;
   height: 48px !important;
   min-width: 48px !important;
-  border-radius: 16px !important;
+  border-radius: 20px !important;
   border: none !important;
   outline: none !important;
   display: grid !important;
