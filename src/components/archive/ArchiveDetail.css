@@ -6,6 +6,28 @@
 .archive-detail__header {
   padding: 24px;
   border-bottom: 1px solid #EEE6DA;
+  position: relative;
+}
+
+/* Крестик — только мобилка */
+.archive-detail__close-mobile {
+  display: none;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: #F0EDE8;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.archive-detail__close-mobile:hover {
+  background: #e5dfd6;
 }
 
 .archive-detail__back {
@@ -133,7 +155,11 @@
   }
 
   .archive-detail__back {
-    display: none !important; /* На мобилке у нас есть handle сверху для закрытия */
+    display: none !important;
+  }
+
+  .archive-detail__close-mobile {
+    display: grid !important;
   }
 
   .archive-detail__body {

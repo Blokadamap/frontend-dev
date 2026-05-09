@@ -342,6 +342,7 @@
   /* Когда открыта панель слоёв — убираем нижний паддинг */
   .archive-left-column.has-layer-panel {
     padding-bottom: 0 !important;
+    z-index: 3200 !important;
   }
 
   /* Зона для drag — большая touch-область */

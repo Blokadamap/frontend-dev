@@ -1,4 +1,4 @@
-import { ArrowLeft, Quote, MapPin, Calendar } from "lucide-react";
+import { ArrowLeft, Quote, MapPin, Calendar, X } from "lucide-react";
 import type { WitnessRecord } from "../../types/archive";
 import {
   buildMetaLine,
@@ -25,6 +25,16 @@ function ArchiveDetail({ record, onClose }: ArchiveDetailProps) {
           aria-label="Закрыть свидетельство"
         >
           <ArrowLeft size={18} strokeWidth={2.5} />
+        </button>
+
+        {/* Крестик только на мобилке */}
+        <button
+          type="button"
+          className="archive-detail__close-mobile"
+          onClick={onClose}
+          aria-label="Закрыть"
+        >
+          <X size={18} strokeWidth={2.5} />
         </button>
 
         <div className="archive-detail__header-copy">
