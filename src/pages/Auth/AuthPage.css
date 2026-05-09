@@ -1,0 +1,37 @@
+.auth-page {
+  min-height: 100vh;
+  background: #eeeeef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 360px;
+}
+
+.auth-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.auth-tab {
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.auth-tab-active {
+  background: #efa94a;
+  color: #ffffff;
+}
+
+.auth-tab-muted {
+  background: #ffffff;
+  color: #999999;
+}
