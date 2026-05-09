@@ -1,7 +1,8 @@
 .archive-layer-dock {
   position: absolute;
-  left: 24px;   
-  bottom: 24px; 
+  left: 24px;
+  bottom: 40px;
+  top: auto;
   z-index: 1500; 
 }
 
@@ -66,7 +67,7 @@
     position: absolute;
     left: 0;
     bottom: 0;
-    width: 320px;
+    width: 360px;
     z-index: 1200;
   }
 }
