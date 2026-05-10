@@ -1,0 +1,1 @@
+export const BASE_API_URL = import.meta.env.PROD ? "/api/v1" : "http://81.26.179.103:8000/api/v1"

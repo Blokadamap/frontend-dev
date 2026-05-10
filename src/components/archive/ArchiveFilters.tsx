@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ReactNode } from "react";
 import { useAtom } from "jotai";
 import {
@@ -8,24 +9,27 @@ import {
   UsersRound,
   UserRound,
   CalendarDays,
-  IdCard,
   MapPinned,
-  MapPin,
   Building2,
-  Navigation
+  Navigation,
 } from "lucide-react";
-import { validateDateRange } from "../../utils/dateValidation";
-import { activeFilterTabAtom, archiveFiltersAtom } from "../../store/archiveAtoms";
-import type { WitnessKind } from "../../types/archive";
-import './ArchiveFilters.css';
+import {
+  activeFilterTabAtom,
+  archiveObjectFilters,
+  archiveArrayFilters,
+  archiveScalarFilters,
+  type ObjectFiltersType,
+  type ArrayFiltersType,
+  type ScalarFiltersType,
+} from "../../store/archiveAtoms";
+import "./ArchiveFilters.css";
+import { useNoteFilters } from "../../hooks/notes/useNoteFilters";
+import { useAuthorFilters } from "../../hooks/authors/useAuthorFilters";
+import { useAuthors } from "../../hooks/authors/useAuthors";
+import { type FilterItem } from "../../types/common/common.types";
 
 interface ArchiveFiltersProps {
   options: {
-    witnessKinds: WitnessKind[];
-    retrospectiveKinds: string[];
-    significances: string[];
-    tags: string[];
-    authors: { id: string; fullName: string }[];
     districts: string[];
     spaces: string[];
     streets: string[];
@@ -34,33 +38,73 @@ interface ArchiveFiltersProps {
   };
 }
 
-function toggleArrayValue<T extends string>(list: T[], value: T) {
-  return list.includes(value) ? list.filter((item) => item !== value) : [...list, value];
-}
-
 function ArchiveFilters({ options }: ArchiveFiltersProps) {
-  const [activeTab] = useAtom(activeFilterTabAtom);
-  const[filters, setFilters] = useAtom(archiveFiltersAtom);
+  const [activeTab,] = useAtom(activeFilterTabAtom);
+  const [objectFilters, setObjectFilters] = useAtom(archiveObjectFilters);
+  const [arrayFilters, setArrayFilters] = useAtom(archiveArrayFilters);
+  const [scalarFilters, setScalarFilters] = useAtom(archiveScalarFilters);
 
-  const onChange = (update: Partial<typeof filters>) => {
-    setFilters((prev) => ({ ...prev, ...update }));
+  const { data: noteFiltersData } = useNoteFilters();
+  const { data: authorsData } = useAuthors();
+  const { data: authorFiltersData } = useAuthorFilters();
+
+  const onUpdateObjectFilters = (
+    update: FilterItem,
+    key: keyof ObjectFiltersType,
+  ) => {
+    setObjectFilters((prev) => {
+      const pr = prev[key];
+
+      if (pr.find((item) => item.id === update.id)) {
+        return {
+          ...prev,
+          [key]: pr.filter((item) => item.id !== update.id),
+        };
+      } else {
+        return {
+          ...prev,
+          [key]: [...pr, update],
+        };
+      }
+    });
   };
 
-  const handleDateChange = (field: "startDate" | "endDate", value: string) => {
-    const nextStart = field === "startDate" ? value : filters.startDate;
-    const nextEnd = field === "endDate" ? value : filters.endDate;
-    const validated = validateDateRange(nextStart, nextEnd);
-    setFilters((prev) => ({
-      ...prev,
-      startDate: validated.startDate,
-      endDate: validated.endDate,
-    }));
+  const onUpdateArrayFilters = (
+    update: string,
+    key: keyof ArrayFiltersType,
+  ) => {
+    setArrayFilters((prev) => {
+      const pr = prev[key];
+
+      if (pr.find((item) => item === update)) {
+        return {
+          ...prev,
+          [key]: pr.filter((item) => item !== update),
+        };
+      } else {
+        return {
+          ...prev,
+          [key]: [...pr, update],
+        };
+      }
+    });
+  };
+
+  const onUpdateScalarFilters = (
+    update: number | string,
+    key: keyof ScalarFiltersType,
+  ) => {
+    setScalarFilters((prev) => {
+      return {
+        ...prev,
+        [key]: update,
+      };
+    });
   };
 
   return (
     <section className="archive-panel archive-panel--filters custom-scrollbar">
       <div className="archive-filter-grid">
-        
         {/* --- ВКЛАДКА: ОБЩЕЕ --- */}
         {activeTab === "general" && (
           <>
@@ -68,26 +112,30 @@ function ArchiveFilters({ options }: ArchiveFiltersProps) {
               <div className="archive-filter-grid__dates">
                 <input
                   type="date"
-                  value={filters.startDate}
-                  onChange={(e) => handleDateChange("startDate", e.target.value)}
+                  value={scalarFilters.startDate}
+                  onChange={(e) =>
+                    onUpdateScalarFilters(e.target.value, "startDate")
+                  }
                 />
                 <span />
                 <input
                   type="date"
-                  value={filters.endDate}
-                  onChange={(e) => handleDateChange("endDate", e.target.value)}
+                  value={scalarFilters.endDate}
+                  onChange={(e) =>
+                    onUpdateScalarFilters(e.target.value, "endDate")
+                  }
                 />
               </div>
             </FilterSection>
 
             <FilterSection icon={NotebookPen} title="тип свидетельства">
               <div className="archive-checkbox-list">
-                {options.witnessKinds.map((value) => (
+                {noteFiltersData?.noteTypes.map((type) => (
                   <CheckboxRow
-                    key={value}
-                    checked={filters.witnessKinds.includes(value)}
-                    label={value}
-                    onChange={() => onChange({ witnessKinds: toggleArrayValue(filters.witnessKinds, value) })}
+                    key={type.id}
+                    checked={objectFilters.noteTypes.includes(type)}
+                    label={type.name}
+                    onChange={() => onUpdateObjectFilters(type, "noteTypes")}
                   />
                 ))}
               </div>
@@ -95,27 +143,34 @@ function ArchiveFilters({ options }: ArchiveFiltersProps) {
 
             <FilterSection icon={Flag} title="значимость">
               <div className="archive-checkbox-list">
-                {options.significances.map((value) => (
+                {/* {options.significances.map((value) => (
                   <CheckboxRow
                     key={value}
                     checked={filters.significances.includes(value as any)}
                     label={value}
-                    onChange={() => onChange({ significances: toggleArrayValue(filters.significances as any, value) as any })}
+                    onChange={() =>
+                      onChange({
+                        significances: toggleArrayValue(
+                          filters.significances as any,
+                          value,
+                        ) as any,
+                      })
+                    }
                   />
-                ))}
+                ))} */}
               </div>
             </FilterSection>
 
             <FilterSection icon={Tag} title="тематики">
               <div className="archive-chip-grid">
-                {options.tags.map((tag) => (
+                {noteFiltersData?.tags.map((tag) => (
                   <button
-                    key={tag}
+                    key={tag.id}
                     type="button"
-                    className={`chip chip--tag${filters.tags.includes(tag) ? " is-active" : ""}`}
-                    onClick={() => onChange({ tags: toggleArrayValue(filters.tags, tag) })}
+                    className={`chip chip--tag${objectFilters.tags.includes(tag) ? " is-active" : ""}`}
+                    onClick={() => onUpdateObjectFilters(tag, "tags")}
                   >
-                    {tag}
+                    {tag.name}
                   </button>
                 ))}
               </div>
@@ -127,52 +182,161 @@ function ArchiveFilters({ options }: ArchiveFiltersProps) {
         {activeTab === "person" && (
           <>
             <FilterSection icon={UsersRound} title="персоналии">
-              <SelectField
-                value={filters.authorId}
-                options={options.authors.map((a) => a.id)}
-                displayOptions={options.authors.map((a) => a.fullName)}
-                onChange={(val) => onChange({ authorId: val })}
-                placeholder="Выберите персоналию..."
-              />
+              <select
+                value={scalarFilters.authorId ?? ""}
+                onChange={(event) =>
+                  onUpdateScalarFilters(Number(event.target.value), "authorId")
+                }
+              >
+                <option value="">Все персоналии</option>
+                {authorsData?.map((author) => (
+                  <option key={author.authorId} value={author.authorId}>
+                    {`${author.middleName} ${author.firstName} ${author.lastName}`}
+                  </option>
+                ))}
+              </select>
             </FilterSection>
 
             <FilterSection icon={CalendarDays} title="дата рождения">
               <div className="archive-filter-grid__dates">
                 <input
                   type="date"
-                  value={filters.birthDateStart}
-                  onChange={(e) => onChange({ birthDateStart: e.target.value })}
+                  value={scalarFilters.birthdayStart}
+                  onChange={(event) =>
+                    onUpdateScalarFilters(event.target.value, "birthdayStart")
+                  }
                 />
                 <span />
                 <input
                   type="date"
-                  value={filters.birthDateEnd}
-                  onChange={(e) => onChange({ birthDateEnd: e.target.value })}
+                  value={scalarFilters.birthdayEnd}
+                  onChange={(event) =>
+                    onUpdateScalarFilters(event.target.value, "birthdayEnd")
+                  }
                 />
               </div>
             </FilterSection>
 
             <FilterSection icon={UserRound} title="пол">
               <div className="archive-checkbox-list">
-                {["Мужской", "Женский"].map((value) => (
+                {(["Мужской", "Женский"] as const).map((value) => (
                   <CheckboxRow
-                    key={value}
-                    checked={filters.genders.includes(value as any)}
+                    key={value === "Женский" ? "F" : "M"}
+                    checked={arrayFilters.genders.includes(
+                      value === "Женский" ? "F" : "M",
+                    )}
                     label={value}
-                    onChange={() => onChange({ genders: toggleArrayValue(filters.genders as any, value) as any })}
+                    onChange={() =>
+                      onUpdateArrayFilters(
+                        value === "Женский" ? "F" : "M",
+                        "genders",
+                      )
+                    }
                   />
                 ))}
               </div>
             </FilterSection>
 
-            <FilterSection icon={IdCard} title="партийность">
+            <FilterSection icon={Flag} title="партийность">
               <div className="archive-checkbox-list">
-                {["Партийный", "Беспартийный"].map((value) => (
+                {authorFiltersData?.politicalParties.map((value) => (
                   <CheckboxRow
-                    key={value}
-                    checked={filters.partyStatuses.includes(value as any)}
-                    label={value}
-                    onChange={() => onChange({ partyStatuses: toggleArrayValue(filters.partyStatuses as any, value) as any })}
+                    key={value.id}
+                    checked={objectFilters.politicalParties.includes(value)}
+                    label={value.name}
+                    onChange={() => {
+                      onUpdateObjectFilters(value, "politicalParties");
+                    }}
+                  />
+                ))}
+              </div>
+            </FilterSection>
+
+            <FilterSection icon={UserRound} title="Образование">
+              <div className="archive-checkbox-list">
+                {authorFiltersData?.educations.map((value) => (
+                  <CheckboxRow
+                    key={value.id}
+                    label={value.name}
+                    checked={objectFilters.educations.includes(value)}
+                    onChange={() => {
+                      onUpdateObjectFilters(value, "educations");
+                    }}
+                  />
+                ))}
+              </div>
+            </FilterSection>
+
+            <FilterSection icon={UserRound} title="Карточки">
+              <div className="archive-checkbox-list">
+                {authorFiltersData?.cards.map((value) => (
+                  <CheckboxRow
+                    key={value.id}
+                    label={value.name}
+                    checked={objectFilters.educations.includes(value)}
+                    onChange={() => {
+                      onUpdateObjectFilters(value, "cards");
+                    }}
+                  />
+                ))}
+              </div>
+            </FilterSection>
+
+            <FilterSection icon={UserRound} title="Семейное положение">
+              <div className="archive-checkbox-list">
+                {authorFiltersData?.familyStatuses.map((value) => (
+                  <CheckboxRow
+                    key={value.id}
+                    label={value.name}
+                    checked={objectFilters.educations.includes(value)}
+                    onChange={() => {
+                      onUpdateObjectFilters(value, "familyStatuses");
+                    }}
+                  />
+                ))}
+              </div>
+            </FilterSection>
+
+            <FilterSection icon={UserRound} title="Национальности">
+              <div className="archive-checkbox-list">
+                {authorFiltersData?.nationalities.map((value) => (
+                  <CheckboxRow
+                    key={value.id}
+                    label={value.name}
+                    checked={objectFilters.educations.includes(value)}
+                    onChange={() => {
+                      onUpdateObjectFilters(value, "nationalities");
+                    }}
+                  />
+                ))}
+              </div>
+            </FilterSection>
+
+            <FilterSection icon={UserRound} title="Религии">
+              <div className="archive-checkbox-list">
+                {authorFiltersData?.religions.map((value) => (
+                  <CheckboxRow
+                    key={value.id}
+                    label={value.name}
+                    checked={objectFilters.educations.includes(value)}
+                    onChange={() => {
+                      onUpdateObjectFilters(value, "religions");
+                    }}
+                  />
+                ))}
+              </div>
+            </FilterSection>
+
+            <FilterSection icon={UserRound} title="Социальный статус">
+              <div className="archive-checkbox-list">
+                {authorFiltersData?.socialClasses.map((value) => (
+                  <CheckboxRow
+                    key={value.id}
+                    label={value.name}
+                    checked={objectFilters.educations.includes(value)}
+                    onChange={() => {
+                      onUpdateObjectFilters(value, "socialClasses");
+                    }}
                   />
                 ))}
               </div>
@@ -185,46 +349,41 @@ function ArchiveFilters({ options }: ArchiveFiltersProps) {
           <>
             <FilterSection icon={MapPinned} title="район">
               <SelectField
-                value={filters.district}
+                value={scalarFilters.district}
                 options={options.districts}
-                onChange={(value) => onChange({ district: value })}
-                placeholder="Выберите район..."
+                onChange={(value) => onUpdateScalarFilters(value, "district")}
               />
             </FilterSection>
 
             <FilterSection icon={Navigation} title="пространство">
               <SelectField
-                value={filters.space}
+                value={scalarFilters.space}
                 options={options.spaces}
-                onChange={(value) => onChange({ space: value })}
-                placeholder="Введите пространство..."
+                onChange={(value) => onUpdateScalarFilters(value, "space")}
               />
             </FilterSection>
 
-            <FilterSection icon={MapPin} title="улица">
+            <FilterSection icon={MapPinned} title="улица">
               <SelectField
-                value={filters.street}
+                value={scalarFilters.street}
                 options={options.streets}
-                onChange={(value) => onChange({ street: value })}
-                placeholder="Введите улицу..."
+                onChange={(value) => onUpdateScalarFilters(value, "street")}
               />
             </FilterSection>
 
             <FilterSection icon={Building2} title="здание">
               <SelectField
-                value={filters.building}
+                value={scalarFilters.building}
                 options={options.buildings}
-                onChange={(value) => onChange({ building: value })}
-                placeholder="Выберите здание..."
+                onChange={(value) => onUpdateScalarFilters(value, "building")}
               />
             </FilterSection>
 
-            <FilterSection icon={MapPin} title="адрес">
+            <FilterSection icon={MapPinned} title="адрес">
               <SelectField
-                value={filters.address}
+                value={scalarFilters.address}
                 options={options.addresses}
-                onChange={(value) => onChange({ address: value })}
-                placeholder="Введите адрес..."
+                onChange={(value) => onUpdateScalarFilters(value, "address")}
               />
             </FilterSection>
           </>
@@ -234,7 +393,15 @@ function ArchiveFilters({ options }: ArchiveFiltersProps) {
   );
 }
 
-function FilterSection({ icon: Icon, title, children }: { icon: any; title: string; children: ReactNode; }) {
+function FilterSection({
+  icon: Icon,
+  title,
+  children,
+}: {
+  icon: any;
+  title: string;
+  children: ReactNode;
+}) {
   return (
     <section className="archive-filter-section">
       <div className="archive-filter-section__title">
@@ -246,9 +413,23 @@ function FilterSection({ icon: Icon, title, children }: { icon: any; title: stri
   );
 }
 
-function CheckboxRow({ checked, label, onChange }: { checked: boolean; label: string; onChange: () => void; }) {
+function CheckboxRow({
+  checked,
+  label,
+  onChange,
+}: {
+  checked: boolean;
+  label: string;
+  onChange: () => void;
+}) {
   return (
-    <label className={`archive-checkbox-row${checked ? " is-checked" : ""}`} onClick={(e) => { e.preventDefault(); onChange(); }}>
+    <label
+      className={`archive-checkbox-row${checked ? " is-checked" : ""}`}
+      onClick={(e) => {
+        e.preventDefault();
+        onChange();
+      }}
+    >
       <span className="archive-checkbox-row__control" />
       <span className="archive-checkbox-row__label">{label}</span>
     </label>

@@ -1,9 +1,9 @@
-import type { Position } from "./coordinates.types"
+import type { Position } from './coordinates.types';
 
-export type ColorsForMarker = "blue" | "red"
+export type ColorsForMarker = 'blue' | 'red';
 
 export interface MarkerType {
-    name: string
-    colorIcon: ColorsForMarker
-    position: Position
+    name: string;
+    colorIcon: ColorsForMarker;
+    position: Position;
 }

@@ -1,2 +1,2 @@
-export type Position = [number, number]
-export type PositionList = Position[]
+export type Position = [number, number];
+export type PositionList = Position[];
