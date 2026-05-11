@@ -92,7 +92,7 @@ export const archiveFilters = atom<ArchiveFiltersType>((get) => ({
   ...get(archiveScalarFilters),
 }));
 
-export const resetArchiveFiltersAtom = atom(null, (get, set) => {
+export const resetArchiveFiltersAtom = atom(null, (_, set) => {
   set(archiveObjectFilters, defaultObjectFilters)
   set(archiveArrayFilters, defaultArrayFilters)
   set(archiveScalarFilters, defaultScalarFilters)

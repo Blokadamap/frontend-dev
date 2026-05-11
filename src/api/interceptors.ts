@@ -43,7 +43,7 @@ export function axiosDefault() {
   const axiosDefault = axios.create(options);
 
   axiosDefault.interceptors.request.use((config) => {
-    const token = storage.get(tokenAtom);
+    const token = localStorage.getItem("auth_token");
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;

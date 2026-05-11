@@ -6,19 +6,19 @@ import { noteMapper } from "./mappers/note.mapper"
 
 class DiaryService {
     async getAll(): Promise<DiaryResponse[]> {
-        const response = await axiosPublic.get<DiaryResponseFromApi[]>("/diaries/")
+        const response = await axiosPublic.get<DiaryResponseFromApi[]>("/api/v1/diaries/")
 
         return diaryMapper.toManyDiaryResponse(response.data)
     }
 
     async getById(id: number): Promise<DiaryResponse> {
-        const response = await axiosPublic.get<DiaryResponseFromApi>(`/diaries/${id}`)
+        const response = await axiosPublic.get<DiaryResponseFromApi>(`/api/v1/diaries/${id}`)
 
         return diaryMapper.toDiaryResponse(response.data)
     }
 
     async GetNotes(id: number): Promise<NoteResponse[]> {
-        const response = await axiosPublic.get<NoteResponseFromApi[]>(`/diaries/${id}/notes`)
+        const response = await axiosPublic.get<NoteResponseFromApi[]>(`/api/v1/diaries/${id}/notes`)
 
         return noteMapper.toManyNoteResponse(response.data)
     }

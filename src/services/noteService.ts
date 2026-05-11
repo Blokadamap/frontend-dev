@@ -16,7 +16,7 @@ import { noteMapper } from './mappers/note.mapper';
 
 class NoteService {
     async getFilters(): Promise<NoteFilters> {
-        const response = await axiosPublic.get<NoteFiltersFromApi>('/notes/filters');
+        const response = await axiosPublic.get<NoteFiltersFromApi>('/api/v1/notes/filters');
 
         return noteMapper.toNoteFilters(response.data);
     }
@@ -28,19 +28,19 @@ class NoteService {
     }
 
     async getDetailNote(id: number): Promise<NoteDetailed> {
-        const response = await axiosPublic.get<NoteDetailedFromApi>(`/notes/detailed/${id}`);
+        const response = await axiosPublic.get<NoteDetailedFromApi>(`/api/v1/notes/detailed/${id}`);
 
         return noteMapper.toNoteDetailed(response.data);
     }
 
     async getNotesByPoint(pointId: number): Promise<NoteShort[]> {
-        const response = await axiosPublic.get<NoteShortFromApi[]>(`/notes/by-point/${pointId}`);
+        const response = await axiosPublic.get<NoteShortFromApi[]>(`/api/v1/notes/by-point/${pointId}`);
 
         return noteMapper.toNoteShorts(response.data);
     }
 
     async getNoteById(noteId: number): Promise<NoteResponse> {
-        const response = await axiosPublic.get<NoteResponseFromApi>(`/notes/${noteId}`);
+        const response = await axiosPublic.get<NoteResponseFromApi>(`/api/v1/notes/${noteId}`);
 
         return noteMapper.toNoteResponse(response.data);
     }
@@ -48,7 +48,7 @@ class NoteService {
     async createNote(data: NoteCreate): Promise<NoteResponse> {
         const note = noteMapper.toNoteCreate(data);
 
-        const response = await axiosPrivate.post<NoteResponseFromApi>(`/notes/`, note);
+        const response = await axiosPrivate.post<NoteResponseFromApi>(`/api/v1/notes/`, note);
 
         return noteMapper.toNoteResponse(response.data);
     }
