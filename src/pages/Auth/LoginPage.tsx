@@ -4,14 +4,17 @@ import { useMutation } from "@tanstack/react-query";
 import "./AuthPage.css";
 import { AuthForm } from "../../components/auth/auth_form/AuthForm";
 import { authService } from "../../services/authService";
+import { getDefaultStore } from "jotai";
+import { tokenAtom } from "../../store/authAtom";
 
 export function LoginPage() {
   const navigate = useNavigate();
+  const storage = getDefaultStore();
 
   const loginMutation = useMutation({
     mutationFn: authService.login,
     onSuccess: (token) => {
-      localStorage.setItem("auth_token", token);
+      storage.set(tokenAtom, token)
       navigate("/map");
     },
   });
