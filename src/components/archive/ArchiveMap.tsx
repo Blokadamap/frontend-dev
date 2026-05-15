@@ -7,23 +7,47 @@ import {
   useMap,
   useMapEvents,
 } from "react-leaflet";
-import type { MapLayerId, WitnessRecord } from "../../types/archive";
+import type { MapLayerId } from "../../types/archive";
+import type { PointInNote } from "../../types/point/point.type";
+import { type PointResponse } from "../../types/point/point.type";
+import { type CoordinateItem } from "../../types/point/point.type";
 import "leaflet/dist/leaflet.css";
 
+function countAveragePosition(
+  coordinateItems: CoordinateItem[] | undefined,
+): [number, number] {
+  if (!coordinateItems?.length) return [0, 0];
+
+  let lat = 0;
+  let lng = 0;
+
+  for (const coor of coordinateItems) {
+    lat += coor.latitude;
+    lng += coor.longitude;
+  }
+
+  return [lat, lng];
+}
+
 interface ArchiveMapProps {
-  records: WitnessRecord[];
-  selectedRecordId: string | null;
+  points: PointResponse[];
+  selectedPointId: number | null;
   selectedLayer: MapLayerId;
   hasLeftSidebar: boolean;
   hasRightSidebar: boolean;
-  onSelectRecord: (recordId: string) => void;
+  onSelectPoint: (pointId: number) => void;
   onClearSelection: () => void;
 }
-const rasterLayerConfig: Record<MapLayerId, {
-  url: string;
-  attribution: string;
-  className?: string;
-}> = {
+
+// Добавил заглушки для всех годов, чтобы не было белого экрана
+const rasterLayerConfig: Record<
+  string,
+  {
+    url: string;
+    attribution: string;
+    className?: string;
+  }
+> = {
   modern: {
     url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
     attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
@@ -36,7 +60,39 @@ const rasterLayerConfig: Record<MapLayerId, {
   },
   topo: {
     url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
-    attribution: "Map data &copy; OpenStreetMap contributors, SRTM | Map style &copy; OpenTopoMap",
+    attribution:
+      "Map data &copy; OpenStreetMap contributors, SRTM | Map style &copy; OpenTopoMap",
+    className: "archive-map__tiles--topo",
+  },
+  // Заглушки: пока нет своих тайлов, используем topo с его стилями
+  "1942": {
+    url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+    attribution: "1942",
+    className: "archive-map__tiles--topo",
+  },
+  "1943": {
+    url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+    attribution: "1943",
+    className: "archive-map__tiles--topo",
+  },
+  "1944": {
+    url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+    attribution: "1944",
+    className: "archive-map__tiles--topo",
+  },
+  "1945": {
+    url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+    attribution: "1945",
+    className: "archive-map__tiles--topo",
+  },
+  "1946": {
+    url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+    attribution: "1946",
+    className: "archive-map__tiles--topo",
+  },
+  "1947": {
+    url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+    attribution: "1947",
     className: "archive-map__tiles--topo",
   },
 };
@@ -51,7 +107,10 @@ function createMarkerIcon(selected: boolean) {
 }
 
 function getViewportConfig(hasLeftSidebar: boolean, hasRightSidebar: boolean) {
-  if (typeof window !== "undefined" && window.matchMedia("(max-width: 960px)").matches) {
+  if (
+    typeof window !== "undefined" &&
+    window.matchMedia("(max-width: 960px)").matches
+  ) {
     return {
       paddingTopLeft: [24, 24] as [number, number],
       paddingBottomRight: [24, 24] as [number, number],
@@ -66,7 +125,11 @@ function getViewportConfig(hasLeftSidebar: boolean, hasRightSidebar: boolean) {
   };
 }
 
-function ClearSelectionHandler({ onClearSelection }: { onClearSelection: () => void }) {
+function ClearSelectionHandler({
+  onClearSelection,
+}: {
+  onClearSelection: () => void;
+}) {
   useMapEvents({
     click: () => onClearSelection(),
   });
@@ -95,13 +158,13 @@ function MapLayoutWatcher({
 }
 
 function MapViewport({
-  records,
-  selectedRecord,
+  points,
+  selectedPoint,
   hasLeftSidebar,
   hasRightSidebar,
 }: {
-  records: WitnessRecord[];
-  selectedRecord: WitnessRecord | undefined;
+  points: PointResponse[];
+  selectedPoint: PointInNote | undefined;
   hasLeftSidebar: boolean;
   hasRightSidebar: boolean;
 }) {
@@ -110,8 +173,8 @@ function MapViewport({
   useEffect(() => {
     const viewport = getViewportConfig(hasLeftSidebar, hasRightSidebar);
 
-    if (selectedRecord) {
-      map.flyTo(selectedRecord.markerPosition, 17.2, {
+    if (selectedPoint) {
+      map.flyTo(countAveragePosition(selectedPoint.pointCoordinates), 17.2, {
         animate: true,
         duration: 0.85,
       });
@@ -126,7 +189,9 @@ function MapViewport({
       return;
     }
 
-    const bounds = L.latLngBounds(records.map((r) => r.markerPosition));
+    const bounds = L.latLngBounds(
+      points.map((point) => countAveragePosition(point.pointCoordinates)),
+    );
     if (bounds.isValid()) {
       map.fitBounds(bounds, {
         animate: true,
@@ -139,21 +204,23 @@ function MapViewport({
     }
 
     map.setView([59.9386, 30.3141], 12.5, { animate: true });
-  }, [map, records, selectedRecord, hasLeftSidebar, hasRightSidebar]);
+  }, [map, points, selectedPoint, hasLeftSidebar, hasRightSidebar]);
 
   return null;
 }
 
 function ArchiveMap({
-  records,
-  selectedRecordId,
+  points,
+  selectedPointId,
   selectedLayer,
   hasLeftSidebar,
   hasRightSidebar,
-  onSelectRecord,
+  onSelectPoint,
   onClearSelection,
 }: ArchiveMapProps) {
-  const selectedRecord = records.find((record) => record.id === selectedRecordId);
+  const selectedPoint = points.find(
+    (point) => point.pointId === selectedPointId,
+  );
   const layerConfig = rasterLayerConfig[selectedLayer];
 
   return (
@@ -164,15 +231,20 @@ function ArchiveMap({
       className={`archive-map archive-map--${selectedLayer}`}
       attributionControl={false}
     >
+      {/* 
+        ВАЖНО: Добавил key={selectedLayer}. 
+        Это заставляет Leaflet перерисовать тайлы при смене ID.
+      */}
       <TileLayer
+        key={selectedLayer}
         url={layerConfig.url}
         attribution={layerConfig.attribution}
         className={layerConfig.className}
       />
 
       <MapViewport
-        records={records}
-        selectedRecord={selectedRecord}
+        points={points}
+        selectedPoint={selectedPoint}
         hasLeftSidebar={hasLeftSidebar}
         hasRightSidebar={hasRightSidebar}
       />
@@ -185,15 +257,15 @@ function ArchiveMap({
 
       <ClearSelectionHandler onClearSelection={onClearSelection} />
 
-      {records.map((record) => {
-        const isSelected = record.id === selectedRecordId;
+      {points.map((point) => {
+        const isSelected = point.pointId === selectedPointId;
         return (
           <Marker
-            key={`${record.id}-${isSelected}`} 
-            position={record.markerPosition}
+            key={`${point.pointId}-${isSelected}`}
+            position={countAveragePosition(point.pointCoordinates)}
             icon={createMarkerIcon(isSelected)}
             eventHandlers={{
-              click: () => onSelectRecord(record.id),
+              click: () => onSelectPoint(point.pointId),
             }}
           />
         );

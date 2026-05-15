@@ -1,0 +1,286 @@
+.archive-panel--results {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  height: auto !important; 
+  padding: 24px 20px !important; 
+  display: flex;
+  flex-direction: column;
+}
+
+.archive-panel__header {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  padding: 0 0 16px 0 !important; 
+}
+
+.archive-panel--results.is-collapsed {
+  height: auto !important;
+  min-height: 0 !important;
+  padding-bottom: 20px; 
+  overflow: hidden; 
+}
+
+.archive-results__main-title {
+  font-family: 'Manrope', sans-serif;
+  margin: 0 0 12px 0 !important;
+  font-size: 24px !important; 
+  font-weight: 800;
+  color: #2F3035;
+  line-height: 1.2;
+}
+
+.archive-panel__count {
+  display: grid; 
+  place-items: center; 
+  min-width: 32px; 
+  height: 32px; 
+  border-radius: 10px; 
+  background: #f0ede6; 
+  color: var(--ink); 
+  font-size: 13px; 
+  font-weight: 800; 
+}
+
+.archive-results__groups { display: flex; flex-direction: column; gap: 16px; }
+.archive-results__group { display: flex; flex-direction: column; gap: 10px; }
+
+.archive-results__month {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin: 16px 0 12px 0; 
+  border-bottom: 1px solid #E8E2D9;
+}
+
+.archive-results__month span {
+  position: relative;
+  z-index: 2; 
+  background: #F4EFE8; 
+  color: #D8AE76; 
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 999px; 
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: inline-block;
+}
+
+.archive-results__content {
+  padding: 10px 0 20px 0; 
+}
+
+.archive-quote-card {
+  width: 100% !important;
+  margin: 0 0 12px 0 !important;
+  padding: 18px !important; 
+  border: 1px solid #E8E2D9 !important;
+  text-align: left;
+  display: grid;
+  gap: 12px;
+  background: #fff;
+  box-shadow: 0 6px 16px rgba(56, 60, 67, 0.04); 
+  transition: 0.2s;
+  border-radius: 20px !important; 
+}
+
+.archive-quote-card:hover, .archive-quote-card.is-active {
+  border-color: var(--brand-gold);
+  transform: translateY(-1px);
+}
+
+.archive-quote-card__header { 
+  display: flex; 
+  justify-content: space-between; 
+  gap: 10px; 
+  align-items: flex-start; 
+}
+
+.archive-quote-card__header strong { font-size: 15px; color: var(--ink); }
+.archive-quote-card__header span { min-width: 74px; font-size: 10.5px; text-align: right; color: var(--ink-soft); }
+
+.archive-quote-card p { 
+  margin: 0; 
+  font-size: 14px; 
+  line-height: 1.52; 
+  color: var(--ink); 
+  display: -webkit-box; 
+  overflow: hidden; 
+  -webkit-box-orient: vertical; 
+  -webkit-line-clamp: 5; 
+}
+
+.archive-quote-card footer { 
+  display: grid; 
+  grid-template-columns: minmax(0, 1fr) auto; 
+  gap: 10px; 
+  font-size: 12px; 
+  color: var(--ink-soft); 
+}
+
+.archive-quote-card footer span:last-child { text-align: right; }
+
+.archive-quote-card.is-active {
+  border-left: 4px solid var(--brand-gold) !important;
+  background: #FCFAF7 !important;
+  box-shadow: 0 8px 20px rgba(216, 174, 118, 0.15) !important;
+}
+
+.archive-quote-card__location {
+  color: var(--amber-strong) !important;
+  font-size: 14px !important;
+}
+
+.archive-quote-card__text {
+  font-size: 14px !important; 
+  line-height: 1.5 !important; 
+  color: var(--ink);
+  margin: 0;
+}
+
+.archive-quote-card__footer {
+  border-top: 1px dashed #EEE6DA;
+  padding-top: 12px;
+  margin-top: 6px;
+  font-size: 11.5px !important;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.archive-quote-card__kind {
+  color: var(--brand-gold);
+  text-transform: uppercase;
+  font-size: 9px;
+  letter-spacing: 0.05em;
+}
+
+.archive-empty-state { display: grid; place-items: center; gap: 8px; min-height: 180px; padding: 22px 18px; border-radius: 12px; background: rgba(244, 241, 234, 0.95); text-align: center; }
+.archive-empty-state p { margin: 0; font-size: 16px; font-weight: 700; color: var(--ink); }
+.archive-empty-state span { font-size: 13px; line-height: 1.5; color: var(--ink-soft); }
+
+.archive-show-more-btn {
+  width: 100%;
+  padding: 14px;
+  margin-top: 20px;
+  background: transparent;
+  border: 2px dashed #E8E2D9;
+  border-radius: 12px;
+  color: var(--ink-soft);
+  font-weight: 700;
+  font-size: 12px;
+  transition: 0.2s;
+}
+
+.archive-show-more-btn:hover {
+  border-color: var(--brand-gold);
+  color: var(--brand-gold);
+  background: white;
+}
+
+.archive-results__interactive-badge {
+  cursor: pointer;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  background: var(--brand-gold) !important; 
+  color: white !important; 
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  height: 26px; 
+  padding: 6px 14px; 
+  border-radius: 999px !important;
+}
+
+.archive-results__interactive-badge:hover {
+  transform: translateY(-1px);
+}
+
+.archive-results__toggle-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%; 
+  height: 40px;
+  margin-top: 12px;
+  background: #CEAC7B !important; 
+  color: #FFFFFF !important;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(206, 172, 123, 0.2);
+}
+
+.archive-results__toggle-badge:hover {
+  background: #BD9B6A !important; 
+  transform: translateY(-1px);
+}
+
+.archive-results__toggle-badge.is-active {
+  box-shadow: none;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 640px) {
+  .archive-panel__header h2 { font-size: 17px; }
+  .archive-quote-card p { font-size: 13px; }
+}
+
+@media (max-width: 960px) {
+  
+
+  .archive-results__main-title {
+    font-size: 20px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .archive-quote-card {
+    padding: 16px !important;
+    border-radius: 16px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .archive-quote-card__text {
+    font-size: 14px !important;
+    -webkit-line-clamp: 4 !important; 
+  }
+
+  .archive-results__month {
+    margin: 12px 0 8px 0 !important;
+  }
+
+   /* Когда шторка результатов свернута */
+  .archive-panel--results.is-collapsed {
+    padding: 0 !important; 
+    background: transparent !important; 
+  }
+
+  /* Выносим в сад заголовок "Свежая выборка" в свернутом виде */
+  .archive-panel--results.is-collapsed .archive-panel__header {
+    display: none !important;
+  }
+
+  /* Контент (список) тоже скрываем полностью */
+  .archive-panel--results.is-collapsed .archive-results__content {
+    display: none !important;
+  }
+
+/* Когда раскрыта — даем паддинг сверху под ручку */
+  .archive-panel--results:not(.is-collapsed) {
+    padding-top: 48px !important; 
+  }
+  
+
+}
+
+
+
+  

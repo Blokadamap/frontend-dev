@@ -1,0 +1,204 @@
+/* =========================================
+   ТУЛБАР И ПОИСК (Два золотых квадрата)
+   ========================================= */
+
+.archive-topbar {
+  position: absolute !important;
+  top: 20px !important;
+  left: 24px !important;
+  /* Чуть расширили под две кнопки, чтобы поиск не сжимался */
+  width: 360px !important; 
+  z-index: 1100 !important;
+}
+
+.archive-toolbar {
+  display: grid !important;
+  /* 1fr для поиска, auto для блока кнопок справа */
+  grid-template-columns: 1fr auto !important; 
+  gap: 10px !important;
+  align-items: center !important;
+}
+
+/* --- ПОЛЕ ПОИСКА (ПИЛЮЛЯ) --- */
+.archive-toolbar__field {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  height: 48px !important;
+  padding: 0 20px !important;
+  background: #ffffff !important;
+  border: 1px solid #E8E2D9 !important;
+  border-radius: 20px !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+}
+
+.archive-toolbar__search-icon {
+  color: #B2B2B2 !important;
+}
+
+.archive-toolbar__field input {
+  flex: 1 !important;
+  height: 100% !important;
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  font-size: 15px !important;
+  color: #2F3035 !important;
+}
+
+.archive-toolbar__field input::placeholder {
+  color: #B2B2B2 !important;
+}
+
+/* --- КНОПКА ОЧИСТКИ ВНУТРИ ПОЛЯ --- */
+.archive-toolbar__clear {
+  background: #2F3035 !important;
+  border: none !important;
+  border-radius: 50% !important;
+  width: 22px !important;
+  height: 22px !important;
+  min-width: 22px !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  color: #ffffff !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  transition: opacity 0.2s !important;
+}
+
+.archive-toolbar__clear:hover {
+  opacity: 0.75 !important;
+}
+
+/* --- КОНТЕЙНЕР ДЛЯ КНОПОК --- */
+.archive-toolbar__buttons {
+  display: flex !important;
+  gap: 8px !important; /* Расстояние между квадратами */
+}
+
+/* --- ОБЩИЙ СТИЛЬ КНОПОК (КВАДРАТЫ) --- */
+.archive-toolbar__button {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  position: relative !important;
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  border-radius: 20px !important;
+  border: none !important;
+  outline: none !important;
+  display: grid !important;
+  place-items: center !important;
+  cursor: pointer !important;
+  background: var(--brand-gold) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
+  transition: all 0.2s ease !important;
+}
+
+.archive-toolbar__button svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
+.archive-toolbar__button:hover {
+  transform: translateY(-1px) scale(1.05) !important;
+  filter: brightness(1.05) !important;
+}
+
+/* Специфические цвета (если захочешь потом поменять, пока всё в золото) */
+.archive-toolbar__button--filter { background: #CEAC7B !important; }
+.archive-toolbar__button--reset { background: var(--brand-gold) !important; }
+.archive-toolbar__button--apply { background: var(--brand-gold) !important; }
+
+/* --- БАДЖ С ЦИФРОЙ --- */
+.archive-toolbar__badge {
+  position: absolute !important;
+  top: -6px !important;
+  right: -6px !important;
+  min-width: 22px !important;
+  height: 22px !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 50% !important;
+  background: #2F3035 !important;
+  color: #ffffff !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  border: 2px solid #ffffff !important;
+}
+
+/* --- АДАПТИВ --- */
+@media (max-width: 960px) {
+  .archive-toolbar {
+    display: grid !important;
+    grid-template-columns: 1fr 48px !important; 
+    gap: 8px !important;
+    padding-right: 0 !important; 
+    box-sizing: border-box !important;
+    width: 100% !important;
+  }
+
+  .archive-toolbar__field {
+    background: #F6F6F6 !important;
+    border: none !important;
+    box-shadow: none !important; 
+    height: 48px !important;
+    border-radius: 16px !important;
+    padding: 0 16px !important; 
+  }
+
+  .archive-toolbar__button {
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 44px !important;
+    border-radius: 16px !important;
+    box-shadow: none !important; 
+    background: var(--brand-gold) !important;
+  }
+
+  .archive-toolbar__buttons {
+    padding-right: 0 !important; 
+    align-items: center !important;
+  }
+  
+  .archive-toolbar__field input {
+    font-size: 15px !important;
+  }
+
+  .archive-toolbar__badge {
+    position: absolute !important;
+    top: -2px !important;
+    right: -2px !important;
+    background: #2F3035 !important;
+    color: #ffffff !important;
+    border: 2px solid #ffffff !important;
+    width: 20px !important;
+    min-width: 18px !important;
+    height: 18px !important;
+    font-size: 10px !important;
+    z-index: 10 !important;
+  }
+
+  .archive-toolbar__button--apply {
+    background: var(--brand-gold) !important;
+    box-shadow: 0 4px 12px rgba(216, 174, 118, 0.3) !important;
+    display: grid !important;
+    place-items: center !important;
+  }
+
+  .archive-toolbar__button--apply svg {
+    color: #ffffff !important;
+    stroke: #ffffff !important;
+  }
+
+  .archive-toolbar__button--desktop-only {
+    display: none !important;
+  }
+
+  .archive-toolbar__clear {
+    display: none !important;
+  }
+}

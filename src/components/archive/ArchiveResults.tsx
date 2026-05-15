@@ -1,32 +1,50 @@
 import { useState } from "react"; 
 import { MapPin } from "lucide-react";
-import type { WitnessRecord } from "../../types/archive";
+import type { DiaryResponse } from "../../types/diary/diary.types";
 import {
   buildRecordExcerpt,
   formatHumanDate,
-  groupWitnessesByMonth,
 } from "../../utils/archive";
+import './ArchiveResults.css';
 
 interface ArchiveResultsProps {
-  records: WitnessRecord[];
+  diaries: DiaryResponse[];
   searchValue: string;
-  selectedRecordId: string | null;
+  selectedDiaryId: number | null;
   visibleCount: number;
   onShowMore: () => void;
-  onSelect: (recordId: string) => void;
+  onSelect: (authorId: number) => void;
+}
+
+function groupDiaryByDate(authors: DiaryResponse[]) {
+  const map = new Map<string, DiaryResponse[]>([])
+  let k = 0
+  let text = "Январь"
+
+  for (const author of authors) {
+    if (k === 2) {
+      k = 0
+      text = text === "Январь" ? "Февраль" : "Январь"
+    }
+    const prev = map.get(text) || []
+    map.set(text, [...prev, author])
+    k++
+  }
+
+  return Array.from(map.entries())
 }
 
 function ArchiveResults({
-  records,
+  diaries,
   searchValue,
-  selectedRecordId,
+  selectedDiaryId,
   visibleCount,
   onShowMore,
   onSelect
 }: ArchiveResultsProps) {
-  const visibleItems = records.slice(0, visibleCount);
-  const grouped = groupWitnessesByMonth(visibleItems);
-  const showEmpty = records.length === 0;
+  const visibleItems = diaries.slice(0, visibleCount);
+  const groupedDiaries = groupDiaryByDate(visibleItems)
+  const showEmpty = diaries.length === 0;
   const [isCountExpanded, setIsCountExpanded] = useState(false);
 
 
@@ -48,7 +66,7 @@ function ArchiveResults({
         onClick={() => setIsCountExpanded(!isCountExpanded)}
         className={`archive-results__interactive-badge ${isCountExpanded ? 'is-active' : ''}`}
       >
-        Всего дневников • {records.length}
+        Всего дневников • {diaries.length}
       </button>
     </div>
 
@@ -63,41 +81,41 @@ function ArchiveResults({
         ) : (
           <div className="archive-results__content">
             <div className="archive-results__groups">
-              {grouped.map((group) => (
-                <div key={group.label} className="archive-results__group">
+              {groupedDiaries.map((group) => (
+                <div key={group[0]} className="archive-results__group">
                   <div className="archive-results__month">
-                     <span>{group.label}</span>
+                     <span>{group[0]}</span>
                   </div>
 
-                  {group.items.map((record) => (
+                  {group[1].map((diary) => (
                     <button
-                      key={record.id}
+                      key={diary.diaryId}
                       type="button"
                       className={`archive-quote-card${
-                        selectedRecordId === record.id ? " is-active" : ""
+                        selectedDiaryId === diary.diaryId ? " is-active" : ""
                       }`}
-                      onClick={() => onSelect(record.id)}
+                      onClick={() => onSelect(diary.diaryId)}
                     >
                       <div className="archive-quote-card__header">
                         <strong className="archive-quote-card__location">
                           <MapPin size={12} className="inline mr-1 opacity-70" />
-                          {record.location.title}
+                          {diary.diarySource}
                         </strong>
                         <span className="archive-quote-card__date">
-                          {formatHumanDate(record.date)}
+                          {formatHumanDate(diary.diaryStartedAt)}
                         </span>
                       </div>
 
                       <p className="archive-quote-card__text">
-                        {buildRecordExcerpt(record.summary || record.content, 140)}
+                        {buildRecordExcerpt("diary text", 140)}
                       </p>
 
                       <footer className="archive-quote-card__footer">
                         <span className="archive-quote-card__author">
-                          {record.author.fullName}
+                          {`${diary.author.middleName} ${diary.author.firstName} ${diary.author.lastName}`}
                         </span>
                         <span className="archive-quote-card__kind">
-                          {record.witnessKind}
+                          {"empty"}
                         </span>
                       </footer>
                     </button>
@@ -106,7 +124,7 @@ function ArchiveResults({
               ))}
             </div>
 
-            {visibleCount < records.length && (
+            {visibleCount < diaries.length && (
               <button type="button" className="archive-show-more-btn" onClick={onShowMore}>
                 Показать ещё свидетельства
               </button>

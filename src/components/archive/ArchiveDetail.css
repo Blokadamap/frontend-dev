@@ -1,0 +1,157 @@
+.archive-panel--detail {
+  padding: 0 !important;
+  background-color: var(--paper) !important;
+}
+
+.archive-detail__header {
+  padding: 24px;
+  border-bottom: 1px solid #EEE6DA;
+}
+
+.archive-detail__back {
+  background: var(--brand-gold) !important; 
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+
+.archive-detail__header-copy {
+  display: grid;
+  gap: 6px;
+}
+
+.archive-detail__date-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.archive-detail__date-wrapper strong {
+  font-size: 16px;
+  color: var(--ink);
+}
+
+.archive-detail__body {
+  padding: 32px 24px;
+  position: relative;
+}
+
+.archive-detail__quote-icon {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+.archive-detail__text {
+  font-family: 'Prata', serif; 
+  font-size: 17px !important;
+  line-height: 1.65 !important;
+  color: #2F3035;
+  position: relative;
+  z-index: 2;
+}
+
+.archive-detail__author-signature {
+  margin-top: 24px;
+  text-align: right;
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
+.archive-detail__location-card {
+  margin: 0 24px 24px;
+  padding: 16px;
+  background: #FAF8F4;
+  border: 1px solid #E8E2D9;
+  border-radius: 14px;
+  display: grid;
+  gap: 8px;
+}
+
+.archive-detail__section-label {
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+}
+
+.archive-detail__location-title {
+  color: var(--amber-strong);
+  font-size: 15px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.archive-detail__location-address {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+.archive-detail__location-full-address {
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.archive-tag-row {
+  padding: 0 24px 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.archive-tag-row .chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--brand-gold);
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .archive-detail__body p { font-size: 13px; }
+}
+
+@media (max-width: 960px) {
+  .archive-detail__header {
+    padding: 16px 20px !important;
+  }
+
+  .archive-detail__back {
+    display: none !important; /* На мобилке у нас есть handle сверху для закрытия */
+  }
+
+  .archive-detail__body {
+    padding: 48px 20px 20px !important;
+  }
+
+  .archive-detail__text {
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+  }
+
+  .archive-detail__location-card {
+    margin: 0 20px 20px !important;
+    padding: 12px !important;
+  }
+
+  .archive-tag-row {
+    padding: 0 20px 40px !important;
+    gap: 8px !important;
+  }
+}

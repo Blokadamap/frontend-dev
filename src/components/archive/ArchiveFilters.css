@@ -1,0 +1,306 @@
+/* =========================================
+   ПАНЕЛЬ ФИЛЬТРОВ
+   ========================================= */
+
+.archive-panel--filters {
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  flex: 1;
+  background-color: #ffffff !important;
+  overflow-y: auto;
+}
+
+.archive-filter-grid {
+  padding: 16px 20px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; 
+}
+
+/* =========================================
+   СЕКЦИИ
+   ========================================= */
+
+.archive-filter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border-top: 1px solid #EEE6DA;
+  padding-top: 20px;
+}
+
+.archive-filter-section:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.archive-filter-section__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* =========================================
+   ПОЛЯ ВВОДА И СЕЛЕКТЫ
+   ========================================= */
+
+.archive-filter-section input:not([type="checkbox"]),
+.archive-filter-section select,
+.archive-filter-grid__dates input {
+  width: 100%;
+  padding: 12px 16px !important;
+  border: 1px solid #E8E2D9 !important;
+  border-radius: 12px !important;
+  background: #fff !important;
+  color: var(--ink) !important;
+  outline: none;
+  font-size: 14px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02) !important;
+  transition: all 0.2s ease !important;
+}
+
+.archive-filter-section input:focus,
+.archive-filter-section select:focus {
+  border-color: var(--brand-gold) !important;
+  box-shadow: 0 0 0 3px rgba(216, 174, 118, 0.15) !important;
+}
+
+/* =========================================
+   ДАТЫ
+   ========================================= */
+
+.archive-filter-grid__dates {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 12px minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+}
+
+.archive-filter-grid__dates span {
+  height: 2px;
+  background: #E8E2D9;
+  border-radius: 2px;
+}
+
+.archive-filter-grid__dates input[type="date"] {
+  width: 100%;
+  height: 48px !important;
+  padding: 0 16px !important;
+  border: 1.5px solid #E8E2D9 !important;
+  border-radius: 999px !important;
+  background: #ffffff !important;
+  color: transparent !important;
+  outline: none;
+  font-size: 14px !important;
+  cursor: pointer !important;
+  transition: border-color 0.2s ease, color 0.2s !important;
+}
+
+.archive-filter-grid__dates input[type="date"]:focus,
+.archive-filter-grid__dates input[type="date"]:not([value=""]) {
+  color: var(--ink) !important;
+}
+
+.archive-filter-grid__dates input[type="date"]:focus {
+  border-color: var(--brand-gold) !important;
+}
+
+/* =========================================
+   ЧЕКБОКСЫ
+   ========================================= */
+
+.archive-checkbox-list {
+  display: grid;
+  gap: 12px;
+}
+
+.archive-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.archive-checkbox-row__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.archive-checkbox-row__control {
+  border-radius: 50% !important;
+  border: 2px solid #D1CBC0 !important;
+  background: white !important;
+  position: relative;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  transition: 0.2s;
+}
+
+.archive-checkbox-row.is-checked .archive-checkbox-row__control {
+  background-color: var(--brand-gold) !important;
+  border-color: var(--brand-gold) !important;
+}
+
+.archive-checkbox-row.is-checked .archive-checkbox-row__control::after {
+  content: "✓" !important;
+  color: white;
+  font-size: 12px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* =========================================
+   ТЕГИ (ЧИПСЫ)
+   ========================================= */
+
+.archive-chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip--tag {
+  background: #F0EDE8;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.chip--tag.is-active {
+  background: var(--brand-gold) !important;
+  color: #fff !important;
+}
+
+/* =========================================
+   АДАПТИВ ПОД МОБИЛКУ (ТАЧ И ОТСТУПЫ)
+   ========================================= */
+
+@media (max-width: 960px) {
+  .archive-panel--filters {
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    padding: 0 !important;
+  }
+
+
+  .archive-filter-grid {
+    padding: 16px 5px 140px 5px !important; 
+    gap: 32px !important;
+    background: #ffffff !important;
+  }
+
+ 
+  .archive-filter-section {
+    border-top: 1px solid #F2F2F2 !important;
+    padding-top: 24px !important;
+  }
+
+  .archive-filter-section:first-child {
+    border-top: none !important;
+    padding-top: 0 !important;
+  }
+
+
+  .archive-filter-section__title {
+    color: var(--brand-gold) !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+    margin-bottom: 12px !important;
+  }
+
+ 
+  .archive-filter-grid__dates input {
+    border-radius: 999px !important;
+    height: 46px !important;
+    border: 1px solid #E8E2D9 !important;
+    padding: 0 16px !important;
+    font-size: 15px !important; 
+    background: #ffffff !important;
+    color: transparent !important;
+  }
+
+  .archive-filter-grid__dates input:focus,
+  .archive-filter-grid__dates input:not([value=""]) {
+    color: var(--ink) !important;
+  }
+
+
+  .archive-filter-grid__dates span {
+    background: #E8E2D9 !important;
+    width: 10px !important;
+    height: 2px !important;
+  }
+
+
+  .archive-checkbox-row {
+    padding: 4px 0 !important;
+  }
+
+  .archive-checkbox-row__control {
+    border-radius: 50% !important; 
+    width: 22px !important;
+    height: 22px !important;
+    border: 2px solid #D1CBC0 !important;
+    background: #ffffff !important;
+  }
+
+  .is-checked .archive-checkbox-row__control {
+    background-color: var(--brand-gold) !important;
+    border-color: var(--brand-gold) !important;
+  }
+
+  .is-checked .archive-checkbox-row__control::after {
+    content: "✓" !important;
+    color: white !important;
+    font-size: 12px !important;
+    font-weight: 900 !important;
+  }
+
+  /* ТЕГИ (Чипсы) */
+  .archive-chip-grid {
+    gap: 10px !important;
+  }
+
+  .chip--tag {
+    border-radius: 999px !important;
+    border: 1px solid #E8E2D9 !important;
+    background: #ffffff !important;
+    color: #737982 !important;
+    padding: 8px 16px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    transition: all 0.2s !important;
+  }
+
+  .chip--tag.is-active {
+    background: var(--brand-gold) !important;
+    border-color: var(--brand-gold) !important;
+    color: #ffffff !important;
+  }
+}

@@ -1,0 +1,267 @@
+.archive-layer-dock {
+  position: absolute;
+  left: 24px;
+  bottom: 40px;
+  top: auto;
+  z-index: 1500; 
+}
+
+.layer-switcher-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.layer-main-button {
+  position: relative;
+  width: 115px;
+  height: 115px;
+  border: 4px solid var(--brand-gold) !important;
+  border-radius: 20px;
+  background: #E8EDF2;
+  background-image: url('/src/assets/layers/map-icon.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+  z-index: 10;
+}
+
+.layer-main-button:hover {
+  transform: scale(1.05);
+}
+
+.layer-main-button__label {
+  width: 100%;
+  padding: 8px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #1a1a1a;
+  position: relative;
+  z-index: 2;
+}
+
+.layer-selection-panel {
+  background: white;
+  border-radius: 24px;
+  border: 1px solid #E8E2D9;
+  padding: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Десктоп: рядом с кнопкой */
+@media (min-width: 961px) {
+  .layer-selection-panel {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 360px;
+    z-index: 1200;
+  }
+}
+
+.layer-modal-handle {
+  display: none;
+}
+
+.layer-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.layer-modal-header h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: #000;
+}
+
+.layer-modal-close-btn {
+  background: #F0EDE8;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #737982;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.layer-modal-close-btn:hover {
+  background: #e5dfd6;
+  transform: scale(1.05);
+}
+
+.layer-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.layer-modal-grid.base-grid {
+  grid-template-columns: repeat(2, 1fr);
+  margin-top: 4px;
+}
+
+.layer-modal-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.layer-modal-item:hover {
+  transform: translateY(-2px);
+}
+
+.layer-modal-item__img {
+  width: 80px;
+  height: 80px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 3px solid transparent;
+  margin-bottom: 6px;
+  transition: all 0.2s ease;
+  background: #f5f5f5;
+}
+
+.layer-modal-item__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.layer-modal-item.is-active .layer-modal-item__img {
+  border-color: var(--brand-gold);
+  box-shadow: 0 4px 12px rgba(216, 174, 118, 0.3);
+}
+
+.layer-modal-item.is-active span {
+  color: var(--brand-gold);
+  font-weight: 700;
+}
+
+.layer-modal-item span {
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+}
+
+.layer-modal-divider {
+  width: 100%;
+  border: none;
+  border-top: 1px solid #EEE6DA;
+  margin: 16px 0;
+}
+
+/* @media (max-width: 960px) {
+  .archive-layer-dock { position: static; width: auto; max-width: none; order: 5; }
+} */
+
+@media (max-width: 768px) {
+  .layer-main-button { width: 80px; height: 80px; }
+  .layer-main-button__label span { display: none; }
+  .layer-selection-panel { width: 280px; padding: 16px; margin-bottom: 100px; }
+  .layer-modal-item__img { width: 65px; height: 65px; }
+  .layer-modal-item span { font-size: 10px; }
+}
+
+@media (max-width: 960px) {
+  .layer-main-button {
+    width: 48px !important;
+    height: 48px !important;
+    border-width: 2px !important;
+    border-radius: 12px !important;
+    background: var(--brand-gold) !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(216, 174, 118, 0.4) !important;
+    align-items: center !important;
+  }
+
+  .layer-main-button__label span {
+    display: none !important;
+  }
+
+  .layer-main-button__label {
+    color: #ffffff !important;
+    justify-content: center !important;
+    align-items: center !important;
+    height: 100% !important;
+    padding: 0 !important;
+  }
+
+  .layer-main-button svg {
+    color: #ffffff !important;
+    stroke: #ffffff !important;
+  }
+
+  /* Оверлей */
+  .layer-mobile-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 3150;
+  }
+
+  /* Панель слоёв — встроена в шторку */
+  .layer-selection-panel--mobile {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 4px 0 !important;
+    z-index: auto !important;
+    max-height: none !important;
+    overflow-y: visible !important;
+    box-sizing: border-box !important;
+  }
+
+  .layer-selection-panel--mobile .layer-modal-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .layer-selection-panel--mobile .layer-modal-item__img {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 1 !important;
+    border-radius: 12px !important;
+  }
+
+  .layer-selection-panel--mobile .layer-modal-item {
+    width: 100% !important;
+  }
+
+  /* Ручка шторки */
+  .layer-modal-handle {
+    width: 44px;
+    height: 5px;
+    background: #EBE6DE;
+    border-radius: 10px;
+    margin: 0 auto 14px;
+  }
+}
