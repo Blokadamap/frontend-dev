@@ -75,7 +75,6 @@ function ArchiveToolbar({
             aria-label="Открыть фильтры"
           >
             <SlidersHorizontal size={24} strokeWidth={2.5} />
-            {showBadge && <span className="archive-toolbar__badge">{filterCount}</span>}
           </button>
         )}
       </div>

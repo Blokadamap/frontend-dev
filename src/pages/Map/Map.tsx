@@ -189,7 +189,7 @@ function Map() {
               <div className="mobile-handle" />
             </div>
 
-            <div className="archive-topbar">
+            <div className="archive-topbar" style={{ position: "relative", zIndex: 60 }}>
               {/* Когда открыта панель слоёв — показываем её вместо поиска */}
               {layerPanelOpen && isMobile ? (
                 <div className="layer-selection-panel layer-selection-panel--mobile" style={{ flex: 1, overflowY: "auto" }}>
