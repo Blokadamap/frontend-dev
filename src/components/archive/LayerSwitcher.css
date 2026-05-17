@@ -68,8 +68,13 @@
     position: absolute;
     left: 0;
     bottom: 0;
-    width: 330px;
+    width: 360px;
+    max-height: 460px; 
     z-index: 1200;
+  }
+   .layer-modal-item__img {
+    max-width: 90px;
+    max-height: 90px;
   }
 }
 
