@@ -441,7 +441,7 @@
 
   /* Правый сайдбар (Детали) */
   .archive-sidebar--right {
-    position: absolute !important;
+    position: fixed !important;
     top: auto !important; 
     bottom: 0 !important; 
     left: 0 !important; 
@@ -451,6 +451,12 @@
     border-radius: 32px 32px 0 0 !important; 
     z-index: 3100 !important;
     box-sizing: border-box !important;
+  }
+
+  /* Центрируем ручку внутри детейла */
+  .archive-sidebar--right .mobile-handle {
+    margin: 10px auto 6px !important;
+    display: block !important;
   }
 
   /* Слои в левый верхний угол */

@@ -163,7 +163,9 @@ function Map() {
           <div
             className={`archive-left-column ${activePanel ? 'is-expanded' : 'is-collapsed'} ${layerPanelOpen && isMobile ? 'has-layer-panel' : ''}`}
             style={isMobile ? { 
-              height: layerPanelOpen ? "520px" : sheetHeightMap[snapPoint], 
+              height: selectedRecord ? "0px" : (layerPanelOpen ? "520px" : sheetHeightMap[snapPoint]),
+              overflow: "hidden",
+              pointerEvents: selectedRecord ? "none" : undefined,
               transition: "height 0.35s cubic-bezier(0.4,0,0.2,1)" 
             } : undefined}
           >
