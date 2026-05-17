@@ -446,7 +446,8 @@
     left: 0 !important; 
     right: 0 !important;
     width: 100% !important; 
-    height: 85dvh !important;
+    height: auto !important;
+    max-height: 85dvh !important;
     border-radius: 32px 32px 0 0 !important; 
     z-index: 3100 !important;
     box-sizing: border-box !important;

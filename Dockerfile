@@ -8,6 +8,8 @@ RUN npm ci
 
 COPY . .
 
+ENV VITE_API_URL="/"
+
 RUN npm run build
 
 
@@ -18,8 +20,6 @@ WORKDIR /app
 RUN npm install -g serve
 
 COPY --from=builder /app/dist ./dist
-
-ENV PROD=true
 
 EXPOSE 4173
 
