@@ -203,10 +203,10 @@
   position: absolute !important;
   top: 20px !important;
   left: 24px !important;
-  width: 330px !important; 
+  width: 360px !important; 
   display: flex !important;
   flex-direction: column !important;
-  gap: 6px !important;
+  gap: 12px !important;
   pointer-events: none !important;
 }
 
@@ -249,7 +249,7 @@
   left: 24px !important;
   bottom: auto !important;
   max-height: 420px !important;
-  width: 330px !important;
+  width: 360px !important;
   background: var(--paper) !important;
   border: 1px solid #E8E2D9 !important;
   border-radius: 20px !important;
@@ -342,6 +342,7 @@
   /* Когда открыта панель слоёв — убираем нижний паддинг */
   .archive-left-column.has-layer-panel {
     padding-bottom: 0 !important;
+    z-index: 3200 !important;
   }
 
   /* Зона для drag — большая touch-область */
@@ -451,6 +452,7 @@
     border-radius: 32px 32px 0 0 !important; 
     z-index: 3100 !important;
     box-sizing: border-box !important;
+    overflow-y: auto !important;
   }
 
   /* Центрируем ручку внутри детейла */
@@ -458,7 +460,6 @@
     margin: 10px auto 6px !important;
     display: block !important;
   }
-
 
   /* Слои в левый верхний угол */
   .archive-layer-dock {
