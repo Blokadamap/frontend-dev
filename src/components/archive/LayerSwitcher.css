@@ -63,7 +63,7 @@
 }
 
 /* Десктоп: рядом с кнопкой */
-@media (min-width: 961px) {
+@media (min-width: 1000px) {
   .layer-selection-panel {
     position: absolute;
     left: 0;
@@ -238,6 +238,7 @@
     inset: auto !important;
     width: 100% !important;
     max-width: 100% !important;
+    margin: 0 auto !important;
     border-radius: 0 !important;
     border: none !important;
     box-shadow: none !important;
@@ -257,15 +258,21 @@
   }
 
   .layer-selection-panel--mobile .layer-modal-grid {
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 6px !important;
+    grid-template-columns: repeat(3, minmax(0, 88px)) !important;
+    gap: 8px !important;
+    justify-content: center !important;
   }
 
   .layer-selection-panel--mobile .layer-modal-item__img {
     width: 100% !important;
     height: auto !important;
-    aspect-ratio: 1 !important;
+    aspect-ratio: 1 / 1 !important;
     border-radius: 10px !important;
+  }
+
+  .layer-selection-panel--mobile .layer-modal-item {
+    width: 100% !important;
+    max-width: 88px !important;
   }
 
   .layer-selection-panel--mobile .layer-modal-item {
