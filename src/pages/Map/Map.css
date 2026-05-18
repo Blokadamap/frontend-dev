@@ -203,7 +203,7 @@
   position: absolute !important;
   top: 20px !important;
   left: 24px !important;
-  width: 360px !important; 
+  width: 330px !important; 
   display: flex !important;
   flex-direction: column !important;
   gap: 6px !important;
@@ -248,8 +248,8 @@
   top: 84px !important;
   left: 24px !important;
   bottom: auto !important;
-  max-height: 560px !important;
-  width: 360px !important;
+  max-height: 420px !important;
+  width: 330px !important;
   background: var(--paper) !important;
   border: 1px solid #E8E2D9 !important;
   border-radius: 20px !important;
@@ -440,7 +440,7 @@
 
   /* Правый сайдбар (Детали) */
   .archive-sidebar--right {
-    position: absolute !important;
+    position: fixed !important;
     top: auto !important; 
     bottom: 0 !important; 
     left: 0 !important; 
@@ -452,6 +452,13 @@
     z-index: 3100 !important;
     box-sizing: border-box !important;
   }
+
+  /* Центрируем ручку внутри детейла */
+  .archive-sidebar--right .mobile-handle {
+    margin: 10px auto 6px !important;
+    display: block !important;
+  }
+
 
   /* Слои в левый верхний угол */
   .archive-layer-dock {

@@ -14,7 +14,6 @@ interface ArchiveToolbarProps {
 
 function ArchiveToolbar({
   value,
-  filterCount,
   isFiltersOpen,
   onChange,
   onSearch,
@@ -22,9 +21,6 @@ function ArchiveToolbar({
   onApplyFilters,
   onResetFilters,
 }: ArchiveToolbarProps) {
-
-  const showBadge = !isFiltersOpen && filterCount > 0;
-
   return (
     <form
       className={`archive-toolbar ${isFiltersOpen ? "is-filters-open" : ""}`}
@@ -75,7 +71,6 @@ function ArchiveToolbar({
             aria-label="Открыть фильтры"
           >
             <SlidersHorizontal size={24} strokeWidth={2.5} />
-            {showBadge && <span className="archive-toolbar__badge">{filterCount}</span>}
           </button>
         )}
       </div>

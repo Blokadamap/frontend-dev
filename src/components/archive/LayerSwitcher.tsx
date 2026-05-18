@@ -23,6 +23,29 @@ interface LayerSwitcherProps {
   onMobileOpen?: () => void;
 }
 
+function LayerImg({ src, alt }: { src: string; alt: string }) {
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
+
+  return (
+    <div className="layer-modal-item__img">
+      {!loaded && !error && (
+        <div className="layer-img-spinner">
+          <span className="layer-img-spinner__dot" />
+        </div>
+      )}
+      <img
+        src={src}
+        alt={alt}
+        style={{ display: loaded && !error ? "block" : "none" }}
+        onLoad={() => setLoaded(true)}
+        onError={() => setError(true)}
+      />
+      {error && <div className="layer-img-placeholder" />}
+    </div>
+  );
+}
+
 function LayerSwitcher({ onMobileOpen }: LayerSwitcherProps) {
   const [selectedLayer, setSelectedLayer] = useAtom(selectedLayerAtom);
   const [isDesktopOpen, setIsDesktopOpen] = useState(false);
@@ -67,9 +90,7 @@ function LayerSwitcher({ onMobileOpen }: LayerSwitcherProps) {
                 className={`layer-modal-item ${selectedLayer === layer.id ? "is-active" : ""}`}
                 onClick={() => setSelectedLayer(layer.id as MapLayerId)}
               >
-                <div className="layer-modal-item__img">
-                  <img src={layer.img} alt={layer.label} />
-                </div>
+                <LayerImg src={layer.img} alt={layer.label} />
                 <span>{layer.label}</span>
               </button>
             ))}
@@ -82,9 +103,7 @@ function LayerSwitcher({ onMobileOpen }: LayerSwitcherProps) {
                 className={`layer-modal-item ${selectedLayer === layer.id ? "is-active" : ""}`}
                 onClick={() => setSelectedLayer(layer.id as MapLayerId)}
               >
-                <div className="layer-modal-item__img">
-                  <img src={layer.img} alt={layer.label} />
-                </div>
+                <LayerImg src={layer.img} alt={layer.label} />
                 <span>{layer.label}</span>
               </button>
             ))}

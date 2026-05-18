@@ -6,16 +6,14 @@
   position: absolute !important;
   top: 20px !important;
   left: 24px !important;
-  /* Чуть расширили под две кнопки, чтобы поиск не сжимался */
   width: 360px !important; 
   z-index: 1100 !important;
 }
 
 .archive-toolbar {
   display: grid !important;
-  /* 1fr для поиска, auto для блока кнопок справа */
-  grid-template-columns: 1fr auto !important; 
-  gap: 10px !important;
+  grid-template-columns: 1fr 104px !important; 
+  gap: 6px !important;
   align-items: center !important;
 }
 
@@ -29,6 +27,7 @@
   background: #ffffff !important;
   border: 1px solid #E8E2D9 !important;
   border-radius: 20px !important;
+  width: 304px !important;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
 }
 
@@ -148,6 +147,7 @@
     height: 48px !important;
     border-radius: 16px !important;
     padding: 0 16px !important; 
+    width: auto !important;
   }
 
   .archive-toolbar__button {
