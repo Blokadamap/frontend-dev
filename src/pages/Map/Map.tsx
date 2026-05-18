@@ -263,9 +263,13 @@ function Map() {
             style={
               isMobile
                 ? {
-                    height: layerPanelOpen
-                      ? "520px"
-                      : sheetHeightMap[snapPoint],
+                    height: selectedRecord
+                      ? "0px"
+                      : layerPanelOpen
+                        ? "520px"
+                        : sheetHeightMap[snapPoint],
+                    overflow: "hidden",
+                    pointerEvents: selectedRecord ? "none" : undefined,
                     transition: "height 0.35s cubic-bezier(0.4,0,0.2,1)",
                   }
                 : undefined
@@ -310,7 +314,10 @@ function Map() {
               <div className="mobile-handle" />
             </div>
 
-            <div className="archive-topbar">
+            <div
+              className="archive-topbar"
+              style={{ position: "relative", zIndex: 60 }}
+            >
               {/* Когда открыта панель слоёв — показываем её вместо поиска */}
               {layerPanelOpen && isMobile ? (
                 <div
