@@ -8,7 +8,6 @@ import ArchiveMap from "../../components/archive/ArchiveMap";
 import ArchiveResults from "../../components/archive/ArchiveResults";
 import ArchiveToolbar from "../../components/archive/ArchiveToolbar";
 import LayerSwitcher, {
-  HISTORICAL_LAYERS,
   BASE_LAYERS,
 } from "../../components/archive/LayerSwitcher";
 import { useDiaries } from "../../hooks/diaries/useDiaries";
@@ -272,7 +271,7 @@ function Map() {
                     height: selectedRecord
                       ? "0px"
                       : layerPanelOpen
-                        ? "520px"
+                        ? "200px"
                         : sheetHeightMap[snapPoint],
                     overflow: "hidden",
                     pointerEvents: selectedRecord ? "none" : undefined,
@@ -342,22 +341,7 @@ function Map() {
                       <X size={18} strokeWidth={2.5} />
                     </button>
                   </div>
-                  <div className="layer-modal-grid">
-                    {HISTORICAL_LAYERS.map((layer, index) => (
-                      <button
-                        key={index}
-                        className={`layer-modal-item ${selectedLayer === layer.id ? "is-active" : ""}`}
-                        onClick={() => setSelectedLayer(layer.id as any)}
-                      >
-                        <div className="layer-modal-item__img">
-                          <img src={layer.img} alt={layer.label} />
-                        </div>
-                        <span>{layer.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                  <hr className="layer-modal-divider" />
-                  <div className="layer-modal-grid">
+                  <div className="layer-modal-grid base-grid">
                     {BASE_LAYERS.map((layer, index) => (
                       <button
                         key={index}
