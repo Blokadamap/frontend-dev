@@ -8,7 +8,6 @@ import ArchiveMap from "../../components/archive/ArchiveMap";
 import ArchiveResults from "../../components/archive/ArchiveResults";
 import ArchiveToolbar from "../../components/archive/ArchiveToolbar";
 import LayerSwitcher, {
-  HISTORICAL_LAYERS,
   BASE_LAYERS,
 } from "../../components/archive/LayerSwitcher";
 import { useDiaries } from "../../hooks/diaries/useDiaries";
@@ -199,6 +198,12 @@ function Map() {
     const setResultsCount = () => setVisibleResultsCount(6);
     setResultsCount();
   }, [deferredSearch, filters]);
+
+  useEffect(() => {
+    if (!isMobile) return;
+    if (activePanel) setSnapPoint((p) => p === "peek" ? "half" : p);
+    else setSnapPoint("peek");
+  }, [activePanel, isMobile]);
 
   useEffect(() => {
     if (searchValue.trim() && activePanel !== "filters") {
