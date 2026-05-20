@@ -201,6 +201,12 @@ function Map() {
   }, [deferredSearch, filters]);
 
   useEffect(() => {
+    if (!isMobile) return;
+    if (activePanel) setSnapPoint((p) => p === "peek" ? "half" : p);
+    else setSnapPoint("peek");
+  }, [activePanel, isMobile]);
+
+  useEffect(() => {
     if (searchValue.trim() && activePanel !== "filters") {
       setActivePanel("results");
     }
