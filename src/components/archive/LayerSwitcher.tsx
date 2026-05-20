@@ -83,20 +83,7 @@ function LayerSwitcher({ onMobileOpen }: LayerSwitcherProps) {
               <X size={18} strokeWidth={2.5} />
             </button>
           </div>
-          <div className="layer-modal-grid">
-            {HISTORICAL_LAYERS.map((layer, index) => (
-              <button
-                key={index}
-                className={`layer-modal-item ${selectedLayer === layer.id ? "is-active" : ""}`}
-                onClick={() => setSelectedLayer(layer.id as MapLayerId)}
-              >
-                <LayerImg src={layer.img} alt={layer.label} />
-                <span>{layer.label}</span>
-              </button>
-            ))}
-          </div>
-          <hr className="layer-modal-divider" />
-          <div className="layer-modal-grid">
+          <div className="layer-modal-grid base-grid">
             {BASE_LAYERS.map((layer, index) => (
               <button
                 key={index}
