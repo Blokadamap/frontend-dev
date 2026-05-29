@@ -5,6 +5,7 @@ import type {
   WitnessRecord,
 } from "../types/archive";
 import type { DiaryResponse } from "../types/diary/diary.types";
+import type { PointResponse } from "../types/point/point.type";
 
 const collator = new Intl.Collator("ru-RU");
 
@@ -13,11 +14,11 @@ const monthFormatter = new Intl.DateTimeFormat("ru-RU", {
   year: "numeric",
 });
 
-const humanDateFormatter = new Intl.DateTimeFormat("ru-RU", {
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-});
+// const humanDateFormatter = new Intl.DateTimeFormat("ru-RU", {
+//   day: "numeric",
+//   month: "long",
+//   year: "numeric",
+// });
 
 export function buildWitnessRecords(payload: ArchivePayload) {
   const authors = new Map(payload.authors.map((author) => [author.id, author]));
@@ -105,8 +106,48 @@ export function formatMonthLabel(date: string) {
   return `${capitalizedMonth} • ${year}`;
 }
 
-export function formatHumanDate(date: string) {
-  return humanDateFormatter.format(new Date(date));
+const months = new Map([
+  [1, "Января"],
+  [2, "Февраля"],
+  [3, "Марта"],
+  [4, "Апреля"],
+  [5, "Мая"],
+  [6, "Июня"],
+  [7, "Июля"],
+  [8, "Августа"],
+  [9, "Сентября"],
+  [10, "Октября"],
+  [11, "Ноября"],
+  [12, "Декабря"],
+])
+
+const commonMonth = new Map([
+  [1, "Январь"],
+  [2, "Февраль"],
+  [3, "Март"],
+  [4, "Апрель"],
+  [5, "Май"],
+  [6, "Июнь"],
+  [7, "Июль"],
+  [8, "Август"],
+  [9, "Сентябрь"],
+  [10, "Октябрь"],
+  [11, "Ноябрь"],
+  [12, "Декабрь"],
+])
+
+function getMonthInRussia(numberOfMonth: string): string | undefined {
+  return months.get(Number(numberOfMonth))
+}
+
+export function getOnlyMonth(date: string): string | undefined {
+  return commonMonth.get(Number(date.split("-")[1]))
+}
+
+export function formatHumanDate(date: string): string | undefined {
+  const a = date.split("-")
+
+  return `${Number(a[2])} ${getMonthInRussia(a[1]) ?? ""} ${a[0]}`
 }
 
 export function buildRecordExcerpt(text: string, maxLength = 180) {
@@ -162,6 +203,11 @@ function uniqueBy<T>(values: T[], getKey: (value: T) => string) {
 export function buildMetaLine(diary: DiaryResponse | undefined) {
   if (!diary) return ""
   return `${diary.author.firstName} • ${diary.diarySource}`;
+}
+
+export function buildMetaLineForPoint(point: PointResponse | undefined) {
+  if (!point) return ""
+  return `${point.pointType?.name} • ${point.pointSubtype?.name} • ${point.pointSubsubtype?.name}`
 }
 
 export function getSignificanceAccent(significance: SignificanceKind) {

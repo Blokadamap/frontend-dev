@@ -7,12 +7,12 @@ import "./ArchiveDetail.css";
 import { useDiaryById } from "../../hooks/diaries/useDiaryById";
 import { useNotesByDiary } from "../../hooks/diaries/useNotesByDiary";
 
-interface ArchiveDetailProps {
+interface ArchiveDetailDiaryProps {
   diaryId: number;
   onClose: () => void;
 }
 
-function ArchiveDetail({ diaryId, onClose }: ArchiveDetailProps) {
+function ArchiveDetailDiary({ diaryId, onClose }: ArchiveDetailDiaryProps) {
   const { data: notes, isLoading, isError } = useNotesByDiary(diaryId);
   const { data: diary } = useDiaryById(diaryId);
 
@@ -49,7 +49,7 @@ function ArchiveDetail({ diaryId, onClose }: ArchiveDetailProps) {
           </span>
           <div className="archive-detail__date-wrapper">
             <Calendar size={14} className="text-[#D8AE76]" />
-            <strong>{diary?.diaryStartedAt ? formatHumanDate(diary?.diaryStartedAt) : "-"}</strong>
+            <strong>{diary?.startedAt ? formatHumanDate(diary?.startedAt) : "-"}</strong>
           </div>
         </div>
       </div>
@@ -112,4 +112,4 @@ function ArchiveDetail({ diaryId, onClose }: ArchiveDetailProps) {
   );
 }
 
-export default ArchiveDetail;
+export default ArchiveDetailDiary;

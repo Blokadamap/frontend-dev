@@ -2,7 +2,8 @@
 import { useAtom } from "jotai";
 import { useDeferredValue, useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
-import ArchiveDetail from "../../components/archive/ArchiveDetail";
+import ArchiveDetailDiary from "../../components/archive/ArchiveDetailDiary";
+import ArchiveDetailPoint from "../../components/archive/ArchiveDetailPoint";
 import ArchiveFilters from "../../components/archive/ArchiveFilters";
 import ArchiveMap from "../../components/archive/ArchiveMap";
 import ArchiveResults from "../../components/archive/ArchiveResults";
@@ -23,8 +24,6 @@ import {
   archiveFilters,
   activeFilterTabAtom,
 } from "../../store/archiveAtoms";
-import type { PointResponse } from "../../types/point/point.type";
-import type { DiaryResponse } from "../../types/diary/diary.types";
 import "./Map.css";
 
 function buildActiveFilterCount(filters: ArchiveFiltersType) {
@@ -63,42 +62,6 @@ function buildFilterPreview(filters: ArchiveFiltersType): string[] {
       "Поиск по образованию: ",
       filters.educations.map((item) => item.name).join("; "),
     );
-
-  return res;
-}
-
-function getFilteredPoints(
-  filters: ArchiveFiltersType,
-  points: PointResponse[] | undefined,
-): PointResponse[] {
-  let res: PointResponse[] = [];
-
-  if (!points) return res;
-
-  if (filters.street)
-    res = points.filter((point) => point.street === filters.street);
-  if (filters.building)
-    res = res.filter((point) => point.building === filters.building);
-  if (filters.district)
-    res = res.filter((point) => point.rayon?.name === filters.district);
-
-  return res;
-}
-
-function getFilteredDiaries(
-  filters: ArchiveFiltersType,
-  diaries: DiaryResponse[] | undefined,
-): DiaryResponse[] {
-  let res: DiaryResponse[] = [];
-
-  if (!diaries) return res;
-
-  if (filters.authorId)
-    return diaries.filter((diary) => diary.authorId === filters.authorId);
-  if (filters.startDate)
-    res = diaries.filter((diary) => diary.diaryStartedAt >= filters.startDate);
-  if (filters.endDate)
-    res = res.filter((diary) => diary.diaryFinishedAt <= filters.endDate);
 
   return res;
 }
@@ -184,15 +147,12 @@ function Map() {
 
   const [selectedPointId, setSelectedPointId] = useState<number | null>(null);
 
-  const filteredDiaries = getFilteredDiaries(filters, diaries);
   const selectedRecord = diaries
     ? diaries.find((diary) => diary.diaryId === selectedDiaryId)
     : null;
   const activeFilterCount = buildActiveFilterCount(filters);
 
   const filterPreview = buildFilterPreview(filters);
-
-  const filteredPoints = getFilteredPoints(filters, points);
 
   useEffect(() => {
     const setResultsCount = () => setVisibleResultsCount(6);
@@ -201,8 +161,18 @@ function Map() {
 
   useEffect(() => {
     if (!isMobile) return;
-    if (activePanel) setSnapPoint((p) => p === "peek" ? "half" : p);
-    else setSnapPoint("peek");
+
+    const swap = (a?: "peek" | "half") => {
+      if (a) {
+        setSnapPoint(a);
+      } else {
+        setSnapPoint((p) => (p === "peek" ? "half" : p));
+      }
+    };
+
+    if (activePanel) {
+      swap();
+    } else swap("peek");
   }, [activePanel, isMobile]);
 
   useEffect(() => {
@@ -214,11 +184,12 @@ function Map() {
   useEffect(() => {
     if (
       selectedDiaryId &&
-      !filteredDiaries.some((diary) => diary.diaryId === selectedDiaryId)
+      diaries &&
+      !diaries.some((diary) => diary.diaryId === selectedDiaryId)
     ) {
       setSelectedDiaryId(null);
     }
-  }, [filteredDiaries, selectedDiaryId, setSelectedDiaryId]);
+  }, [diaries, selectedDiaryId, setSelectedDiaryId]);
 
   if (isLoadingDiaries || isLoadingPoints) {
     return (
@@ -247,12 +218,13 @@ function Map() {
       <section className="archive-shell">
         <div className="archive-stage">
           <ArchiveMap
-            points={filteredPoints}
+            points={points ?? []}
             selectedPointId={selectedPointId}
             selectedLayer={selectedLayer}
             hasLeftSidebar={activePanel !== null}
             hasRightSidebar={Boolean(selectedRecord)}
             onSelectPoint={(pointId) => {
+              setSelectedDiaryId(null);
               setSelectedPointId(pointId);
               setActivePanel(null);
             }}
@@ -365,20 +337,24 @@ function Map() {
                     onChange={setSearchValue}
                     onSearch={() => {
                       setSelectedPointId(null);
+                      setSelectedDiaryId(null);
                       setActivePanel("results");
                     }}
                     onOpenFilters={() => {
                       setSelectedPointId(null);
+                      setSelectedDiaryId(null);
                       setActivePanel("filters");
                     }}
                     onApplyFilters={() => {
                       setSelectedPointId(null);
+                      setSelectedDiaryId(null);
                       setActivePanel("results");
                     }}
                     onResetFilters={() => {
                       resetFilters();
                       setSearchValue("");
                       setSelectedPointId(null);
+                      setSelectedDiaryId(null);
                       setActivePanel("results");
                     }}
                   />
@@ -441,7 +417,7 @@ function Map() {
                   <ArchiveFilters options={options} />
                 ) : (
                   <ArchiveResults
-                    diaries={filteredDiaries}
+                    diaries={diaries ?? []}
                     searchValue={searchValue}
                     selectedDiaryId={selectedDiaryId}
                     visibleCount={visibleResultsCount}
@@ -449,6 +425,7 @@ function Map() {
                       setVisibleResultsCount((count) => count + 6)
                     }
                     onSelect={(recordId) => {
+                      setSelectedPointId(null)
                       setSelectedDiaryId(recordId);
                       setActivePanel(null);
                     }}
@@ -468,10 +445,29 @@ function Map() {
                   setActivePanel("results");
                 }}
               />
-              <ArchiveDetail
+              <ArchiveDetailDiary
                 diaryId={selectedDiaryId}
                 onClose={() => {
                   setSelectedDiaryId(null);
+                  setActivePanel("results");
+                }}
+              />
+            </div>
+          )}
+
+          {selectedPointId && (
+            <div className="archive-sidebar archive-sidebar--right animate-in">
+              <div
+                className="mobile-handle"
+                onClick={() => {
+                  setSelectedPointId(null);
+                  setActivePanel("results");
+                }}
+              />
+              <ArchiveDetailPoint
+                pointId={selectedPointId}
+                onClose={() => {
+                  setSelectedPointId(null);
                   setActivePanel("results");
                 }}
               />

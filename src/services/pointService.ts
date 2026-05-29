@@ -10,7 +10,7 @@ import type {
     PointTypeItemFromApi,
 } from '../types/point/point.type';
 import { pointMapper } from './mappers/point.mapper';
-import type { NoteShort, NoteShortFromApi } from '../types/note/note.type';
+import type { NoteResponse, NoteResponseFromApi } from '../types/note/note.type';
 import { noteMapper } from './mappers/note.mapper';
 import { axiosPrivate } from '../api/interceptors';
 
@@ -21,7 +21,7 @@ class PointService {
         return pointMapper.toPointItems(response.data);
     }
 
-    async getPointById(pointId: string): Promise<PointResponse> {
+    async getPointById(pointId: number): Promise<PointResponse> {
         const response = await axiosPublic.get<PointResponseFromApi>(`/api/v1/points/${pointId}`);
 
         return pointMapper.toPointRespose(response.data);
@@ -41,10 +41,10 @@ class PointService {
         return response.data;
     }
 
-    async getNotesByPoint(pointId: string): Promise<NoteShort[]> {
-        const response = await axiosPublic.get<NoteShortFromApi[]>(`/api/v1/points/${pointId}/notes`);
+    async getNotesByPoint(pointId: string): Promise<NoteResponse[]> {
+        const response = await axiosPublic.get<NoteResponseFromApi[]>(`/api/v1/points/${pointId}/notes`);
 
-        return noteMapper.toNoteShorts(response.data);
+        return noteMapper.toManyNoteResponse(response.data);
     }
 
     async createPoint(data: PointCreate): Promise<PointResponse> {

@@ -7,9 +7,9 @@ class DiaryMapper {
             return {
                 diaryId: item.diary_id,
                 authorId: item.author_id,
-                diaryStartedAt: item.diary_started_at,
-                diaryFinishedAt: item.diary_finished_at,
-                diarySource: item.diary_source,
+                startedAt: item.started_at,
+                finishedAt: item.finished_at,
+                diarySource: item.source,
                 author: this.toAuthorShort(item.author),
             };
         });
@@ -19,9 +19,9 @@ class DiaryMapper {
         return {
             diaryId: item.diary_id,
             authorId: item.author_id,
-            diaryStartedAt: item.diary_started_at,
-            diaryFinishedAt: item.diary_finished_at,
-            diarySource: item.diary_source,
+            startedAt: item.started_at,
+            finishedAt: item.finished_at,
+            diarySource: item.source,
             author: this.toAuthorShort(item.author),
         };
     }

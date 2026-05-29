@@ -9,8 +9,6 @@ import type {
     NoteFiltersFromApi,
     NoteResponse,
     NoteResponseFromApi,
-    NoteShort,
-    NoteShortFromApi,
 } from '../types/note/note.type';
 import { noteMapper } from './mappers/note.mapper';
 
@@ -33,10 +31,10 @@ class NoteService {
         return noteMapper.toNoteDetailed(response.data);
     }
 
-    async getNotesByPoint(pointId: number): Promise<NoteShort[]> {
-        const response = await axiosPublic.get<NoteShortFromApi[]>(`/api/v1/notes/by-point/${pointId}`);
+    async getNotesByPoint(pointId: number): Promise<NoteResponse[]> {
+        const response = await axiosPublic.get<NoteResponseFromApi[]>(`/api/v1/notes/by-point/${pointId}`);
 
-        return noteMapper.toNoteShorts(response.data);
+        return noteMapper.toManyNoteResponse(response.data);
     }
 
     async getNoteById(noteId: number): Promise<NoteResponse> {
