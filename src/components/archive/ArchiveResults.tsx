@@ -4,6 +4,7 @@ import type { DiaryResponse } from "../../types/diary/diary.types";
 import {
   buildRecordExcerpt,
   formatHumanDate,
+  getOnlyMonth,
 } from "../../utils/archive";
 import './ArchiveResults.css';
 
@@ -16,19 +17,13 @@ interface ArchiveResultsProps {
   onSelect: (authorId: number) => void;
 }
 
-function groupDiaryByDate(authors: DiaryResponse[]) {
+function groupDiaryByDate(diaries: DiaryResponse[]) {
   const map = new Map<string, DiaryResponse[]>([])
-  let k = 0
-  let text = "Январь"
 
-  for (const author of authors) {
-    if (k === 2) {
-      k = 0
-      text = text === "Январь" ? "Февраль" : "Январь"
-    }
-    const prev = map.get(text) || []
-    map.set(text, [...prev, author])
-    k++
+
+  for (const diary of diaries) {
+    const prev = map.get(diary.startedAt) || []
+    map.set(diary.startedAt, [...prev, diary])
   }
 
   return Array.from(map.entries())
@@ -84,7 +79,7 @@ function ArchiveResults({
               {groupedDiaries.map((group) => (
                 <div key={group[0]} className="archive-results__group">
                   <div className="archive-results__month">
-                     <span>{group[0]}</span>
+                     <span>{getOnlyMonth(group[0])}</span>
                   </div>
 
                   {group[1].map((diary) => (
@@ -102,7 +97,7 @@ function ArchiveResults({
                           {diary.diarySource}
                         </strong>
                         <span className="archive-quote-card__date">
-                          {formatHumanDate(diary.diaryStartedAt)}
+                          {formatHumanDate(diary.startedAt)}
                         </span>
                       </div>
 

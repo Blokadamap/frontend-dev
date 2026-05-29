@@ -3,17 +3,17 @@ import type { AuthorShort, AuthorShortFromApi } from '../author/author.type';
 export interface DiaryResponseFromApi {
     diary_id: number;
     author_id: number;
-    diary_started_at: string;
-    diary_finished_at: string;
-    diary_source: string;
+    started_at: string;
+    finished_at: string;
+    source: string;
     author: AuthorShortFromApi;
 }
 
 export interface DiaryResponse {
     diaryId: number;
     authorId: number;
-    diaryStartedAt: string;
-    diaryFinishedAt: string;
+    startedAt: string;
+    finishedAt: string;
     diarySource: string;
     author: AuthorShort;
 }
