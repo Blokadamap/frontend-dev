@@ -1,0 +1,105 @@
+.site-footer {
+  background: var(--footer-bg);
+  color: #fff;
+  padding: 36px 24px;
+}
+
+.site-footer__inner {
+  max-width: 1276px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+/* Левая группа: логотип ИТМО + кредит «Прожито» рядом */
+.site-footer__left {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.site-footer__logo {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.site-footer__logo img {
+  height: 64px;
+  width: auto;
+  display: block;
+}
+
+/* Кредит: разделитель + текст + логотип «Прожито» */
+.site-footer__credit {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex: 0 1 auto;
+}
+
+.site-footer__prozhito {
+  display: inline-flex;
+  align-items: center;
+}
+
+.site-footer__prozhito img {
+  height: 34px;
+  width: auto;
+  display: block;
+}
+
+.site-footer__divider {
+  width: 3px;
+  height: 88px;
+  background: #fff;
+  border-radius: 2px;
+  flex: 0 0 auto;
+}
+
+.site-footer__credit p {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.25;
+  max-width: 240px;
+}
+
+.site-footer__contacts {
+  flex: 0 0 auto;
+  text-align: left;
+}
+
+.site-footer__contacts h2 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.site-footer__contacts a {
+  font-size: 18px;
+  color: #fff;
+  opacity: 0.92;
+  word-break: break-word;
+}
+
+.site-footer__contacts a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 860px) {
+  .site-footer__inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+  .site-footer__credit {
+    justify-content: flex-start;
+  }
+  .site-footer__contacts {
+    text-align: left;
+  }
+}

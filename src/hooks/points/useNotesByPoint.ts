@@ -3,7 +3,7 @@ import { useAppQuery } from '../useAppQuery';
 
 export const useNotesByPoint = (pointId: string) => {
     return useAppQuery({
-        queryKey: ['notes by point'],
+        queryKey: ['notes by point', pointId],
         queryFn: () => pointService.getNotesByPoint(pointId),
     });
 };

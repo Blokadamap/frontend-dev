@@ -12,8 +12,8 @@
 
 .archive-toolbar {
   display: grid !important;
-  grid-template-columns: 1fr 104px !important; 
-  gap: 6px !important;
+  grid-template-columns: 1fr 40px !important;
+  gap: 12px !important;
   align-items: center !important;
 }
 
@@ -21,18 +21,18 @@
 .archive-toolbar__field {
   display: flex !important;
   align-items: center !important;
-  gap: 12px !important;
-  height: 48px !important;
-  padding: 0 20px !important;
+  gap: 10px !important;
+  height: 40px !important;
+  padding: 0 16px !important;
   background: #ffffff !important;
-  border: 1px solid #E8E2D9 !important;
+  border: none !important;
   border-radius: 20px !important;
-  width: 304px !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+  width: auto !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06) !important;
 }
 
 .archive-toolbar__search-icon {
-  color: #B2B2B2 !important;
+  color: #B8B8B8 !important;
 }
 
 .archive-toolbar__field input {
@@ -46,7 +46,16 @@
 }
 
 .archive-toolbar__field input::placeholder {
-  color: #B2B2B2 !important;
+  color: #B8B8B8 !important;
+}
+
+/* Прячем нативный крестик очистки у input[type="search"] — оставляем
+   только свою кнопку очистки (тёмный круг). */
+.archive-toolbar__field input::-webkit-search-cancel-button,
+.archive-toolbar__field input::-webkit-search-decoration {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  display: none !important;
 }
 
 /* --- КНОПКА ОЧИСТКИ ВНУТРИ ПОЛЯ --- */
@@ -82,10 +91,10 @@
   appearance: none !important;
   -webkit-appearance: none !important;
   position: relative !important;
-  width: 48px !important;
-  height: 48px !important;
-  min-width: 48px !important;
-  border-radius: 20px !important;
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  border-radius: 12px !important;
   border: none !important;
   outline: none !important;
   display: grid !important;
@@ -93,7 +102,7 @@
   cursor: pointer !important;
   background: var(--brand-gold) !important;
   color: #ffffff !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 4px 14px rgba(216, 174, 118, 0.35) !important;
   transition: all 0.2s ease !important;
 }
 
@@ -108,7 +117,7 @@
 }
 
 /* Специфические цвета (если захочешь потом поменять, пока всё в золото) */
-.archive-toolbar__button--filter { background: #CEAC7B !important; }
+.archive-toolbar__button--filter { background: var(--brand-gold) !important; }
 .archive-toolbar__button--reset { background: var(--brand-gold) !important; }
 .archive-toolbar__button--apply { background: var(--brand-gold) !important; }
 

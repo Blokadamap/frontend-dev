@@ -14,13 +14,11 @@ export interface NoteShortFromApi {
 export interface NoteResponseFromApi {
     note_id: number;
     diary_id: number;
-    note_type_id: number;
-    temporality_id: number;
     created_at: string;
     citation: string;
     source: string;
-    note_type?: FilterItem | null;
-    temporality?: FilterItem | null;
+    note_types?: FilterItem[];
+    temporalities?: FilterItem[];
     tags?: FilterItem[];
     first_name?: string;
     middle_name?: string | null;
@@ -30,13 +28,11 @@ export interface NoteResponseFromApi {
 export interface NoteDetailedFromApi {
     note_id: number;
     diary_id: number;
-    note_type_id: number;
-    temporality_id: number;
     created_at: string;
     citation: string;
     source: string;
-    note_type?: FilterItem | null;
-    temporality?: FilterItem | null;
+    note_types?: FilterItem[];
+    temporalities?: FilterItem[];
     tags?: FilterItem[];
     points?: PointInNoteFromApi[];
     author_id: number;
@@ -54,8 +50,8 @@ export interface NoteDetailedFromApi {
 
 export interface NoteCreateForApi {
     author_id: number;
-    note_type_id: number;
-    temporality_id: number;
+    note_type_ids: number[];
+    temporality_ids: number[];
     created_at: string;
     citation: string;
     source: string;
@@ -86,14 +82,12 @@ export interface NoteShort {
 export interface NoteResponse {
     noteId: number;
     diaryId: number;
-    noteTypeId: number;
-    temporalityId: number;
     createdAt: string;
     citation: string;
     source: string;
 
-    noteType?: FilterItem | null;
-    temporality?: FilterItem | null;
+    noteTypes?: FilterItem[];
+    temporalities?: FilterItem[];
     tags?: FilterItem[];
 
     firstName?: string;
@@ -104,14 +98,12 @@ export interface NoteResponse {
 export interface NoteDetailed {
     noteId: number;
     diaryId: number;
-    noteTypeId: number;
-    temporalityId: number;
     createdAt: string;
     citation: string;
     source: string;
 
-    noteType?: FilterItem | null;
-    temporality?: FilterItem | null;
+    noteTypes?: FilterItem[];
+    temporalities?: FilterItem[];
     tags?: FilterItem[];
     points?: PointInNote[];
 
@@ -132,8 +124,8 @@ export interface NoteDetailed {
 
 export interface NoteCreate {
     authorId: number;
-    noteTypeId: number;
-    temporalityId: number;
+    noteTypeIds: number[];
+    temporalityIds: number[];
     createdAt: string;
     citation: string;
     source: string;
@@ -151,4 +143,31 @@ export interface NoteFilters {
     tags: FilterItem[];
     noteTypes: FilterItem[];
     temporalities: FilterItem[];
+}
+
+// Заметка для списка/фильтрации (GET /api/v1/notes/): связи + id автора + точки.
+export interface NoteListItemFromApi {
+    note_id: number;
+    diary_id: number;
+    author_id: number;
+    created_at: string;
+    citation?: string;
+    source?: string;
+    note_types?: FilterItem[];
+    temporalities?: FilterItem[];
+    tags?: FilterItem[];
+    point_ids?: number[];
+}
+
+export interface NoteListItem {
+    noteId: number;
+    diaryId: number;
+    authorId: number;
+    createdAt: string;
+    citation: string;
+    source: string;
+    noteTypes: FilterItem[];
+    temporalities: FilterItem[];
+    tags: FilterItem[];
+    pointIds: number[];
 }

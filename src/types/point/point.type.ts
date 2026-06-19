@@ -15,13 +15,14 @@ export interface PointResponseFromApi {
     point_subtype?: FilterItem | null;
     point_subsubtype?: FilterItem | null;
     point_coordinates?: CoordinateItem[];
+    note_coordinates?: NoteCoordinateItemFromApi[];
 }
 
 export interface PointCreateForApi {
-    rayon_id: number;
+    rayon_id?: number | null;
     street: string;
     building: string;
-    latitude: number;
+    latitude?: number | null;
     longitude?: number | null;
     point_type_id: number;
     point_subtype_id?: number | null;
@@ -31,6 +32,18 @@ export interface PointCreateForApi {
 }
 
 export interface CoordinateItem {
+    latitude: number;
+    longitude: number;
+}
+
+export interface NoteCoordinateItemFromApi {
+    note_id: number;
+    latitude: number;
+    longitude: number;
+}
+
+export interface NoteCoordinateItem {
+    noteId: number;
     latitude: number;
     longitude: number;
 }
@@ -83,13 +96,14 @@ export interface PointResponse {
     pointSubtype?: FilterItem | null;
     pointSubsubtype?: FilterItem | null;
     pointCoordinates?: CoordinateItem[];
+    noteCoordinates?: NoteCoordinateItem[];
 }
 
 export interface PointCreate {
-    rayonId: number;
+    rayonId?: number | null;
     street: string;
     building: string;
-    latitude: number;
+    latitude?: number | null;
     longitude?: number | null;
     pointTypeId: number;
     pointSubtypeId?: number | null;

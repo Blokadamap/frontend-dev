@@ -5,7 +5,7 @@ import { useAppQuery } from '../useAppQuery';
 
 export const useAuthorById = (id: string) => {
     return useAppQuery<AuthorResponse, AxiosError>({
-        queryKey: ['author by id'],
+        queryKey: ['author by id', id],
         queryFn: () => authorService.getById(id),
     });
 };

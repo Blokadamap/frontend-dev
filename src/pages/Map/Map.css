@@ -214,6 +214,22 @@
   pointer-events: auto !important;
 }
 
+/* Выплывающий хедер карты сдвигает строку поиска, кнопку фильтров и
+   левую панель вниз на свою высоту (≈64px), пока он раскрыт. */
+.archive-topbar,
+.archive-sidebar--left {
+  transition:
+    transform 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+    width 0.32s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.map-flyout:hover ~ .archive-shell .archive-topbar,
+.map-flyout:focus-within ~ .archive-shell .archive-topbar,
+.map-flyout:hover ~ .archive-shell .archive-sidebar--left,
+.map-flyout:focus-within ~ .archive-shell .archive-sidebar--left {
+  transform: translateY(64px);
+}
+
 /* Табы на десктопе */
 .archive-filter-tabs {
   display: flex;
@@ -261,7 +277,15 @@
 
 /* Когда открыты фильтры — табы добавляют ещё 30px + 6px gap */
 .archive-left-column:has(.archive-filter-tabs) .archive-sidebar--left {
-  top: 120px !important; 
+  top: 120px !important;
+}
+
+/* Раскрытый список свидетельств («Всего свидетельств») — расширяем левую
+   панель вдвое (360 → 720px) для удобного просмотра. Только десктоп. */
+@media (min-width: 961px) {
+  .archive-sidebar--left:has(.archive-panel--results:not(.is-collapsed)) {
+    width: 720px !important;
+  }
 }
 
 /* Правый сайдбар (Детали) */

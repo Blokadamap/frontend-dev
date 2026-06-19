@@ -1,6 +1,8 @@
 import type {
     AuthorCreate,
     AuthorCreateForApi,
+    AuthorDetailed,
+    AuthorDetailedFromApi,
     AuthorFilters,
     AuthorFiltersFromApi,
     AuthorResponse,
@@ -26,7 +28,9 @@ class AuthorMapper {
             middle_name: data.middleName,
             sex: data.sex,
             birth_date: data.birthDate,
+            death_date: data.deathDate || null,
             biography: data.biography,
+            photo: data.photo || null,
             has_children: data.hasChildren,
             family_status_id: data.familyStatusId,
             social_class_ids: data.socialClassIds,
@@ -39,6 +43,7 @@ class AuthorMapper {
             diary_started_at: data.diaryStartedAt,
             diary_finished_at: data.diaryFinishedAt,
             diary_source: data.diarySource,
+            diary_storage_place: data.diaryStoragePlace,
         };
     }
 
@@ -50,7 +55,9 @@ class AuthorMapper {
             lastName: data.last_name,
             sex: data.sex,
             birthDate: data.birth_date,
+            deathDate: data.death_date ?? null,
             biography: data.biography,
+            photo: data.photo ?? null,
             hasChildren: data.has_children,
             familyStatusId: data.family_status_id,
             familyStatus: data.family_status,
@@ -62,6 +69,28 @@ class AuthorMapper {
             politicalParties: data.political_parties,
             cards: data.cards,
         };
+    }
+
+    toAuthorDetaileds(data: AuthorDetailedFromApi[]): AuthorDetailed[] {
+        return data.map((item) => ({
+            authorId: item.author_id,
+            firstName: item.first_name,
+            middleName: item.middle_name,
+            lastName: item.last_name,
+            sex: item.sex,
+            birthDate: item.birth_date,
+            deathDate: item.death_date ?? null,
+            photo: item.photo ?? null,
+            hasChildren: item.has_children,
+            familyStatus: item.family_status ?? null,
+            socialClasses: item.social_classes ?? [],
+            nationalities: item.nationalities ?? [],
+            religions: item.religions ?? [],
+            educations: item.education ?? [],
+            occupations: item.occupation ?? [],
+            politicalParties: item.political_parties ?? [],
+            cards: item.cards ?? [],
+        }));
     }
 
     toAuthorFilters(data: AuthorFiltersFromApi): AuthorFilters {

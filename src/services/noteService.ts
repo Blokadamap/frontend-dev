@@ -7,6 +7,8 @@ import type {
     NoteDetailedFromApi,
     NoteFilters,
     NoteFiltersFromApi,
+    NoteListItem,
+    NoteListItemFromApi,
     NoteResponse,
     NoteResponseFromApi,
 } from '../types/note/note.type';
@@ -19,8 +21,18 @@ class NoteService {
         return noteMapper.toNoteFilters(response.data);
     }
 
+    async getFilteredList(
+        params: Record<string, string> = {},
+    ): Promise<NoteListItem[]> {
+        const response = await axiosPublic.get<NoteListItemFromApi[]>('/api/v1/notes/', {
+            params,
+        });
+
+        return noteMapper.toNoteListItems(response.data);
+    }
+
     async createTag(data: TagCreate): Promise<unknown> {
-        const response = await axiosPrivate.post('/notes/tags', data);
+        const response = await axiosPrivate.post('/api/v1/notes/tags', data);
 
         return response.data;
     }
@@ -49,6 +61,54 @@ class NoteService {
         const response = await axiosPrivate.post<NoteResponseFromApi>(`/api/v1/notes/`, note);
 
         return noteMapper.toNoteResponse(response.data);
+    }
+
+    /** Обновление существующего свидетельства (только суперадмин). */
+    async updateNote(id: number, data: NoteCreate): Promise<unknown> {
+        const note = noteMapper.toNoteCreate(data);
+
+        const response = await axiosPrivate.patch(`/api/v1/notes/${id}`, note);
+
+        return response.data;
+    }
+
+    /** Полный состав свидетельства для предзаполнения формы правки. */
+    async getNoteForEdit(id: number): Promise<NoteCreate> {
+        const response = await axiosPublic.get<{
+            author_id: number;
+            note_type_ids: number[];
+            temporality_ids: number[];
+            created_at: string;
+            citation: string;
+            source: string;
+            tag_ids: number[];
+            note_to_points: { point_id: number; description: string }[];
+        }>(`/api/v1/notes/${id}/edit`);
+
+        const d = response.data;
+        return {
+            authorId: d.author_id,
+            noteTypeIds: d.note_type_ids ?? [],
+            temporalityIds: d.temporality_ids ?? [],
+            createdAt: d.created_at,
+            citation: d.citation,
+            source: d.source,
+            tagIds: d.tag_ids ?? [],
+            noteToPoints: (d.note_to_points ?? []).map((p) => ({
+                pointId: p.point_id,
+                description: p.description,
+            })),
+        };
+    }
+
+    /** Удаление свидетельства (только суперадмин). */
+    async deleteNote(id: number): Promise<void> {
+        await axiosPrivate.delete(`/api/v1/notes/${id}`);
+    }
+
+    /** Удаление тега (блокируется, если используется; только суперадмин). */
+    async deleteTag(id: number): Promise<void> {
+        await axiosPrivate.delete(`/api/v1/notes/tags/${id}`);
     }
 }
 

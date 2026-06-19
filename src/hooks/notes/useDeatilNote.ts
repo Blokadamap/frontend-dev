@@ -3,7 +3,7 @@ import { useAppQuery } from '../useAppQuery';
 
 export const useDetailNote = (id: number) => {
     return useAppQuery({
-        queryKey: ['detail notes'],
+        queryKey: ['detail notes', id],
         queryFn: () => noteService.getDetailNote(id),
     });
 };

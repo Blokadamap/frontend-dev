@@ -10,6 +10,7 @@ class DiaryMapper {
                 startedAt: item.started_at,
                 finishedAt: item.finished_at,
                 diarySource: item.source,
+                diaryStoragePlace: item.storage_place ?? "",
                 author: this.toAuthorShort(item.author),
             };
         });
@@ -22,6 +23,7 @@ class DiaryMapper {
             startedAt: item.started_at,
             finishedAt: item.finished_at,
             diarySource: item.source,
+            diaryStoragePlace: item.storage_place ?? "",
             author: this.toAuthorShort(item.author),
         };
     }

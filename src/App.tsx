@@ -1,8 +1,11 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import Landing from "./pages/Landing/Landing";
 import Map from "./pages/Map/Map";
+import AboutPage from "./pages/About/AboutPage";
+import AuthorsPage from "./pages/Authors/AuthorsPage";
+import AuthorDetailPage from "./pages/Authors/AuthorDetailPage";
+import EvidencePage from "./pages/Evidence/EvidencePage";
+import SiteLayout from "./components/layout/SiteLayout";
 import { LoginPage } from "./pages/Auth/LoginPage";
-import { RegisterPage } from "./pages/Auth/RegisterPage";
 import { RequireAuth } from "./components/auth/RequireAuth";
 import { AdminPage } from "./pages/AdminPage/AdminPage";
 
@@ -10,11 +13,40 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Landing />} />
+        <Route
+          path="/"
+          element={
+            <SiteLayout>
+              <AboutPage />
+            </SiteLayout>
+          }
+        />
         <Route path="/map" element={<Map />} />
-        <Route path="*" element={<Navigate to="/map" replace />} />
+        <Route
+          path="/authors"
+          element={
+            <SiteLayout>
+              <AuthorsPage />
+            </SiteLayout>
+          }
+        />
+        <Route
+          path="/authors/:id"
+          element={
+            <SiteLayout>
+              <AuthorDetailPage />
+            </SiteLayout>
+          }
+        />
+        <Route
+          path="/evidence"
+          element={
+            <SiteLayout>
+              <EvidencePage />
+            </SiteLayout>
+          }
+        />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
 
         <Route
           path="/admin"
@@ -24,6 +56,8 @@ function App() {
             </RequireAuth>
           }
         />
+
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );

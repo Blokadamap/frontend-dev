@@ -40,6 +40,11 @@ class PointMapper {
             pointSubtype: data.point_subtype,
             pointSubsubtype: data.point_subsubtype,
             pointCoordinates: data.point_coordinates,
+            noteCoordinates: data.note_coordinates?.map((coor) => ({
+                noteId: coor.note_id,
+                latitude: coor.latitude,
+                longitude: coor.longitude,
+            })),
         };
     }
 
@@ -60,6 +65,11 @@ class PointMapper {
                 pointSubtype: item.point_subtype,
                 pointSubsubtype: item.point_subsubtype,
                 pointCoordinates: item.point_coordinates,
+                noteCoordinates: item.note_coordinates?.map((coor) => ({
+                    noteId: coor.note_id,
+                    latitude: coor.latitude,
+                    longitude: coor.longitude,
+                })),
             };
         });
     }

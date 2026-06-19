@@ -11,6 +11,7 @@ import type {
 } from '../types/point/point.type';
 import { pointMapper } from './mappers/point.mapper';
 import type { NoteResponse, NoteResponseFromApi } from '../types/note/note.type';
+import type { FilterItem } from '../types/common/common.types';
 import { noteMapper } from './mappers/note.mapper';
 import { axiosPrivate } from '../api/interceptors';
 
@@ -54,10 +55,35 @@ class PointService {
         return pointMapper.toPointRespose(response.data);
     }
 
+    /** Обновление существующего места (только суперадмин). */
+    async updatePoint(id: number, data: PointCreate): Promise<PointResponse> {
+        const point = pointMapper.toPointCreateForApi(data);
+        const response = await axiosPrivate.patch<PointResponseFromApi>(`/api/v1/points/${id}`, point);
+
+        return pointMapper.toPointRespose(response.data);
+    }
+
+    /** Удаление места (блокируется при наличии свидетельств; суперадмин). */
+    async deletePoint(id: number): Promise<void> {
+        await axiosPrivate.delete(`/api/v1/points/${id}`);
+    }
+
     async getAll(): Promise<PointResponse[]> {
         const response = await axiosPublic.get<PointResponseFromApi[]>('/api/v1/points/')
 
         return pointMapper.toManyPointResponse(response.data)
+    }
+
+    /** Справочник районов (taxonomies/rayons). Возвращаем единый вид {id, name}. */
+    async getRayons(): Promise<FilterItem[]> {
+        const response = await axiosPublic.get<Array<Record<string, unknown>>>(
+            '/api/v1/taxonomies/rayons',
+        );
+
+        return (response.data ?? []).map((item) => ({
+            id: Number(item.id ?? item.rayon_id),
+            name: String(item.name ?? ''),
+        }));
     }
 }
 

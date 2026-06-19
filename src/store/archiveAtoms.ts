@@ -5,7 +5,9 @@ import type { AuthorFilters } from '../types/author/author.type';
 import type { WritableAtom } from 'jotai';
 
 export const searchAtom = atom('');
-export const activePanelAtom = atom<ArchivePanel | null>('results');
+// При загрузке страницы панель закрыта — на карте видны только строка
+// поиска с кнопкой фильтров и переключатель слоёв (как в прототипе).
+export const activePanelAtom = atom<ArchivePanel | null>(null);
 export const activeFilterTabAtom = atom<FilterTab>('general');
 export const selectedLayerAtom = atom<MapLayerId>('modern');
 export const selectedRecordIdAtom = atom<number | null>(null);
@@ -22,8 +24,13 @@ export interface ScalarFiltersType {
     authorId: number | null;
     birthdayStart: string;
     birthdayEnd: string
+    hasChildren: string
     district: string
     space: string
+    placeKind: string
+    pointType: string
+    pointSubtype: string
+    pointSubsubtype: string
     street: string
     building: string
     address: string
@@ -55,8 +62,13 @@ export const defaultScalarFilters: ScalarFiltersType = {
     authorId: null,
     birthdayStart: "",
     birthdayEnd: "",
+    hasChildren: "",
     district: "",
     space: "",
+    placeKind: "",
+    pointType: "",
+    pointSubtype: "",
+    pointSubsubtype: "",
     street: "",
     building: "",
     address: ""

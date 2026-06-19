@@ -6,6 +6,7 @@ export interface DiaryResponseFromApi {
     started_at: string;
     finished_at: string;
     source: string;
+    storage_place?: string | null;
     author: AuthorShortFromApi;
 }
 
@@ -15,5 +16,6 @@ export interface DiaryResponse {
     startedAt: string;
     finishedAt: string;
     diarySource: string;
+    diaryStoragePlace: string;
     author: AuthorShort;
 }

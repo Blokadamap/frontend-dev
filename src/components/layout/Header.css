@@ -1,0 +1,58 @@
+.site-header {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  justify-content: center;
+  padding: 28px 24px 8px;
+  /* Белая подложка, чтобы хедер сливался с белым верхом страницы «О проекте» */
+  background: #ffffff;
+}
+
+/* ── Выплывающий хедер на странице карты ─────────────────────────── */
+.map-flyout {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1500;
+  /* Зона наведения у верхней кромки — выше самого бара, чтобы поймать курсор */
+  pointer-events: none;
+}
+
+/* Невидимая полоска-триггер у самого верха экрана */
+.map-flyout__trigger {
+  height: 22px;
+  pointer-events: auto;
+}
+
+.map-flyout__bar {
+  pointer-events: auto;
+  display: flex;
+  justify-content: center;
+  padding: 14px 24px 16px;
+  background: linear-gradient(
+    180deg,
+    rgba(252, 250, 247, 0.96) 0%,
+    rgba(252, 250, 247, 0.86) 70%,
+    rgba(252, 250, 247, 0) 100%
+  );
+  backdrop-filter: blur(6px);
+  transform: translateY(-110%);
+  opacity: 0;
+  transition:
+    transform 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.32s ease;
+}
+
+/* Появление при наведении на верхнюю часть или фокусе внутри */
+.map-flyout:hover .map-flyout__bar,
+.map-flyout:focus-within .map-flyout__bar {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+@media (max-width: 720px) {
+  .site-header {
+    padding: 18px 12px 6px;
+  }
+}

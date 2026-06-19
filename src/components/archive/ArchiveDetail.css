@@ -202,3 +202,220 @@
     gap: 8px !important;
   }
 }
+/* =====================================================================
+   Карточка свидетельства (pop-up-quote) — по дизайн-прототипу Figma.
+   Используется только в ArchiveDetailPoint, не затрагивает карточку
+   дневника (.archive-detail__*).
+   ===================================================================== */
+.archive-panel--detail {
+  display: flex;
+  flex-direction: column;
+}
+
+.testimony-back {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin: 18px 0 8px 20px;
+  border: none;
+  border-radius: 50%;
+  background: #efeae2;
+  color: #6b6b6b;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.testimony-back:hover {
+  background: #e5ded3;
+}
+
+.testimony-scroll {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 4px 20px 28px;
+}
+
+.testimony-card {
+  background: #ffffff;
+  border: 1px solid #f0e9dd;
+  border-radius: 20px;
+  padding: 28px 30px 26px;
+  box-shadow: 0 14px 34px rgba(39, 43, 49, 0.08);
+}
+
+.testimony-card + .testimony-card {
+  margin-top: 18px;
+}
+
+/* Цитата + золотой бейдж */
+.testimony-card__quote::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.testimony-card__badge {
+  float: left;
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  margin: 4px 18px 6px 0;
+  border-radius: 14px;
+  background: var(--brand-gold);
+  box-shadow: 0 6px 14px rgba(216, 174, 118, 0.35);
+}
+
+.testimony-card__text {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 22px;
+  letter-spacing: -0.14px;
+  color: #1c1c1c;
+  text-align: left;
+}
+
+.testimony-card__author {
+  margin: 18px 0 0;
+  text-align: right;
+  font-style: italic;
+  font-size: 16px;
+  letter-spacing: -0.16px;
+  color: #666666;
+}
+
+/* Кликабельное ФИО автора — переход на страницу автора */
+.testimony-card__author-link {
+  color: inherit;
+  cursor: pointer;
+  transition: color 0.18s ease;
+}
+
+.testimony-card__author-link:hover {
+  color: var(--brand-gold);
+  text-decoration: underline;
+}
+
+/* Источник свидетельства: мелким шрифтом в самом низу карточки, по правому краю */
+.testimony-card__source {
+  margin: 14px 0 0;
+  text-align: right;
+  font-size: 9.5px;
+  line-height: 14px;
+  letter-spacing: -0.1px;
+  color: #9a9a9a;
+  overflow-wrap: anywhere;
+}
+
+.testimony-card__divider {
+  height: 1px;
+  margin: 18px 0;
+  background: linear-gradient(
+    90deg,
+    rgba(216, 174, 118, 0) 0%,
+    rgba(216, 174, 118, 0.55) 50%,
+    rgba(216, 174, 118, 0) 100%
+  );
+}
+
+/* Метаданные: дата и место */
+.testimony-card__meta {
+  display: grid;
+  gap: 16px;
+}
+
+.testimony-card__meta-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.testimony-card__meta-row--place {
+  align-items: flex-start;
+}
+
+.testimony-card__meta-icon {
+  flex: 0 0 auto;
+  color: var(--brand-gold);
+}
+
+.testimony-card__meta-row--place .testimony-card__meta-icon {
+  margin-top: 1px;
+}
+
+.testimony-card__date {
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: -0.16px;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.testimony-card__place {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.testimony-card__place-name {
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.25;
+  letter-spacing: -0.16px;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.testimony-card__place-address {
+  font-size: 13px;
+  line-height: 1.35;
+  letter-spacing: -0.13px;
+  color: #808080;
+}
+
+/* Чипы тем/типа */
+.testimony-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 22px;
+}
+
+.testimony-card__tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 23px;
+  padding: 3px 14px;
+  border-radius: 15px;
+  background: var(--brand-gold);
+  color: #ffffff;
+  font-size: 14px;
+  line-height: 17px;
+  white-space: nowrap;
+}
+
+@media (max-width: 960px) {
+  .testimony-back {
+    margin: 14px 0 6px 16px;
+  }
+
+  .testimony-scroll {
+    padding: 4px 16px calc(20px + env(safe-area-inset-bottom));
+  }
+
+  .testimony-card {
+    padding: 22px 20px 20px;
+    border-radius: 18px;
+  }
+
+  .testimony-card__badge {
+    width: 44px;
+    height: 44px;
+    margin: 2px 14px 4px 0;
+  }
+
+  .testimony-card__text {
+    font-size: 14px;
+    line-height: 21px;
+  }
+}

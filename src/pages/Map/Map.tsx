@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useAtom } from "jotai";
-import { useDeferredValue, useEffect, useRef, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { X } from "lucide-react";
 import ArchiveDetailDiary from "../../components/archive/ArchiveDetailDiary";
 import ArchiveDetailPoint from "../../components/archive/ArchiveDetailPoint";
@@ -11,8 +11,13 @@ import ArchiveToolbar from "../../components/archive/ArchiveToolbar";
 import LayerSwitcher, {
   BASE_LAYERS,
 } from "../../components/archive/LayerSwitcher";
+import MapFlyoutHeader from "../../components/layout/MapFlyoutHeader";
 import { useDiaries } from "../../hooks/diaries/useDiaries";
 import { usePoints } from "../../hooks/points/usePoints";
+import { usePointTypes } from "../../hooks/points/usePointTypes";
+import { useFilteredNotes } from "../../hooks/notes/useFilteredNotes";
+import { useServerFilter } from "../../hooks/useServerFilter";
+import { pointMatchesPlace, buildPointAddress } from "../../utils/filters";
 import { type ArchiveFiltersType } from "../../store/archiveAtoms";
 import { useAtomValue } from "jotai";
 import {
@@ -44,35 +49,20 @@ function buildActiveFilterCount(filters: ArchiveFiltersType) {
   if (filters.address) res++;
   if (filters.birthdayStart) res++;
   if (filters.birthdayEnd) res++;
+  if (filters.hasChildren) res++;
   if (filters.building) res++;
   if (filters.genders.length != 0) res++;
   if (filters.startDate) res++;
   if (filters.endDate) res++;
   if (filters.street) res++;
+  if (filters.district) res++;
+  if (filters.placeKind) res++;
+  if (filters.pointType) res++;
+  if (filters.pointSubtype) res++;
+  if (filters.pointSubsubtype) res++;
 
   return res;
 }
-
-function buildFilterPreview(filters: ArchiveFiltersType): string[] {
-  const res = [];
-
-  if (filters.authorId) res.push("Поиск по автору");
-  if (filters.educations.length != 0)
-    res.push(
-      "Поиск по образованию: ",
-      filters.educations.map((item) => item.name).join("; "),
-    );
-
-  return res;
-}
-
-const options = {
-  districts: [],
-  spaces: [],
-  streets: [],
-  buildings: [],
-  addresses: [],
-};
 
 function Map() {
   // ── Реактивный isMobile ────────────────────────────────────────
@@ -135,24 +125,69 @@ function Map() {
     isLoading: isLoadingPoints,
     isError: isErrorPoints,
   } = usePoints();
+  const { data: pointTypes } = usePointTypes();
 
   const [searchValue, setSearchValue] = useAtom(searchAtom);
   const filters = useAtomValue(archiveFilters);
+  const deferredSearch = useDeferredValue(searchValue);
+
+  // Опции вкладки «Место»: район/улица/здание/адрес — из самих точек,
+  // тип/подтип места — из справочника типов.
+  const filterOptions = useMemo(() => {
+    const uniq = (values: (string | undefined | null)[]) =>
+      [...new Set(values.map((v) => (v ?? "").trim()).filter(Boolean))].sort(
+        (a, b) => a.localeCompare(b, "ru"),
+      );
+    const subtypeNames = (pointTypes ?? []).flatMap((type) =>
+      (type.pointSubtypes ?? []).map((sub) => sub.name),
+    );
+    return {
+      districts: uniq((points ?? []).map((p) => p.rayon?.name)),
+      pointTypes: uniq((pointTypes ?? []).map((type) => type.name)),
+      pointSubtypes: uniq(subtypeNames),
+      streets: uniq((points ?? []).map((p) => p.street)),
+      buildings: uniq((points ?? []).map((p) => p.building)),
+      addresses: uniq((points ?? []).map((p) => buildPointAddress(p))),
+    };
+  }, [points, pointTypes]);
+
+  // Серверная фильтрация по заметкам/персоналиям → id точек и дневников.
+  const serverFilter = useServerFilter(filters, deferredSearch);
+  // Точка видна, если проходит фильтры «Место» (клиент) и серверное
+  // ограничение по свидетельствам (если оно активно).
+  const visiblePoints = useMemo(
+    () =>
+      (points ?? []).filter(
+        (p) =>
+          pointMatchesPlace(p, filters) &&
+          (serverFilter.pointIdFilter == null ||
+            serverFilter.pointIdFilter.has(p.pointId)),
+      ),
+    [points, filters, serverFilter],
+  );
   const [, resetFilters] = useAtom(resetArchiveFiltersAtom);
   const [activePanel, setActivePanel] = useAtom(activePanelAtom);
   const [selectedLayer, setSelectedLayer] = useAtom(selectedLayerAtom);
   const [selectedDiaryId, setSelectedDiaryId] = useAtom(selectedRecordIdAtom);
   const [visibleResultsCount, setVisibleResultsCount] = useState(6);
-  const deferredSearch = useDeferredValue(searchValue);
+
+  // Свидетельства для панели результатов. При активном поиске/фильтрации
+  // берём отфильтрованные заметки; иначе (свежая выборка) — все заметки.
+  const allNotesQuery = useFilteredNotes(
+    {},
+    activePanel === "results" &&
+      serverFilter.notes == null &&
+      !serverFilter.isFiltering,
+  );
+  const resultNotes = serverFilter.notes ?? allNotesQuery.data ?? [];
 
   const [selectedPointId, setSelectedPointId] = useState<number | null>(null);
+  const [selectedNoteId, setSelectedNoteId] = useState<number | null>(null);
 
   const selectedRecord = diaries
     ? diaries.find((diary) => diary.diaryId === selectedDiaryId)
     : null;
   const activeFilterCount = buildActiveFilterCount(filters);
-
-  const filterPreview = buildFilterPreview(filters);
 
   useEffect(() => {
     const setResultsCount = () => setVisibleResultsCount(6);
@@ -175,11 +210,6 @@ function Map() {
     } else swap("peek");
   }, [activePanel, isMobile]);
 
-  useEffect(() => {
-    if (searchValue.trim() && activePanel !== "filters") {
-      setActivePanel("results");
-    }
-  }, [activePanel, searchValue, setActivePanel]);
 
   useEffect(() => {
     if (
@@ -215,22 +245,31 @@ function Map() {
 
   return (
     <main className="archive-page">
+      <MapFlyoutHeader />
       <section className="archive-shell">
         <div className="archive-stage">
           <ArchiveMap
-            points={points ?? []}
+            points={visiblePoints}
             selectedPointId={selectedPointId}
             selectedLayer={selectedLayer}
             hasLeftSidebar={activePanel !== null}
             hasRightSidebar={Boolean(selectedRecord)}
             onSelectPoint={(pointId) => {
               setSelectedDiaryId(null);
+              setSelectedNoteId(null);
               setSelectedPointId(pointId);
+              setActivePanel(null);
+            }}
+            onSelectNote={(pointId, noteId) => {
+              setSelectedDiaryId(null);
+              setSelectedPointId(pointId);
+              setSelectedNoteId(noteId);
               setActivePanel(null);
             }}
             onClearSelection={() => {
               setSelectedPointId(null);
-              setActivePanel("results");
+              setSelectedNoteId(null);
+              setActivePanel(null);
             }}
           />
 
@@ -334,7 +373,19 @@ function Map() {
                     value={searchValue}
                     filterCount={activeFilterCount}
                     isFiltersOpen={activePanel === "filters"}
-                    onChange={setSearchValue}
+                    isResultsOpen={activePanel === "results"}
+                    onChange={(next) => {
+                      setSearchValue(next);
+                      // Пока есть текст — показываем живые результаты;
+                      // очистка возвращает к карте (не трогая панель фильтров).
+                      if (next.trim()) {
+                        setSelectedPointId(null);
+                        setSelectedDiaryId(null);
+                        setActivePanel("results");
+                      } else if (activePanel === "results") {
+                        setActivePanel(null);
+                      }
+                    }}
                     onSearch={() => {
                       setSelectedPointId(null);
                       setSelectedDiaryId(null);
@@ -348,14 +399,16 @@ function Map() {
                     onApplyFilters={() => {
                       setSelectedPointId(null);
                       setSelectedDiaryId(null);
-                      setActivePanel("results");
+                      setActivePanel(null);
                     }}
                     onResetFilters={() => {
                       resetFilters();
                       setSearchValue("");
                       setSelectedPointId(null);
+                      setSelectedNoteId(null);
                       setSelectedDiaryId(null);
-                      setActivePanel("results");
+                      setActiveTab("general");
+                      setActivePanel(null);
                     }}
                   />
 
@@ -370,7 +423,17 @@ function Map() {
                           if (isMobile) setActivePanel("filters");
                         }}
                       >
-                        Общее
+                        Свидетельство
+                      </button>
+                      <button
+                        type="button"
+                        className={`archive-filter-tabs__item ${activeTab === "person" ? "is-active" : ""}`}
+                        onClick={() => {
+                          setActiveTab("person");
+                          if (isMobile) setActivePanel("filters");
+                        }}
+                      >
+                        Автор
                       </button>
                       <button
                         type="button"
@@ -382,30 +445,8 @@ function Map() {
                       >
                         Место
                       </button>
-                      <button
-                        type="button"
-                        className={`archive-filter-tabs__item ${activeTab === "person" ? "is-active" : ""}`}
-                        onClick={() => {
-                          setActiveTab("person");
-                          if (isMobile) setActivePanel("filters");
-                        }}
-                      >
-                        Персоналия
-                      </button>
                     </nav>
                   )}
-
-                  {filterPreview.length > 0 &&
-                    !activePanel &&
-                    !selectedRecord && (
-                      <div className="archive-filter-summary">
-                        {filterPreview.map((item) => (
-                          <span key={item} className="chip chip--soft">
-                            {item}
-                          </span>
-                        ))}
-                      </div>
-                    )}
                 </>
               )}
             </div>
@@ -414,21 +455,17 @@ function Map() {
             {activePanel === "filters" || activePanel === "results" ? (
               <div className="archive-sidebar archive-sidebar--left animate-in">
                 {activePanel === "filters" ? (
-                  <ArchiveFilters options={options} />
+                  <ArchiveFilters options={filterOptions} />
                 ) : (
                   <ArchiveResults
-                    diaries={diaries ?? []}
+                    notes={resultNotes}
+                    diaries={diaries}
+                    points={points ?? []}
                     searchValue={searchValue}
-                    selectedDiaryId={selectedDiaryId}
                     visibleCount={visibleResultsCount}
                     onShowMore={() =>
                       setVisibleResultsCount((count) => count + 6)
                     }
-                    onSelect={(recordId) => {
-                      setSelectedPointId(null)
-                      setSelectedDiaryId(recordId);
-                      setActivePanel(null);
-                    }}
                   />
                 )}
               </div>
@@ -461,14 +498,18 @@ function Map() {
                 className="mobile-handle"
                 onClick={() => {
                   setSelectedPointId(null);
-                  setActivePanel("results");
+                  setSelectedNoteId(null);
+                  setActivePanel(null);
                 }}
               />
               <ArchiveDetailPoint
                 pointId={selectedPointId}
+                selectedNoteId={selectedNoteId}
+                noteIdFilter={serverFilter.noteIdFilter}
                 onClose={() => {
                   setSelectedPointId(null);
-                  setActivePanel("results");
+                  setSelectedNoteId(null);
+                  setActivePanel(null);
                 }}
               />
             </div>

@@ -314,3 +314,93 @@
     color: #ffffff !important;
   }
 }
+/* =========================================
+   КАСТОМНЫЙ ВЫПАДАЮЩИЙ СПИСОК (в стиле сайта)
+   ========================================= */
+.filter-select {
+  position: relative;
+  width: 100%;
+}
+
+.filter-select__control {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  height: 40px;
+  padding: 0 12px 0 18px;
+  background: #ffffff;
+  border: 1px solid var(--brand-gold);
+  border-radius: 14px;
+  color: var(--ink);
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.filter-select.is-open .filter-select__control {
+  box-shadow: 0 0 0 3px rgba(216, 174, 118, 0.15);
+}
+
+.filter-select__value {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filter-select__value.is-placeholder {
+  color: var(--ink-soft);
+}
+
+.filter-select__chevron {
+  flex: none;
+  color: var(--amber-strong);
+  transition: transform 0.2s ease;
+}
+
+.filter-select.is-open .filter-select__chevron {
+  transform: rotate(180deg);
+}
+
+.filter-select__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 60;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: #ffffff;
+  border: 1px solid #ECDDC4;
+  border-radius: 14px;
+  box-shadow: 0 16px 30px rgba(39, 43, 49, 0.14);
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.filter-select__option {
+  width: 100%;
+  display: block;
+  padding: 9px 12px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--ink);
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.filter-select__option:hover {
+  background: rgba(216, 174, 118, 0.14);
+}
+
+.filter-select__option.is-selected {
+  background: var(--brand-gold);
+  color: #ffffff;
+}

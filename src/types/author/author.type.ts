@@ -14,7 +14,9 @@ export interface AuthorResponseFromApi {
     last_name: string;
     sex: 'M' | 'F';
     birth_date: string;
+    death_date?: string | null;
     biography: string;
+    photo?: string | null;
     has_children: boolean;
     family_status_id: number;
     family_status?: FilterItem | null;
@@ -33,7 +35,9 @@ export interface AuthorCreateForApi {
     middle_name: string;
     sex: 'M' | 'F';
     birth_date: string;
+    death_date: string | null;
     biography: string;
+    photo: string | null;
     has_children: boolean;
     family_status_id: number;
     social_class_ids: number[];
@@ -46,6 +50,7 @@ export interface AuthorCreateForApi {
     diary_started_at: string;
     diary_finished_at: string;
     diary_source: string;
+    diary_storage_place: string;
 }
 
 export interface AuthorFiltersFromApi {
@@ -73,7 +78,9 @@ export interface AuthorResponse {
     lastName: string;
     sex: 'M' | 'F';
     birthDate: string;
+    deathDate?: string | null;
     biography: string;
+    photo?: string | null;
     hasChildren: boolean;
     familyStatusId: number;
 
@@ -93,7 +100,9 @@ export interface AuthorCreate {
     middleName: string;
     sex: 'M' | 'F';
     birthDate: string;
+    deathDate: string;
     biography: string;
+    photo: string;
     hasChildren: boolean;
     familyStatusId: number;
 
@@ -108,6 +117,7 @@ export interface AuthorCreate {
     diaryStartedAt: string;
     diaryFinishedAt: string;
     diarySource: string;
+    diaryStoragePlace: string;
 }
 
 export interface AuthorFilters {
@@ -121,3 +131,44 @@ export interface AuthorFilters {
     cards: FilterItem[];
 }
 
+
+// Автор с атрибутами для фильтрации (GET /api/v1/authors/).
+export interface AuthorDetailedFromApi {
+    author_id: number;
+    first_name: string;
+    middle_name: string | null;
+    last_name: string;
+    sex: 'M' | 'F';
+    birth_date: string;
+    death_date?: string | null;
+    photo?: string | null;
+    has_children: boolean;
+    family_status?: FilterItem | null;
+    social_classes?: FilterItem[];
+    nationalities?: FilterItem[];
+    religions?: FilterItem[];
+    education?: FilterItem[];
+    occupation?: FilterItem[];
+    political_parties?: FilterItem[];
+    cards?: FilterItem[];
+}
+
+export interface AuthorDetailed {
+    authorId: number;
+    firstName: string;
+    middleName: string | null;
+    lastName: string;
+    sex: 'M' | 'F';
+    birthDate: string;
+    deathDate?: string | null;
+    photo?: string | null;
+    hasChildren: boolean;
+    familyStatus?: FilterItem | null;
+    socialClasses: FilterItem[];
+    nationalities: FilterItem[];
+    religions: FilterItem[];
+    educations: FilterItem[];
+    occupations: FilterItem[];
+    politicalParties: FilterItem[];
+    cards: FilterItem[];
+}

@@ -1,0 +1,65 @@
+.site-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 14px 28px;
+}
+
+.site-nav__item {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 20px;
+  border-radius: 999px;
+  border: 1.5px solid transparent;
+  font-family: "Manrope", sans-serif;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.18s ease;
+}
+
+/* Доступная ссылка (не текущая страница) — залита золотом */
+a.site-nav__item {
+  background: var(--brand-gold);
+  color: #fff;
+}
+
+a.site-nav__item:hover {
+  background: var(--brand-gold-strong);
+  transform: translateY(-1px);
+}
+
+/* Текущая страница — обведённая «призрачная» пилюля */
+a.site-nav__item.is-active {
+  background: transparent;
+  border-color: var(--brand-gold);
+  color: var(--brand-gold);
+  transform: none;
+}
+
+/* Разделы в разработке — приглушённые, без клика */
+.site-nav__item--soon {
+  background: transparent;
+  border-color: rgba(115, 115, 115, 0.35);
+  color: rgba(115, 115, 115, 0.7);
+  cursor: default;
+  opacity: 0.75;
+}
+
+@media (max-width: 720px) {
+  .site-nav {
+    gap: 10px 14px;
+  }
+  .site-nav__item {
+    height: 30px;
+    padding: 0 14px;
+    font-size: 14px;
+  }
+}

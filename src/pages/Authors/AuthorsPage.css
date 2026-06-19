@@ -1,0 +1,253 @@
+.authors-page {
+  min-height: calc(100dvh - 64px);
+  padding: 28px 24px 80px;
+}
+
+.authors-layout {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 248px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.authors-layout.is-filters-collapsed {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* ── Боковая панель фильтров ─────────────────────────────────────── */
+.authors-filters {
+  position: sticky;
+  top: 16px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  overflow: hidden;
+  max-height: calc(100dvh - 96px);
+  display: flex;
+}
+
+.authors-filters .archive-panel--filters {
+  max-height: calc(100dvh - 96px);
+}
+
+/* ── Основная колонка ────────────────────────────────────────────── */
+.authors-main {
+  background: #fff;
+  border: 1px solid #ececec;
+  border-radius: 20px;
+  box-shadow: 0 18px 48px rgba(39, 43, 49, 0.08);
+  padding: 22px 26px 32px;
+  min-height: 480px;
+}
+
+.authors-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.authors-filter-toggle {
+  position: relative;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--brand-gold);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--brand-gold);
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.authors-filter-toggle.is-active {
+  background: var(--brand-gold);
+  color: #fff;
+}
+
+.authors-filter-toggle__badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #c8504c;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.authors-search {
+  position: relative;
+  flex: 1 1 auto;
+  max-width: 320px;
+}
+
+.authors-search__icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #b8b8b8;
+  pointer-events: none;
+}
+
+.authors-search input {
+  width: 100%;
+  height: 40px;
+  padding: 0 42px 0 40px;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  border-radius: 20px;
+  background: #fff;
+  font-size: 15px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.authors-search input:focus {
+  border-color: var(--brand-gold);
+  box-shadow: 0 0 0 3px rgba(216, 174, 118, 0.15);
+}
+
+.authors-search__clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: #f0ede6;
+  color: #737982;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.authors-search__clear:hover {
+  background: var(--brand-gold);
+  color: #fff;
+}
+
+/* ── Список авторов ──────────────────────────────────────────────── */
+.authors-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.author-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  text-align: left;
+  padding: 12px 16px;
+  background: #fff;
+  border: 1px solid #b8b8b8;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.author-card:hover {
+  border-color: var(--brand-gold);
+  box-shadow: 0 10px 24px rgba(216, 174, 118, 0.18);
+  transform: translateY(-1px);
+}
+
+.author-card__photo {
+  flex: 0 0 auto;
+  width: 84px;
+  height: 91px;
+  border-radius: 16px;
+  background: #f0ede6;
+  border: 1px dashed #d9d2c6;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #c2bbac;
+  overflow: hidden;
+}
+
+.author-card__photo--filled {
+  border: 1px solid #e3ddd2;
+}
+
+.author-card__photo--filled img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.author-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.author-card__name {
+  font-size: 20px;
+  color: #1a1a1a;
+}
+
+.author-card__dates {
+  font-size: 15px;
+  color: #666;
+}
+
+/* ── Статусы ─────────────────────────────────────────────────────── */
+.authors-status {
+  padding: 40px 8px;
+  text-align: center;
+  color: var(--ink-soft, #737982);
+  font-size: 15px;
+}
+
+.authors-empty {
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  min-height: 220px;
+  text-align: center;
+}
+
+.authors-empty p {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.authors-empty span {
+  font-size: 13px;
+  color: var(--ink-soft, #737982);
+}
+
+@media (max-width: 860px) {
+  .authors-layout,
+  .authors-layout.is-filters-collapsed {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .authors-filters {
+    position: static;
+    max-height: none;
+  }
+  .author-card__name {
+    font-size: 17px;
+  }
+}

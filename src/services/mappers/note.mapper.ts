@@ -5,6 +5,8 @@ import type {
     NoteDetailedFromApi,
     NoteFilters,
     NoteFiltersFromApi,
+    NoteListItem,
+    NoteListItemFromApi,
     NoteResponse,
     NoteResponseFromApi,
     NoteShort,
@@ -27,13 +29,11 @@ class NoteMapper {
         return {
             noteId: data.note_id,
             diaryId: data.diary_id,
-            noteTypeId: data.note_type_id,
-            temporalityId: data.temporality_id,
             createdAt: data.created_at,
             citation: data.citation,
             source: data.source,
-            noteType: data.note_type,
-            temporality: data.temporality,
+            noteTypes: data.note_types,
+            temporalities: data.temporalities,
             tags: data.tags,
             points: data.points?.map((item) => this.toPointInNote(item)),
             authorId: data.author_id,
@@ -65,13 +65,11 @@ class NoteMapper {
         return {
             noteId: data.note_id,
             diaryId: data.diary_id,
-            noteTypeId: data.note_type_id,
-            temporalityId: data.temporality_id,
             createdAt: data.created_at,
             citation: data.citation,
             source: data.source,
-            noteType: data.note_type,
-            temporality: data.temporality,
+            noteTypes: data.note_types,
+            temporalities: data.temporalities,
             tags: data.tags,
             firstName: data.first_name,
             middleName: data.middle_name,
@@ -84,13 +82,11 @@ class NoteMapper {
             return {
                 noteId: item.note_id,
                 diaryId: item.diary_id,
-                noteTypeId: item.note_type_id,
-                temporalityId: item.temporality_id,
                 createdAt: item.created_at,
                 citation: item.citation,
                 source: item.source,
-                noteType: item.note_type,
-                temporality: item.temporality,
+                noteTypes: item.note_types,
+                temporalities: item.temporalities,
                 tags: item.tags,
                 firstName: item.first_name,
                 middleName: item.middle_name,
@@ -102,8 +98,8 @@ class NoteMapper {
     toNoteCreate(data: NoteCreate): NoteCreateForApi {
         return {
             author_id: data.authorId,
-            note_type_id: data.noteTypeId,
-            temporality_id: data.temporalityId,
+            note_type_ids: data.noteTypeIds,
+            temporality_ids: data.temporalityIds,
             created_at: data.createdAt,
             citation: data.citation,
             source: data.source,
@@ -133,6 +129,21 @@ class NoteMapper {
             description: data.description,
             pointCoordinates: data.point_coordinates,
         };
+    }
+
+    toNoteListItems(data: NoteListItemFromApi[]): NoteListItem[] {
+        return data.map((item) => ({
+            noteId: item.note_id,
+            diaryId: item.diary_id,
+            authorId: item.author_id,
+            createdAt: item.created_at,
+            citation: item.citation ?? '',
+            source: item.source ?? '',
+            noteTypes: item.note_types ?? [],
+            temporalities: item.temporalities ?? [],
+            tags: item.tags ?? [],
+            pointIds: item.point_ids ?? [],
+        }));
     }
 }
 

@@ -82,7 +82,7 @@ function ArchiveDetailDiary({ diaryId, onClose }: ArchiveDetailDiaryProps) {
                 href="#record-location"
                 className="archive-detail__location-title"
               >
-                {note.temporality?.name}
+                {note.temporalities?.map((t) => t.name).join(", ")}
               </a>
               {/* <p className="archive-detail__location-address">
                 {record.location.district}, {record.location.street},{" "}

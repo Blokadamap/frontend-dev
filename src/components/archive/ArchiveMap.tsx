@@ -8,7 +8,6 @@ import {
   useMapEvents,
 } from "react-leaflet";
 import type { MapLayerId } from "../../types/archive";
-import type { PointInNote } from "../../types/point/point.type";
 import { type PointResponse } from "../../types/point/point.type";
 import { type CoordinateItem } from "../../types/point/point.type";
 import "leaflet/dist/leaflet.css";
@@ -26,7 +25,36 @@ function countAveragePosition(
     lng += coor.longitude;
   }
 
-  return [lat, lng];
+  return [lat / coordinateItems.length, lng / coordinateItems.length];
+}
+
+// Один маркер на место. Координата берётся из фиксированной точки места
+// (pointCoordinates), а если её нет (место без фиксированной координаты —
+// кладбище, площадь) — как среднее координат его свидетельств
+// (noteCoordinates). Клик всегда открывает место со списком всех его
+// свидетельств (noteId = null).
+type PointMarker = { position: [number, number]; noteId: number | null };
+
+function getPointMarkers(point: PointResponse): PointMarker[] {
+  const coordinates = point.pointCoordinates?.length
+    ? point.pointCoordinates
+    : point.noteCoordinates ?? [];
+  return [{ position: countAveragePosition(coordinates), noteId: null }];
+}
+
+function getPointMarkerPositions(point: PointResponse): [number, number][] {
+  return getPointMarkers(point).map((marker) => marker.position);
+}
+
+function averageOfPositions(positions: [number, number][]): [number, number] {
+  if (!positions.length) return [0, 0];
+  let lat = 0;
+  let lng = 0;
+  for (const [la, lo] of positions) {
+    lat += la;
+    lng += lo;
+  }
+  return [lat / positions.length, lng / positions.length];
 }
 
 interface ArchiveMapProps {
@@ -36,6 +64,7 @@ interface ArchiveMapProps {
   hasLeftSidebar: boolean;
   hasRightSidebar: boolean;
   onSelectPoint: (pointId: number) => void;
+  onSelectNote: (pointId: number, noteId: number) => void;
   onClearSelection: () => void;
 }
 
@@ -164,7 +193,7 @@ function MapViewport({
   hasRightSidebar,
 }: {
   points: PointResponse[];
-  selectedPoint: PointInNote | undefined;
+  selectedPoint: PointResponse | undefined;
   hasLeftSidebar: boolean;
   hasRightSidebar: boolean;
 }) {
@@ -174,10 +203,14 @@ function MapViewport({
     const viewport = getViewportConfig(hasLeftSidebar, hasRightSidebar);
 
     if (selectedPoint) {
-      map.flyTo(countAveragePosition(selectedPoint.pointCoordinates), 17.2, {
-        animate: true,
-        duration: 0.85,
-      });
+      map.flyTo(
+        averageOfPositions(getPointMarkerPositions(selectedPoint)),
+        17.2,
+        {
+          animate: true,
+          duration: 0.85,
+        },
+      );
       if (viewport.panBy[0] !== 0 || viewport.panBy[1] !== 0) {
         map.once("moveend", () => {
           map.panBy(L.point(viewport.panBy[0], viewport.panBy[1]), {
@@ -190,7 +223,7 @@ function MapViewport({
     }
 
     const bounds = L.latLngBounds(
-      points.map((point) => countAveragePosition(point.pointCoordinates)),
+      points.flatMap((point) => getPointMarkerPositions(point)),
     );
     if (bounds.isValid()) {
       map.fitBounds(bounds, {
@@ -216,6 +249,7 @@ function ArchiveMap({
   hasLeftSidebar,
   hasRightSidebar,
   onSelectPoint,
+  onSelectNote,
   onClearSelection,
 }: ArchiveMapProps) {
   const selectedPoint = points.find(
@@ -257,18 +291,23 @@ function ArchiveMap({
 
       <ClearSelectionHandler onClearSelection={onClearSelection} />
 
-      {points.map((point) => {
+      {points.flatMap((point) => {
         const isSelected = point.pointId === selectedPointId;
-        return (
+        // Для нефиксированных мест — по маркеру на каждое свидетельство;
+        // клик по такому маркеру открывает именно эту цитату (noteId).
+        return getPointMarkers(point).map((marker, index) => (
           <Marker
-            key={`${point.pointId}-${isSelected}`}
-            position={countAveragePosition(point.pointCoordinates)}
+            key={`${point.pointId}-${index}-${isSelected}`}
+            position={marker.position}
             icon={createMarkerIcon(isSelected)}
             eventHandlers={{
-              click: () => onSelectPoint(point.pointId),
+              click: () =>
+                marker.noteId != null
+                  ? onSelectNote(point.pointId, marker.noteId)
+                  : onSelectPoint(point.pointId),
             }}
           />
-        );
+        ));
       })}
     </MapContainer>
   );

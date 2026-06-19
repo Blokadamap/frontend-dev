@@ -1,0 +1,285 @@
+.evidence-page {
+  min-height: calc(100dvh - 64px);
+  padding: 24px 24px 80px;
+}
+
+/* Единый центрированный контейнер; внутри всё выровнено по левому краю,
+   поэтому вкладки встают над колонкой фильтров, а не по центру страницы. */
+.evidence-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.evidence-toolbar-row {
+  width: 100%;
+}
+
+.evidence-toolbar-row .archive-toolbar {
+  max-width: 360px;
+}
+
+/* ── Вкладки фильтра (как на карте), выровнены по колонке фильтров ── */
+.evidence-tabs.archive-filter-tabs {
+  display: flex;
+  gap: 6px;
+  width: 320px;
+  margin: 16px 0 12px;
+}
+
+.evidence-tabs .archive-filter-tabs__item {
+  flex: 1;
+  height: 32px;
+  padding: 0;
+  border-radius: 999px;
+  border: 1px solid #e8e2d9;
+  background: #fff;
+  color: #737982;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.evidence-tabs .archive-filter-tabs__item.is-active {
+  background: var(--brand-gold);
+  color: #fff;
+  border-color: var(--brand-gold);
+}
+
+/* ── Раскладка ───────────────────────────────────────────────────── */
+.evidence-layout {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.evidence-layout.is-filters-collapsed {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* Открыта правая панель детали — список сужается, появляется колонка справа */
+.evidence-layout.has-detail {
+  grid-template-columns: 320px minmax(0, 1fr) 400px;
+}
+
+.evidence-layout.is-filters-collapsed.has-detail {
+  grid-template-columns: minmax(0, 1fr) 400px;
+}
+
+.evidence-filters {
+  position: sticky;
+  top: 16px;
+  background: #fff;
+  border: 1px solid #ececec;
+  border-radius: 20px;
+  overflow: hidden;
+  max-height: calc(100dvh - 120px);
+  display: flex;
+}
+
+.evidence-filters .archive-panel--filters {
+  max-height: calc(100dvh - 120px);
+}
+
+.evidence-main {
+  background: #fff;
+  border: 1px solid #ececec;
+  border-radius: 20px;
+  box-shadow: 0 18px 48px rgba(39, 43, 49, 0.08);
+  padding: 8px 24px 20px;
+  min-height: 480px;
+}
+
+/* ── Карточки свидетельств ───────────────────────────────────────── */
+.evidence-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.evidence-card {
+  padding: 22px 0 18px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.evidence-card:last-child {
+  border-bottom: none;
+}
+
+.evidence-card__head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.evidence-card__author {
+  font-weight: 600;
+  font-size: 15px;
+  color: #1a1a1a;
+}
+
+.evidence-card__author--link {
+  cursor: pointer;
+  transition: color 0.18s ease;
+}
+
+.evidence-card__author--link:hover {
+  color: var(--brand-gold);
+  text-decoration: underline;
+}
+
+.evidence-card__date {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.37);
+}
+
+.evidence-card__text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #1a1a1a;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+}
+
+.evidence-card__footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.evidence-card__more {
+  padding: 4px 18px;
+  border: 1px solid var(--brand-gold);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--brand-gold);
+  font-size: 12px;
+  font-weight: 600;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.evidence-card__more:hover {
+  background: var(--brand-gold);
+  color: #fff;
+}
+
+/* ── Пагинация ───────────────────────────────────────────────────── */
+.evidence-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-top: 22px;
+  margin-top: 6px;
+  border-top: 1px solid #eee6da;
+}
+
+.evidence-pagesize {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--ink-soft, #737982);
+}
+
+.evidence-pagesize__btn {
+  min-width: 36px;
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid #e8e2d9;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink, #2f3035);
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.18s ease;
+}
+
+.evidence-pagesize__btn.is-active {
+  background: var(--brand-gold);
+  border-color: var(--brand-gold);
+  color: #fff;
+}
+
+.evidence-pager {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.evidence-pager__nav {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e8e2d9;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--ink, #2f3035);
+  transition: all 0.18s ease;
+}
+
+.evidence-pager__nav:hover:not(:disabled) {
+  border-color: var(--brand-gold);
+  color: var(--brand-gold);
+}
+
+.evidence-pager__nav:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.evidence-pager__info {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink, #2f3035);
+  min-width: 56px;
+  text-align: center;
+}
+
+/* ── Статусы ─────────────────────────────────────────────────────── */
+.evidence-status {
+  padding: 48px 8px;
+  text-align: center;
+  color: var(--ink-soft, #737982);
+}
+
+.evidence-empty {
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  min-height: 220px;
+  text-align: center;
+}
+
+.evidence-empty p {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink, #2f3035);
+}
+
+.evidence-empty span {
+  font-size: 13px;
+  color: var(--ink-soft, #737982);
+}
+
+@media (max-width: 860px) {
+  .evidence-layout,
+  .evidence-layout.is-filters-collapsed,
+  .evidence-layout.has-detail,
+  .evidence-layout.is-filters-collapsed.has-detail {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .evidence-filters {
+    position: static;
+    max-height: none;
+  }
+}
