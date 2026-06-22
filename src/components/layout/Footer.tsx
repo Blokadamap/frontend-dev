@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "./Footer.css";
 
 const CONTACT_EMAIL = "ndprigodich@itmo.ru";
@@ -40,6 +41,9 @@ function Footer() {
         <div className="site-footer__contacts">
           <h2>Контакты</h2>
           <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+          <Link className="site-footer__privacy" to="/privacy">
+            Политика обработки персональных данных
+          </Link>
         </div>
       </div>
     </footer>

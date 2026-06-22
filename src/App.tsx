@@ -8,6 +8,7 @@ import SiteLayout from "./components/layout/SiteLayout";
 import { LoginPage } from "./pages/Auth/LoginPage";
 import { RequireAuth } from "./components/auth/RequireAuth";
 import { AdminPage } from "./pages/AdminPage/AdminPage";
+import PrivacyPage from "./pages/Privacy/PrivacyPage";
 
 function App() {
   return (
@@ -43,6 +44,14 @@ function App() {
           element={
             <SiteLayout>
               <EvidencePage />
+            </SiteLayout>
+          }
+        />
+        <Route
+          path="/privacy"
+          element={
+            <SiteLayout>
+              <PrivacyPage />
             </SiteLayout>
           }
         />
