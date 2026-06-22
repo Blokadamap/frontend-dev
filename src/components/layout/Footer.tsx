@@ -41,7 +41,11 @@ function Footer() {
         <div className="site-footer__contacts">
           <h2>Контакты</h2>
           <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
-          <Link className="site-footer__privacy" to="/privacy">
+          <Link
+            className="site-footer__privacy"
+            to="/privacy"
+            onClick={() => window.scrollTo({ top: 0, left: 0 })}
+          >
             Политика обработки персональных данных
           </Link>
         </div>
