@@ -44,6 +44,11 @@
   text-shadow: 0 2px 10px rgba(255, 255, 255, 0.55);
 }
 
+/* Заголовок страницы Политики — на треть меньше основного. */
+.about-hero__title--privacy {
+  font-size: clamp(29px, 5.33vw, 67px);
+}
+
 .about-card {
   width: 100%;
   max-width: 1032px;

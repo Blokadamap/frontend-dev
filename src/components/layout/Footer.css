@@ -80,6 +80,7 @@
 }
 
 .site-footer__contacts a {
+  display: block;
   font-size: 18px;
   color: #fff;
   opacity: 0.92;
@@ -88,6 +89,10 @@
 
 .site-footer__contacts a:hover {
   text-decoration: underline;
+}
+
+.site-footer__privacy {
+  margin-top: 8px;
 }
 
 @media (max-width: 860px) {
