@@ -10,7 +10,9 @@ function PrivacyPage() {
     <div className="about-page">
       <section className="about-hero">
         <h1 className="about-hero__title about-hero__title--privacy">
-          Политика в отношении обработки персональных данных
+          Политика в отношении
+          <br />
+          обработки персональных данных
         </h1>
 
         <div className="about-card">
