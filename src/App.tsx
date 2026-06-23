@@ -9,10 +9,18 @@ import { LoginPage } from "./pages/Auth/LoginPage";
 import { RequireAuth } from "./components/auth/RequireAuth";
 import { AdminPage } from "./pages/AdminPage/AdminPage";
 import PrivacyPage from "./pages/Privacy/PrivacyPage";
+import CookieBanner from "./components/layout/CookieBanner";
+import { useYandexMetrika } from "./hooks/useYandexMetrika";
+
+function MetrikaTracker() {
+  useYandexMetrika();
+  return null;
+}
 
 function App() {
   return (
     <BrowserRouter>
+      <MetrikaTracker />
       <Routes>
         <Route
           path="/"
@@ -68,6 +76,7 @@ function App() {
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <CookieBanner />
     </BrowserRouter>
   );
 }
