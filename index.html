@@ -25,13 +25,21 @@
           (k.async = 1),
           (k.src = r),
           a.parentNode.insertBefore(k, a);
-      })(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+      })(
+        window,
+        document,
+        "script",
+        "https://mc.yandex.ru/metrika/tag.js?id=110083093",
+        "ym",
+      );
 
       ym(110083093, "init", {
-        defer: true,
+        ssr: true,
         clickmap: true,
-        trackLinks: true,
+        referrer: document.referrer,
+        url: location.href,
         accurateTrackBounce: true,
+        trackLinks: true,
       });
     </script>
     <noscript

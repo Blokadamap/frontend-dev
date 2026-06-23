@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
 // Номер счётчика Яндекс.Метрики. Должен совпадать с номером в index.html.
@@ -11,14 +11,20 @@ declare global {
 }
 
 /**
- * Отправляет hit в Яндекс.Метрику при каждом переходе по роутеру.
- * Нужно, потому что сайт — SPA: смена страницы не перезагружает документ,
- * и счётчик с defer:true сам по себе видит только первый заход.
+ * Отправляет hit в Яндекс.Метрику при переходах по роутеру (SPA).
+ * Первый заход (страница входа) уже учтён автоматическим хитом из сниппета
+ * в index.html, поэтому начальное монтирование пропускаем — иначе landing
+ * считался бы дважды. Хиты шлём только при последующей смене URL.
  */
 export function useYandexMetrika() {
   const location = useLocation();
+  const isFirst = useRef(true);
 
   useEffect(() => {
+    if (isFirst.current) {
+      isFirst.current = false;
+      return;
+    }
     window.ym?.(COUNTER_ID, "hit", window.location.href);
   }, [location]);
 }
