@@ -68,6 +68,20 @@ interface ArchiveMapProps {
   onClearSelection: () => void;
 }
 
+// Граница покрытия исторического скана «Mil.-Geo.-Plan von Leningrad» (1941),
+// в координатах [[югЗапад],[северВосток]] — за её пределами тайлы не запрашиваются.
+const HISTORICAL_1941_BOUNDS: [[number, number], [number, number]] = [
+  [59.8559, 30.1904],
+  [60.0594, 30.5200],
+];
+
+// Граница покрытия карты Ленинграда 1925 г. (собрана из листов, привязана
+// по контрольным точкам).
+const HISTORICAL_1925_BOUNDS: [[number, number], [number, number]] = [
+  [59.8724, 30.2014],
+  [60.0210, 30.4761],
+];
+
 // Добавил заглушки для всех годов, чтобы не было белого экрана
 const rasterLayerConfig: Record<
   string,
@@ -75,6 +89,12 @@ const rasterLayerConfig: Record<
     url: string;
     attribution: string;
     className?: string;
+    // Необязательные параметры для собственных растровых тайлов (XYZ).
+    maxNativeZoom?: number;
+    minNativeZoom?: number;
+    bounds?: [[number, number], [number, number]];
+    // Базовая подложка под полупрозрачный исторический слой.
+    baseUnder?: string;
   }
 > = {
   modern: {
@@ -86,6 +106,29 @@ const rasterLayerConfig: Record<
     url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     attribution: "Tiles &copy; Esri",
     className: "archive-map__tiles--retro",
+  },
+  // Исторический план Ленинграда 1941 г. (немецкий военный «Mil.-Geo.-Plan»),
+  // привязан по контрольным точкам и нарезан на собственные XYZ-тайлы.
+  // Нативные тайлы до z15, дальше Leaflet масштабирует их сам.
+  "1941": {
+    url: "/tiles/1941/{z}/{x}/{y}.webp",
+    attribution: "Mil.-Geo.-Plan von Leningrad, 1941",
+    className: "archive-map__tiles--1941",
+    maxNativeZoom: 15,
+    minNativeZoom: 11,
+    bounds: HISTORICAL_1941_BOUNDS,
+    baseUnder: "modern",
+  },
+  // Карта Ленинграда 1925 г. (русская, собрана из районных листов),
+  // привязана по контрольным точкам и нарезана в собственные XYZ-тайлы.
+  "1925": {
+    url: "/tiles/1925/{z}/{x}/{y}.webp",
+    attribution: "Карта Ленинграда, 1925 г.",
+    className: "archive-map__tiles--1925",
+    maxNativeZoom: 15,
+    minNativeZoom: 11,
+    bounds: HISTORICAL_1925_BOUNDS,
+    baseUnder: "modern",
   },
   topo: {
     url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
@@ -265,8 +308,20 @@ function ArchiveMap({
       className={`archive-map archive-map--${selectedLayer}`}
       attributionControl={false}
     >
-      {/* 
-        ВАЖНО: Добавил key={selectedLayer}. 
+      {/*
+        Если у слоя есть базовая подложка (исторический полупрозрачный план),
+        сначала рисуем её, чтобы за пределами скана была видна обычная карта.
+      */}
+      {layerConfig.baseUnder && rasterLayerConfig[layerConfig.baseUnder] && (
+        <TileLayer
+          key={`base-${layerConfig.baseUnder}`}
+          url={rasterLayerConfig[layerConfig.baseUnder].url}
+          className={rasterLayerConfig[layerConfig.baseUnder].className}
+        />
+      )}
+
+      {/*
+        ВАЖНО: Добавил key={selectedLayer}.
         Это заставляет Leaflet перерисовать тайлы при смене ID.
       */}
       <TileLayer
@@ -274,6 +329,9 @@ function ArchiveMap({
         url={layerConfig.url}
         attribution={layerConfig.attribution}
         className={layerConfig.className}
+        maxNativeZoom={layerConfig.maxNativeZoom}
+        minNativeZoom={layerConfig.minNativeZoom}
+        bounds={layerConfig.bounds}
       />
 
       <MapViewport

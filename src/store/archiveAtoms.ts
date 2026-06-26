@@ -9,7 +9,8 @@ export const searchAtom = atom('');
 // поиска с кнопкой фильтров и переключатель слоёв (как в прототипе).
 export const activePanelAtom = atom<ArchivePanel | null>(null);
 export const activeFilterTabAtom = atom<FilterTab>('general');
-export const selectedLayerAtom = atom<MapLayerId>('modern');
+// По умолчанию показываем спутниковый слой (Esri World Imagery).
+export const selectedLayerAtom = atom<MapLayerId>('retro');
 export const selectedRecordIdAtom = atom<number | null>(null);
 
 export interface ObjectFiltersType extends AuthorFilters, NoteFilters {}
@@ -57,8 +58,10 @@ export const defaultArrayFilters: ArrayFiltersType = {
 }
 
 export const defaultScalarFilters: ScalarFiltersType = {
-    startDate: "",
-    endDate: "",
+    // По умолчанию временной промежуток предзаполнен годами блокады/войны:
+    // 1 января 1941 — 31 декабря 1945 (формат date-инпута YYYY-MM-DD).
+    startDate: "1941-01-01",
+    endDate: "1945-12-31",
     authorId: null,
     birthdayStart: "",
     birthdayEnd: "",

@@ -129,6 +129,10 @@
 .archive-map__tiles--modern-close-detail { filter: grayscale(1) saturate(0) contrast(1.42) brightness(1.08); }
 .archive-map__tiles--retro { filter: grayscale(0.2) contrast(0.94) saturate(0.35) sepia(0.1); }
 .archive-map__tiles--topo { filter: grayscale(0.5) contrast(0.95) saturate(0.2); }
+/* Исторический план 1941 г.: чуть мягче и без интерполяционного «мыла»
+   при перемасштабировании выше нативного зума. */
+.archive-map__tiles--1941 { image-rendering: auto; opacity: 0.96; }
+.archive-map__tiles--1925 { image-rendering: auto; opacity: 0.96; }
 
 .archive-marker-wrapper { background: transparent; border: none; }
 .archive-marker-pin {

@@ -332,6 +332,11 @@
   gap: 12px;
 }
 
+/* Дата вынесена в самый верх карточки — над цитатой. */
+.testimony-card__date-top {
+  margin-bottom: 14px;
+}
+
 .testimony-card__meta-row--place {
   align-items: flex-start;
 }

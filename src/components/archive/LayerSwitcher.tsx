@@ -3,6 +3,12 @@ import { useAtom } from "jotai";
 import { Layers, X } from "lucide-react";
 import { selectedLayerAtom } from "../../store/archiveAtoms";
 import type { MapLayerId } from "../../types/archive";
+// Импортируем превью через Vite, чтобы пути работали и в dev, и в собранной
+// версии (иначе /src/assets/... ломается в production).
+import satellitePreview from "../../assets/layers/tomsk.png";
+import defaultPreview from "../../assets/layers/default.png";
+import historical1941Preview from "../../assets/layers/1941.png";
+import historical1925Preview from "../../assets/layers/1925.png";
 import './LayerSwitcher.css';
 
 export const HISTORICAL_LAYERS = [
@@ -15,8 +21,10 @@ export const HISTORICAL_LAYERS = [
 ];
 
 export const BASE_LAYERS = [
-  { id: "retro", label: "Спутник", img: "/src/assets/layers/tomsk.png" },
-  { id: "modern", label: "По умолчанию", img: "/src/assets/layers/default.png" },
+  { id: "retro", label: "Спутник", img: satellitePreview },
+  { id: "modern", label: "Современная карта", img: defaultPreview },
+  { id: "1941", label: "Немецкий план 1941 г.", img: historical1941Preview },
+  { id: "1925", label: "План 1925 г.", img: historical1925Preview },
 ];
 
 interface LayerSwitcherProps {

@@ -1,6 +1,6 @@
 export type ArchivePanel = 'filters' | 'results' | null;
 export type FilterTab = 'general' | 'person' | 'place';
-export type MapLayerId = 'modern' | 'retro' | 'topo';
+export type MapLayerId = 'modern' | 'retro' | 'topo' | '1941' | '1925';
 export type Gender = 'Мужской' | 'Женский';
 export type PartyStatus = 'Партийный' | 'Беспартийный';
 export type WitnessKind = 'Личное' | 'С чужих слов (слухи)' | 'Опосредованное свидетельство';

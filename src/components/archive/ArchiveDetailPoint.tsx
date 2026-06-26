@@ -112,6 +112,19 @@ function ArchiveDetailPoint({
           return (
             <Fragment key={note.noteId}>
               <article className="testimony-card">
+                {note.createdAt && (
+                  <div className="testimony-card__meta-row testimony-card__date-top">
+                    <Calendar
+                      className="testimony-card__meta-icon"
+                      size={20}
+                      strokeWidth={2}
+                    />
+                    <span className="testimony-card__date">
+                      {formatDottedDate(note.createdAt)}
+                    </span>
+                  </div>
+                )}
+
                 <div className="testimony-card__quote">
                   <span className="testimony-card__badge" aria-hidden="true">
                     <Quote size={22} fill="#ffffff" stroke="none" />
@@ -136,19 +149,6 @@ function ArchiveDetailPoint({
                 <div className="testimony-card__divider" />
 
                 <div className="testimony-card__meta">
-                  {note.createdAt && (
-                    <div className="testimony-card__meta-row">
-                      <Calendar
-                        className="testimony-card__meta-icon"
-                        size={20}
-                        strokeWidth={2}
-                      />
-                      <span className="testimony-card__date">
-                        {formatDottedDate(note.createdAt)}
-                      </span>
-                    </div>
-                  )}
-
                   {point?.name && (
                     <div className="testimony-card__meta-row testimony-card__meta-row--place">
                       <MapPin
