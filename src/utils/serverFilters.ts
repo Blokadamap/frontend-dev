@@ -30,6 +30,9 @@ export function isNoteFilterActive(f: ArchiveFiltersType): boolean {
     f.noteTypes.length > 0 ||
     f.temporalities.length > 0 ||
     f.tags.length > 0 ||
+    f.organizations.length > 0 ||
+    f.cityNames.length > 0 ||
+    f.geoNames.length > 0 ||
     !!f.startDate ||
     !!f.endDate
   );
@@ -67,6 +70,9 @@ export function buildNoteParams(
   if (f.noteTypes.length) params.note_type_ids = csv(f.noteTypes);
   if (f.temporalities.length) params.temporality_ids = csv(f.temporalities);
   if (f.tags.length) params.tag_ids = csv(f.tags);
+  if (f.organizations.length) params.organization_ids = csv(f.organizations);
+  if (f.cityNames.length) params.city_name_ids = csv(f.cityNames);
+  if (f.geoNames.length) params.geo_name_ids = csv(f.geoNames);
   if (f.startDate) params.date_from = f.startDate;
   if (f.endDate) params.date_to = f.endDate;
   if (authorIds != null) params.author_ids = authorIds.join(",");

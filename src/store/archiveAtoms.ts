@@ -13,7 +13,9 @@ export const activeFilterTabAtom = atom<FilterTab>('general');
 export const selectedLayerAtom = atom<MapLayerId>('retro');
 export const selectedRecordIdAtom = atom<number | null>(null);
 
-export interface ObjectFiltersType extends AuthorFilters, NoteFilters {}
+// Личности (personalities) намеренно исключены: справочник используется
+// только в админке, в фильтры карты не выводится.
+export type ObjectFiltersType = AuthorFilters & Omit<NoteFilters, 'personalities'>;
 
 export interface ArrayFiltersType {
     genders: string[];
@@ -37,7 +39,7 @@ export interface ScalarFiltersType {
     address: string
 }
 
-export interface ArchiveFiltersType extends ObjectFiltersType, ArrayFiltersType, ScalarFiltersType {}
+export type ArchiveFiltersType = ObjectFiltersType & ArrayFiltersType & ScalarFiltersType;
 
 export const defaultObjectFilters: ObjectFiltersType = {
     familyStatuses: [],
@@ -51,6 +53,9 @@ export const defaultObjectFilters: ObjectFiltersType = {
     tags: [],
     noteTypes: [],
     temporalities: [],
+    organizations: [],
+    cityNames: [],
+    geoNames: [],
 };
 
 export const defaultArrayFilters: ArrayFiltersType = {

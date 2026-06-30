@@ -22,6 +22,11 @@ class NoteMapper {
             tags: data.tags,
             noteTypes: data.note_types,
             temporalities: data.temporalities,
+            // Defaults на случай старого бэкенда без этих справочников.
+            organizations: data.organizations ?? [],
+            cityNames: data.city_names ?? [],
+            geoNames: data.geo_names ?? [],
+            personalities: data.personalities ?? [],
         };
     }
 
@@ -105,6 +110,12 @@ class NoteMapper {
             source: data.source,
             tag_ids: data.tagIds,
             note_to_points: data.noteToPoints.map((item) => this.toNoteToPointCreateForApi(item)),
+            localization_accuracy: data.localizationAccuracy || null,
+            place_type: data.placeType || null,
+            organization_ids: data.organizationIds,
+            city_name_ids: data.cityNameIds,
+            geo_name_ids: data.geoNameIds,
+            personality_ids: data.personalityIds,
         };
     }
 

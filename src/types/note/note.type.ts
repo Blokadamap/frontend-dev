@@ -57,6 +57,13 @@ export interface NoteCreateForApi {
     source: string;
     tag_ids: number[];
     note_to_points: NoteToPointCreateForApi[];
+    // Новые необязательные графы.
+    localization_accuracy: string | null;
+    place_type: string | null;
+    organization_ids: number[];
+    city_name_ids: number[];
+    geo_name_ids: number[];
+    personality_ids: number[];
 }
 
 export interface NoteToPointCreateForApi {
@@ -68,6 +75,10 @@ export interface NoteFiltersFromApi {
     tags: FilterItem[];
     note_types: FilterItem[];
     temporalities: FilterItem[];
+    organizations?: FilterItem[];
+    city_names?: FilterItem[];
+    geo_names?: FilterItem[];
+    personalities?: FilterItem[];
 }
 
 export interface NoteShort {
@@ -132,6 +143,13 @@ export interface NoteCreate {
 
     tagIds: number[];
     noteToPoints: NoteToPointCreate[];
+    // Новые необязательные графы.
+    localizationAccuracy: string | null;
+    placeType: string | null;
+    organizationIds: number[];
+    cityNameIds: number[];
+    geoNameIds: number[];
+    personalityIds: number[];
 }
 
 export interface NoteToPointCreate {
@@ -139,10 +157,17 @@ export interface NoteToPointCreate {
     description: string;
 }
 
+// Доступные значения фильтров/справочников свидетельства.
+// organizations/cityNames/geoNames выводятся в фильтры карты;
+// personalities — только для выбора в админке (в фильтры карты не идёт).
 export interface NoteFilters {
     tags: FilterItem[];
     noteTypes: FilterItem[];
     temporalities: FilterItem[];
+    organizations: FilterItem[];
+    cityNames: FilterItem[];
+    geoNames: FilterItem[];
+    personalities: FilterItem[];
 }
 
 // Заметка для списка/фильтрации (GET /api/v1/notes/): связи + id автора + точки.
