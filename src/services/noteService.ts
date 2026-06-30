@@ -83,6 +83,12 @@ class NoteService {
             source: string;
             tag_ids: number[];
             note_to_points: { point_id: number; description: string }[];
+            localization_accuracy?: string | null;
+            place_type?: string | null;
+            organization_ids?: number[];
+            city_name_ids?: number[];
+            geo_name_ids?: number[];
+            personality_ids?: number[];
         }>(`/api/v1/notes/${id}/edit`);
 
         const d = response.data;
@@ -98,6 +104,12 @@ class NoteService {
                 pointId: p.point_id,
                 description: p.description,
             })),
+            localizationAccuracy: d.localization_accuracy ?? null,
+            placeType: d.place_type ?? null,
+            organizationIds: d.organization_ids ?? [],
+            cityNameIds: d.city_name_ids ?? [],
+            geoNameIds: d.geo_name_ids ?? [],
+            personalityIds: d.personality_ids ?? [],
         };
     }
 
@@ -109,6 +121,22 @@ class NoteService {
     /** Удаление тега (блокируется, если используется; только суперадмин). */
     async deleteTag(id: number): Promise<void> {
         await axiosPrivate.delete(`/api/v1/notes/tags/${id}`);
+    }
+
+    /**
+     * Новые тегоподобные справочники свидетельства. prefix — сегмент пути
+     * бэкенда: "organizations" | "city-names" | "geo-names" | "personalities".
+     * Создание и удаление полностью аналогичны тегам.
+     */
+    async createNoteTaxonomy(prefix: string, data: TagCreate): Promise<unknown> {
+        const response = await axiosPrivate.post(`/api/v1/notes/${prefix}`, data);
+
+        return response.data;
+    }
+
+    /** Удаление (блокируется, если значение используется; только суперадмин). */
+    async deleteNoteTaxonomy(prefix: string, id: number): Promise<void> {
+        await axiosPrivate.delete(`/api/v1/notes/${prefix}/${id}`);
     }
 }
 

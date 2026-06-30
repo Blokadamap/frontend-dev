@@ -77,8 +77,10 @@
     position: absolute;
     left: 0;
     bottom: 0;
-    width: 220px;
-    max-height: 460px; 
+    /* Ширина — по содержимому: окно расширяется под ряд из 3 превью,
+       а сами превью остаются такого же размера, как у базовых видов. */
+    width: fit-content;
+    max-height: 460px;
     z-index: 1200;
   }
    .layer-modal-item__img {
@@ -124,15 +126,24 @@
   transform: scale(1.05);
 }
 
+/* Ячейки фиксированного размера (как у базовых превью), чтобы при 3 в ряд
+   превью не уменьшались — вместо этого расширяется само окно. */
 .layer-modal-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 90px);
   gap: 12px;
+  justify-content: center;
 }
 
 .layer-modal-grid.base-grid {
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, 90px);
   margin-top: 4px;
+}
+
+/* Исторические карты: по 3 в ряд, отделены от базового ряда. */
+.layer-modal-grid.hist-grid {
+  grid-template-columns: repeat(3, 90px);
+  margin-top: 12px;
 }
 
 .layer-modal-item {

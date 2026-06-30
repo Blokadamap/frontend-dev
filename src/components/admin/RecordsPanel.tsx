@@ -15,6 +15,9 @@ import { useDeleteNote } from "../../hooks/notes/useDeleteNote";
 import { useDeleteAuthor } from "../../hooks/authors/useDeleteAuthor";
 import { useDeletePoint } from "../../hooks/points/useDeletePoint";
 import { useDeleteTag } from "../../hooks/notes/useDeleteTag";
+import { useDeleteNoteTaxonomy } from "../../hooks/notes/useDeleteNoteTaxonomy";
+import type { FilterItem } from "../../types/common/common.types";
+import type { NoteFilters } from "../../types/note/note.type";
 
 import { authorService } from "../../services/authorService";
 import { pointService } from "../../services/pointService";
@@ -24,13 +27,25 @@ import { diaryService } from "../../services/diaryService";
 import type { AuthorCreate } from "../../types/author/author.type";
 import type { PointCreate } from "../../types/point/point.type";
 
-type Entity = "notes" | "authors" | "points" | "tags";
+type Entity =
+  | "notes"
+  | "authors"
+  | "points"
+  | "tags"
+  | "organizations"
+  | "city-names"
+  | "geo-names"
+  | "personalities";
 
 const ENTITY_TABS: { id: Entity; label: string }[] = [
   { id: "notes", label: "Свидетельства" },
   { id: "authors", label: "Авторы" },
   { id: "points", label: "Места" },
   { id: "tags", label: "Теги" },
+  { id: "organizations", label: "Организации" },
+  { id: "city-names", label: "Городские названия" },
+  { id: "geo-names", label: "Географические названия" },
+  { id: "personalities", label: "Персоналии" },
 ];
 
 const DELETE_LABEL: Record<Entity, string> = {
@@ -38,6 +53,18 @@ const DELETE_LABEL: Record<Entity, string> = {
   authors: "автора",
   points: "место",
   tags: "тег",
+  organizations: "организацию",
+  "city-names": "городское название",
+  "geo-names": "географическое название",
+  personalities: "персоналию",
+};
+
+// Какое поле справочника из useNoteFilters показывать на вкладке.
+const TAXONOMY_FILTER_KEY: Partial<Record<Entity, keyof NoteFilters>> = {
+  organizations: "organizations",
+  "city-names": "cityNames",
+  "geo-names": "geoNames",
+  personalities: "personalities",
 };
 
 export function RecordsPanel() {
@@ -51,6 +78,10 @@ export function RecordsPanel() {
   const deleteAuthor = useDeleteAuthor();
   const deletePoint = useDeletePoint();
   const deleteTag = useDeleteTag();
+  const deleteOrganization = useDeleteNoteTaxonomy("organizations");
+  const deleteCityName = useDeleteNoteTaxonomy("city-names");
+  const deleteGeoName = useDeleteNoteTaxonomy("geo-names");
+  const deletePersonality = useDeleteNoteTaxonomy("personalities");
 
   function refreshLists() {
     queryClient.invalidateQueries({ queryKey: ["authors"] });
@@ -89,7 +120,11 @@ export function RecordsPanel() {
     if (entity === "notes") deleteNote.mutate(id, opts);
     else if (entity === "authors") deleteAuthor.mutate(id, opts);
     else if (entity === "points") deletePoint.mutate(id, opts);
-    else deleteTag.mutate(id, opts);
+    else if (entity === "tags") deleteTag.mutate(id, opts);
+    else if (entity === "organizations") deleteOrganization.mutate(id, opts);
+    else if (entity === "city-names") deleteCityName.mutate(id, opts);
+    else if (entity === "geo-names") deleteGeoName.mutate(id, opts);
+    else deletePersonality.mutate(id, opts);
   }
 
   return (
@@ -136,6 +171,13 @@ export function RecordsPanel() {
           {entity === "authors" && <AuthorsList search={search} onEdit={openEdit} onDelete={handleDelete} />}
           {entity === "points" && <PointsList search={search} onEdit={openEdit} onDelete={handleDelete} />}
           {entity === "tags" && <TagsList search={search} onDelete={handleDelete} />}
+          {TAXONOMY_FILTER_KEY[entity] && (
+            <TaxonomyList
+              filterKey={TAXONOMY_FILTER_KEY[entity]!}
+              search={search}
+              onDelete={handleDelete}
+            />
+          )}
         </>
       )}
     </div>
@@ -173,6 +215,35 @@ function TagsList({ search, onDelete }: { search: string; onDelete: (id: number)
     const q = search.trim().toLowerCase();
     return (data?.tags ?? []).filter((t) => t.name.toLowerCase().includes(q));
   }, [data, search]);
+
+  if (isLoading) return <div className="admin-empty">Загрузка…</div>;
+  if (!items.length) return <div className="admin-empty">Ничего не найдено.</div>;
+  return (
+    <div className="admin-records">
+      {items.map((t) => (
+        <RecordRow key={t.id} title={t.name} subtitle={`ID ${t.id}`} onDelete={() => onDelete(t.id)} />
+      ))}
+    </div>
+  );
+}
+
+// Список значений нового тегоподобного справочника (организации, городские/
+// географические названия, персоналии) с удалением — аналогично TagsList.
+function TaxonomyList({
+  filterKey,
+  search,
+  onDelete,
+}: {
+  filterKey: keyof NoteFilters;
+  search: string;
+  onDelete: (id: number) => void;
+}) {
+  const { data, isLoading } = useNoteFilters();
+  const items = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    const list = (data?.[filterKey] as FilterItem[] | undefined) ?? [];
+    return list.filter((t) => t.name.toLowerCase().includes(q));
+  }, [data, filterKey, search]);
 
   if (isLoading) return <div className="admin-empty">Загрузка…</div>;
   if (!items.length) return <div className="admin-empty">Ничего не найдено.</div>;

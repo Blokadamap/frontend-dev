@@ -9,6 +9,7 @@ import satellitePreview from "../../assets/layers/tomsk.png";
 import defaultPreview from "../../assets/layers/default.png";
 import historical1941Preview from "../../assets/layers/1941.png";
 import historical1925Preview from "../../assets/layers/1925.png";
+import historical1940Preview from "../../assets/layers/1940.png";
 import './LayerSwitcher.css';
 
 export const HISTORICAL_LAYERS = [
@@ -23,8 +24,9 @@ export const HISTORICAL_LAYERS = [
 export const BASE_LAYERS = [
   { id: "retro", label: "Спутник", img: satellitePreview },
   { id: "modern", label: "Современная карта", img: defaultPreview },
-  { id: "1941", label: "Немецкий план 1941 г.", img: historical1941Preview },
   { id: "1925", label: "План 1925 г.", img: historical1925Preview },
+  { id: "1940", label: "План 1940 г.", img: historical1940Preview },
+  { id: "1941", label: "Немецкий план 1941 г.", img: historical1941Preview },
 ];
 
 interface LayerSwitcherProps {
@@ -91,10 +93,11 @@ function LayerSwitcher({ onMobileOpen }: LayerSwitcherProps) {
               <X size={18} strokeWidth={2.5} />
             </button>
           </div>
+          {/* Первый ряд — два базовых вида (фиксированно 2 в ряд). */}
           <div className="layer-modal-grid base-grid">
-            {BASE_LAYERS.map((layer, index) => (
+            {BASE_LAYERS.slice(0, 2).map((layer) => (
               <button
-                key={index}
+                key={layer.id}
                 className={`layer-modal-item ${selectedLayer === layer.id ? "is-active" : ""}`}
                 onClick={() => setSelectedLayer(layer.id as MapLayerId)}
               >
@@ -103,6 +106,22 @@ function LayerSwitcher({ onMobileOpen }: LayerSwitcherProps) {
               </button>
             ))}
           </div>
+
+          {/* Исторические карты — по 3 в ряд, новые переносятся на след. ряд. */}
+          {BASE_LAYERS.length > 2 && (
+            <div className="layer-modal-grid hist-grid">
+              {BASE_LAYERS.slice(2).map((layer) => (
+                <button
+                  key={layer.id}
+                  className={`layer-modal-item ${selectedLayer === layer.id ? "is-active" : ""}`}
+                  onClick={() => setSelectedLayer(layer.id as MapLayerId)}
+                >
+                  <LayerImg src={layer.img} alt={layer.label} />
+                  <span>{layer.label}</span>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

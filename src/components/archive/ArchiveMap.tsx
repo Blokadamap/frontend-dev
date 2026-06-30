@@ -82,6 +82,12 @@ const HISTORICAL_1925_BOUNDS: [[number, number], [number, number]] = [
   [60.0210, 30.4761],
 ];
 
+// Граница покрытия плана Ленинграда 1940 г.
+const HISTORICAL_1940_BOUNDS: [[number, number], [number, number]] = [
+  [59.8393, 30.1904],
+  [60.0594, 30.5310],
+];
+
 // Добавил заглушки для всех годов, чтобы не было белого экрана
 const rasterLayerConfig: Record<
   string,
@@ -128,6 +134,16 @@ const rasterLayerConfig: Record<
     maxNativeZoom: 15,
     minNativeZoom: 11,
     bounds: HISTORICAL_1925_BOUNDS,
+    baseUnder: "modern",
+  },
+  // План Ленинграда 1940 г. (Лениздат), привязан по контрольным точкам.
+  "1940": {
+    url: "/tiles/1940/{z}/{x}/{y}.webp",
+    attribution: "План Ленинграда, 1940 г. (Лениздат)",
+    className: "archive-map__tiles--1940",
+    maxNativeZoom: 15,
+    minNativeZoom: 11,
+    bounds: HISTORICAL_1940_BOUNDS,
     baseUnder: "modern",
   },
   topo: {

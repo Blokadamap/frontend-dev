@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ChevronDown } from "lucide-react";
 import { useAtom } from "jotai";
 import {
@@ -39,8 +39,6 @@ function ArchiveFilters({ options }: ArchiveFiltersProps) {
   const [objectFilters, setObjectFilters] = useAtom(archiveObjectFilters);
   const [arrayFilters, setArrayFilters] = useAtom(archiveArrayFilters);
   const [scalarFilters, setScalarFilters] = useAtom(archiveScalarFilters);
-
-  const [tagQuery, setTagQuery] = useState("");
 
   const { data: noteFiltersData } = useNoteFilters();
   const { data: authorsData } = useAuthors();
@@ -134,12 +132,6 @@ function ArchiveFilters({ options }: ArchiveFiltersProps) {
   const isObjectChecked = (item: FilterItem, key: keyof ObjectFiltersType) =>
     objectFilters[key].some((picked) => picked.id === item.id);
 
-  const visibleTags = (noteFiltersData?.tags ?? []).filter((tag) =>
-    tag.name
-      .toLocaleLowerCase("ru-RU")
-      .includes(tagQuery.toLocaleLowerCase("ru-RU")),
-  );
-
   return (
     <section className="archive-panel archive-panel--filters custom-scrollbar">
       <div className="archive-filter-grid">
@@ -194,27 +186,37 @@ function ArchiveFilters({ options }: ArchiveFiltersProps) {
               </div>
             </FilterSection>
 
-            <FilterSection title="Тематики">
-              <input
-                type="text"
-                className="archive-filter-section__search"
-                placeholder="Введите тематику..."
-                value={tagQuery}
-                onChange={(event) => setTagQuery(event.target.value)}
-              />
-              <div className="archive-chip-grid">
-                {visibleTags.map((tag) => (
-                  <button
-                    key={tag.id}
-                    type="button"
-                    className={`chip chip--tag${isObjectChecked(tag, "tags") ? " is-active" : ""}`}
-                    onClick={() => onUpdateObjectFilters(tag, "tags")}
-                  >
-                    {tag.name}
-                  </button>
-                ))}
-              </div>
-            </FilterSection>
+            <ChipFilterSection
+              title="Тематики"
+              placeholder="Введите тематику..."
+              items={noteFiltersData?.tags ?? []}
+              selected={objectFilters.tags}
+              onToggle={(item) => onUpdateObjectFilters(item, "tags")}
+            />
+
+            <ChipFilterSection
+              title="Упоминание/связанные организации"
+              placeholder="Введите организацию..."
+              items={noteFiltersData?.organizations ?? []}
+              selected={objectFilters.organizations}
+              onToggle={(item) => onUpdateObjectFilters(item, "organizations")}
+            />
+
+            <ChipFilterSection
+              title="Упоминание городских названий"
+              placeholder="Введите название..."
+              items={noteFiltersData?.cityNames ?? []}
+              selected={objectFilters.cityNames}
+              onToggle={(item) => onUpdateObjectFilters(item, "cityNames")}
+            />
+
+            <ChipFilterSection
+              title="Упоминание географических названий"
+              placeholder="Введите название..."
+              items={noteFiltersData?.geoNames ?? []}
+              selected={objectFilters.geoNames}
+              onToggle={(item) => onUpdateObjectFilters(item, "geoNames")}
+            />
           </>
         )}
 
@@ -508,6 +510,88 @@ function ArchiveFilters({ options }: ArchiveFiltersProps) {
         )}
       </div>
     </section>
+  );
+}
+
+// Случайная выборка n элементов (для дефолтного показа фильтров, чтобы
+// прокрутка не была длинной). Перемешивание — копия + Фишер–Йейтс.
+function pickRandom<T>(items: T[], n: number): T[] {
+  if (items.length <= n) return items;
+  const copy = [...items];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy.slice(0, n);
+}
+
+const DEFAULT_CHIP_LIMIT = 15;
+
+// Секция фильтра в виде чипов с поиском (как «Тематики»). По умолчанию (без
+// ввода) показывает случайные 15 значений + уже выбранные, чтобы список не
+// был длинным. При вводе ищет по всем значениям.
+function ChipFilterSection({
+  title,
+  placeholder,
+  items,
+  selected,
+  onToggle,
+}: {
+  title: string;
+  placeholder: string;
+  items: FilterItem[];
+  selected: FilterItem[];
+  onToggle: (item: FilterItem) => void;
+}) {
+  const [query, setQuery] = useState("");
+  const q = query.trim().toLocaleLowerCase("ru-RU");
+
+  // Случайные 15 — стабильны, пока не изменится сам список значений.
+  const sample = useMemo(
+    () => pickRandom(items, DEFAULT_CHIP_LIMIT),
+    [items],
+  );
+
+  const selectedIds = new Set(selected.map((s) => s.id));
+
+  const visible = useMemo(() => {
+    if (q) {
+      return items.filter((i) => i.name.toLocaleLowerCase("ru-RU").includes(q));
+    }
+    // Без запроса: выбранные всегда видимы + случайные 15 (без дублей).
+    const seen = new Set<number>();
+    const result: FilterItem[] = [];
+    for (const item of [...selected, ...sample]) {
+      if (!seen.has(item.id)) {
+        seen.add(item.id);
+        result.push(item);
+      }
+    }
+    return result;
+  }, [q, items, selected, sample]);
+
+  return (
+    <FilterSection title={title}>
+      <input
+        type="text"
+        className="archive-filter-section__search"
+        placeholder={placeholder}
+        value={query}
+        onChange={(event) => setQuery(event.target.value)}
+      />
+      <div className="archive-chip-grid">
+        {visible.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            className={`chip chip--tag${selectedIds.has(item.id) ? " is-active" : ""}`}
+            onClick={() => onToggle(item)}
+          >
+            {item.name}
+          </button>
+        ))}
+      </div>
+    </FilterSection>
   );
 }
 
