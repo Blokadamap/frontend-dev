@@ -133,6 +133,7 @@
    при перемасштабировании выше нативного зума. */
 .archive-map__tiles--1941 { image-rendering: auto; opacity: 0.96; }
 .archive-map__tiles--1925 { image-rendering: auto; opacity: 0.96; }
+.archive-map__tiles--1940 { image-rendering: auto; opacity: 0.96; }
 
 .archive-marker-wrapper { background: transparent; border: none; }
 .archive-marker-pin {
