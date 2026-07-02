@@ -425,7 +425,7 @@ function ArchiveFilters({ options }: ArchiveFiltersProps) {
               />
             </FilterSection>
 
-            <FilterSection title="Тип места">
+            <FilterSection title="Место">
               <SelectField
                 value={scalarFilters.placeKind}
                 options={["building", "other"]}
@@ -444,7 +444,7 @@ function ArchiveFilters({ options }: ArchiveFiltersProps) {
               />
             </FilterSection>
 
-            <FilterSection title="Подтип">
+            <FilterSection title="Тип места">
               <SelectField
                 value={scalarFilters.pointType}
                 options={typeOptionNames}

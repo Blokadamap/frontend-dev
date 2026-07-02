@@ -157,7 +157,7 @@ export function PointForm({ recordId, initial, onSaved }: Props) {
           </select>
         </Field>
 
-        <Field label="Тип места">
+        <Field label="Место">
           <select
             className="admin-select"
             value={placeKind}
@@ -177,7 +177,7 @@ export function PointForm({ recordId, initial, onSaved }: Props) {
           </select>
         </Field>
 
-        <Field label="Подтип">
+        <Field label="Тип места">
           <select
             className="admin-select"
             value={form.pointTypeId || ""}
