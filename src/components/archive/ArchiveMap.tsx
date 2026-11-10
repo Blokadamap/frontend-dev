@@ -101,12 +101,21 @@ const rasterLayerConfig: Record<
     bounds?: [[number, number], [number, number]];
     // Базовая подложка под полупрозрачный исторический слой.
     baseUnder?: string;
+    // Прозрачный слой подписей поверх основного (только для самого слоя,
+    // не для использования в качестве подложки).
+    labelsUrl?: string;
   }
 > = {
+  // Esri Light Gray Canvas: без API-ключа (CARTO с ноября 2026 требует ключ
+  // и вместо тайлов отдаёт картинку «API KEY REQUIRED»).
+  // Нативные тайлы есть до z16, дальше Leaflet масштабирует сам.
   modern: {
-    url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-    attribution: "&copy; OpenStreetMap contributors &copy; CARTO",
+    url: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+    labelsUrl:
+      "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}",
+    attribution: "Tiles &copy; Esri &mdash; Esri, HERE, Garmin, &copy; OpenStreetMap contributors",
     className: "archive-map__tiles--modern",
+    maxNativeZoom: 16,
   },
   retro: {
     url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
@@ -333,6 +342,7 @@ function ArchiveMap({
           key={`base-${layerConfig.baseUnder}`}
           url={rasterLayerConfig[layerConfig.baseUnder].url}
           className={rasterLayerConfig[layerConfig.baseUnder].className}
+          maxNativeZoom={rasterLayerConfig[layerConfig.baseUnder].maxNativeZoom}
         />
       )}
 
@@ -349,6 +359,15 @@ function ArchiveMap({
         minNativeZoom={layerConfig.minNativeZoom}
         bounds={layerConfig.bounds}
       />
+
+      {layerConfig.labelsUrl && (
+        <TileLayer
+          key={`labels-${selectedLayer}`}
+          url={layerConfig.labelsUrl}
+          className="archive-map__tiles--modern-labels"
+          maxNativeZoom={layerConfig.maxNativeZoom}
+        />
+      )}
 
       <MapViewport
         points={points}
